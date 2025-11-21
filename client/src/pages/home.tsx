@@ -112,21 +112,19 @@ export default function Home() {
             </div>
 
             {/* Heading */}
-            <h2 className="text-[28px] font-bold text-gray-900 mb-6" data-testid="text-success-heading">
+            <h2 className="text-[24px] font-bold text-gray-900 mb-6 text-center" data-testid="text-success-heading">
               Success
             </h2>
 
             {/* Body Text */}
-            <div className="space-y-1 text-[17px] leading-snug text-gray-800 font-medium mb-10 text-center">
-              <p className="mb-4">
+            <div className="w-full space-y-1 text-[15px] leading-normal text-gray-800 font-medium mb-8 text-left">
+              <p className="mb-1">
                 You have successfully <br />
                 transferred NGN{formatCurrency(receiptData.amount)} to <br />
                 {receiptData.recipientName}
               </p>
-              <div className="flex flex-col items-center gap-1">
-                <p>Bank Name: {receiptData.bankName}</p>
-                <p>Account Number: {receiptData.accountNumber}</p>
-              </div>
+              <p>Bank Name: {receiptData.bankName}</p>
+              <p>Account Number: {receiptData.accountNumber}</p>
             </div>
 
             {/* Buttons */}
