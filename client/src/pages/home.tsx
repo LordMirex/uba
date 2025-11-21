@@ -94,9 +94,9 @@ export default function Home() {
     img.crossOrigin = "anonymous";
     img.onload = () => {
       // Draw avatar centered
-      const avatarSize = 90;
+      const avatarSize = 110;
       const avatarX = (canvas.width - avatarSize) / 2;
-      const avatarY = 35;
+      const avatarY = 30;
       ctx.drawImage(img, avatarX, avatarY, avatarSize, avatarSize);
 
       // Draw "Success" heading
