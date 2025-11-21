@@ -1,16 +1,23 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
-import { X } from "lucide-react";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Check, ChevronsUpDown } from "lucide-react";
+import { cn } from "@/lib/utils";
 import avatarImage from "@assets/images~2_1763755363341.png";
 import { useToast } from "@/hooks/use-toast";
-import html2canvas from "html2canvas";
+import { useQuery } from "@tanstack/react-query";
+
+interface Bank {
+  bank_name: string;
+  bank_code: string;
+}
 
 // --- Schema ---
 const transferSchema = z.object({
@@ -26,16 +33,15 @@ const transferSchema = z.object({
     .regex(/^\d+$/, "Account number must be digits only")
     .min(6, "Account number must be at least 6 digits")
     .max(20, "Account number must be less than 20 digits"),
-  note: z.string().optional(),
 });
 
 type TransferFormValues = z.infer<typeof transferSchema>;
 
 export default function Home() {
-  const [isSuccess, setIsSuccess] = useState(false);
   const [receiptData, setReceiptData] = useState<TransferFormValues | null>(null);
+  const [openBankSelector, setOpenBankSelector] = useState(false);
   const { toast } = useToast();
-  const receiptRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const form = useForm<TransferFormValues>({
     resolver: zodResolver(transferSchema),
@@ -44,117 +50,118 @@ export default function Home() {
       amount: "",
       bankName: "",
       accountNumber: "",
-      note: "",
     },
   });
 
+  // Fetch banks from API
+  const { data: banksData, isLoading: banksLoading } = useQuery({
+    queryKey: ['banks'],
+    queryFn: async () => {
+      const response = await fetch('/api/banks');
+      if (!response.ok) throw new Error('Failed to fetch banks');
+      return response.json();
+    },
+  });
+
+  const banks: Bank[] = banksData?.data || [];
+
   const onSubmit = (data: TransferFormValues) => {
-    setTimeout(() => {
-      setReceiptData(data);
-      setIsSuccess(true);
-    }, 500);
+    setReceiptData(data);
   };
 
-  const handleClose = async () => {
-    if (receiptRef.current) {
-      try {
-        const canvas = await html2canvas(receiptRef.current, {
-          backgroundColor: '#ffffff',
-          scale: 2,
-          logging: false,
-          useCORS: true,
-        });
+  // Generate receipt canvas when receipt data changes
+  useEffect(() => {
+    if (receiptData && canvasRef.current) {
+      generateReceiptCanvas();
+    }
+  }, [receiptData]);
+
+  const generateReceiptCanvas = () => {
+    const canvas = canvasRef.current;
+    if (!canvas || !receiptData) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // Set canvas size
+    canvas.width = 400;
+    canvas.height = 500;
+
+    // Fill white background
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Load and draw avatar image
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => {
+      // Draw avatar centered at top
+      const avatarSize = 120;
+      const avatarX = (canvas.width - avatarSize) / 2;
+      const avatarY = 40;
+      ctx.drawImage(img, avatarX, avatarY, avatarSize, avatarSize);
+
+      // Draw "Success" heading
+      ctx.fillStyle = '#000000';
+      ctx.font = 'bold 28px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Success', canvas.width / 2, avatarY + avatarSize + 50);
+
+      // Draw transfer details - left aligned
+      ctx.font = '400 16px Inter, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillStyle = '#333333';
+      
+      const textX = 40;
+      let textY = avatarY + avatarSize + 100;
+      const lineHeight = 24;
+
+      // Format amount with commas
+      const amount = parseFloat(receiptData.amount).toLocaleString('en-NG', { 
+        minimumFractionDigits: 0, 
+        maximumFractionDigits: 2 
+      });
+
+      // Multi-line text
+      ctx.fillText('You have successfully', textX, textY);
+      textY += lineHeight;
+      ctx.fillText(`transferred NGN${amount} to`, textX, textY);
+      textY += lineHeight;
+      ctx.fillText(receiptData.recipientName.toUpperCase(), textX, textY);
+      textY += lineHeight + 8;
+      ctx.fillText(`Bank Name: ${receiptData.bankName}`, textX, textY);
+      textY += lineHeight;
+      ctx.fillText(`Account Number: ${receiptData.accountNumber}`, textX, textY);
+    };
+    img.src = avatarImage;
+  };
+
+  const handleDownload = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    canvas.toBlob((blob) => {
+      if (blob) {
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `transfer-receipt-${Date.now()}.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
         
-        canvas.toBlob((blob) => {
-          if (blob) {
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `transfer-receipt-${Date.now()}.png`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
-            
-            toast({
-              title: "Receipt downloaded",
-              description: "Your transfer receipt has been saved.",
-            });
-          }
-        });
-      } catch (error) {
-        console.error('Failed to capture receipt:', error);
         toast({
-          title: "Download failed",
-          description: "Could not save the receipt. Please try again.",
-          variant: "destructive",
+          title: "Receipt downloaded",
+          description: "Your transfer receipt has been saved.",
         });
       }
-    }
-    
-    setTimeout(() => {
-      setIsSuccess(false);
-      form.reset();
-      setReceiptData(null);
-    }, 500);
+    });
   };
 
-  const formatCurrency = (amount: string) => {
-    const num = parseFloat(amount);
-    return num.toLocaleString('en-NG', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
-  };
-
-  // --- Success Receipt View ---
-  if (isSuccess && receiptData) {
-    return (
-      <div className="min-h-screen bg-black/50 flex items-center justify-center p-4 font-sans">
-        <Card className="w-full max-w-[400px] bg-white rounded-[24px] shadow-xl border-0 relative overflow-visible">
-          <button 
-            onClick={handleClose}
-            className="absolute top-6 right-6 text-gray-800 hover:text-gray-600 transition-colors z-10"
-            data-testid="button-close"
-          >
-            <X className="h-6 w-6" strokeWidth={2.5} />
-          </button>
-
-          <CardContent ref={receiptRef} className="flex flex-col items-center pt-12 pb-12 px-8 text-center bg-white rounded-[24px]">
-            {/* Avatar */}
-            <div className="mb-6 relative">
-               <div className="h-24 w-24 mx-auto flex items-center justify-center">
-                  <img 
-                    src={avatarImage} 
-                    alt="Success Avatar" 
-                    className="h-full w-full object-contain"
-                    data-testid="img-avatar"
-                  />
-               </div>
-            </div>
-
-            {/* Heading */}
-            <h2 className="text-[24px] font-bold text-gray-900 mb-6 text-center" data-testid="text-success-heading">
-              Success
-            </h2>
-
-            {/* Body Text */}
-            <div className="w-full space-y-1 text-[15px] leading-normal text-gray-800 font-medium text-left">
-              <p className="mb-1">
-                You have successfully <br />
-                transferred NGN{formatCurrency(receiptData.amount)} to <br />
-                {receiptData.recipientName}
-              </p>
-              <p>Bank Name: {receiptData.bankName}</p>
-              <p>Account Number: {receiptData.accountNumber}</p>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  // --- Transfer Form View ---
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 font-sans">
-      <Card className="w-full max-w-md bg-white shadow-sm border border-gray-100">
+    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-start p-4 font-sans">
+      <Card className="w-full max-w-md bg-white shadow-sm border border-gray-100 mt-8">
         <CardContent className="pt-6 px-6 pb-8">
           <h1 className="text-2xl font-bold text-gray-900 mb-6">Transfer Demo</h1>
           
@@ -204,23 +211,58 @@ export default function Home() {
                 control={form.control}
                 name="bankName"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="flex flex-col">
                     <FormLabel className="text-gray-700">Bank name</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger className="h-11 bg-gray-50 border-gray-200" data-testid="select-bank">
-                          <SelectValue placeholder="Select a bank" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="Opay">Opay</SelectItem>
-                        <SelectItem value="GTBank">GTBank</SelectItem>
-                        <SelectItem value="Zenith Bank">Zenith Bank</SelectItem>
-                        <SelectItem value="Access Bank">Access Bank</SelectItem>
-                        <SelectItem value="First Bank">First Bank</SelectItem>
-                        <SelectItem value="Kuda">Kuda</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <Popover open={openBankSelector} onOpenChange={setOpenBankSelector}>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            className={cn(
+                              "h-11 bg-gray-50 border-gray-200 justify-between font-normal",
+                              !field.value && "text-muted-foreground"
+                            )}
+                            data-testid="select-bank"
+                          >
+                            {field.value || "Select a bank"}
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-full p-0" align="start">
+                        <Command>
+                          <CommandInput placeholder="Search bank..." className="h-9" />
+                          <CommandList>
+                            <CommandEmpty>
+                              {banksLoading ? "Loading banks..." : "No bank found."}
+                            </CommandEmpty>
+                            <CommandGroup>
+                              {banks.map((bank) => (
+                                <CommandItem
+                                  key={bank.bank_code}
+                                  value={bank.bank_name}
+                                  onSelect={() => {
+                                    form.setValue("bankName", bank.bank_name);
+                                    setOpenBankSelector(false);
+                                  }}
+                                >
+                                  {bank.bank_name}
+                                  <Check
+                                    className={cn(
+                                      "ml-auto h-4 w-4",
+                                      field.value === bank.bank_name
+                                        ? "opacity-100"
+                                        : "opacity-0"
+                                    )}
+                                  />
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -251,12 +293,35 @@ export default function Home() {
                 className="w-full h-12 text-lg bg-[#E60000] hover:bg-[#cc0000] text-white mt-4"
                 data-testid="button-submit"
               >
-                Transfer
+                Generate Receipt
               </Button>
             </form>
           </Form>
         </CardContent>
       </Card>
+
+      {/* Canvas Preview */}
+      {receiptData && (
+        <Card className="w-full max-w-md bg-white shadow-sm border border-gray-100 mt-6">
+          <CardContent className="pt-6 px-6 pb-8">
+            <h2 className="text-xl font-bold text-gray-900 mb-4">Receipt Preview</h2>
+            <div className="flex justify-center mb-4">
+              <canvas 
+                ref={canvasRef}
+                className="border border-gray-200 rounded-lg max-w-full h-auto"
+                style={{ maxWidth: '100%', height: 'auto' }}
+              />
+            </div>
+            <Button
+              onClick={handleDownload}
+              className="w-full h-12 text-lg bg-[#E60000] hover:bg-[#cc0000] text-white"
+              data-testid="button-download"
+            >
+              Download Receipt
+            </Button>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }
