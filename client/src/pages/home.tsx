@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
 import { X } from "lucide-react";
-import avatarImage from "@assets/generated_images/3d_man_in_red_jacket_giving_thumbs_up.png";
+import avatarImage from "@assets/images~2_1763755363341.png";
 import { useToast } from "@/hooks/use-toast";
 
 // --- Schema ---
@@ -101,11 +101,11 @@ export default function Home() {
           <CardContent className="flex flex-col items-center pt-12 pb-8 px-8 text-center">
             {/* Avatar */}
             <div className="mb-6 relative">
-               <div className="h-24 w-24 rounded-full bg-gray-100 overflow-hidden mx-auto">
+               <div className="h-24 w-24 mx-auto flex items-center justify-center">
                   <img 
                     src={avatarImage} 
                     alt="Success Avatar" 
-                    className="h-full w-full object-cover"
+                    className="h-full w-full object-contain"
                     data-testid="img-avatar"
                   />
                </div>
@@ -117,20 +117,22 @@ export default function Home() {
             </h2>
 
             {/* Body Text */}
-            <div className="space-y-1 text-[17px] leading-snug text-gray-800 font-medium mb-10">
-              <p>
+            <div className="space-y-1 text-[17px] leading-snug text-gray-800 font-medium mb-10 text-center">
+              <p className="mb-4">
                 You have successfully <br />
                 transferred NGN{formatCurrency(receiptData.amount)} to <br />
                 {receiptData.recipientName}
               </p>
-              <p>Bank Name: {receiptData.bankName}</p>
-              <p>Account Number: {receiptData.accountNumber}</p>
+              <div className="flex flex-col items-center gap-1">
+                <p>Bank Name: {receiptData.bankName}</p>
+                <p>Account Number: {receiptData.accountNumber}</p>
+              </div>
             </div>
 
             {/* Buttons */}
             <div className="w-full space-y-4">
               <Button 
-                className="w-full h-14 text-[19px] font-semibold bg-[#E60000] hover:bg-[#cc0000] text-white rounded-xl shadow-none"
+                className="w-full h-14 text-[19px] font-semibold bg-[#E60000] hover:bg-[#cc0000] text-white rounded-md shadow-none"
                 onClick={handleClose}
                 data-testid="button-ok"
               >
@@ -138,7 +140,7 @@ export default function Home() {
               </Button>
               
               <Button 
-                className="w-full h-14 text-[19px] font-semibold bg-[#E60000] hover:bg-[#cc0000] text-white rounded-xl shadow-none"
+                className="w-full h-14 text-[19px] font-semibold bg-[#E60000] hover:bg-[#cc0000] text-white rounded-md shadow-none"
                 onClick={handleShare}
                 data-testid="button-share"
               >
