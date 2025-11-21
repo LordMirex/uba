@@ -68,7 +68,7 @@ export default function Home() {
 
     // Set canvas size - compact layout
     canvas.width = 390;
-    canvas.height = 480;
+    canvas.height = 360;
 
     // Fill white background
     ctx.fillStyle = '#ffffff';
