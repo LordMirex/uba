@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
 import { X } from "lucide-react";
-import avatarImage from "@assets/generated_images/friendly_3d_avatar_for_success_screen.png";
+import avatarImage from "@assets/generated_images/3d_man_in_red_jacket_giving_thumbs_up.png";
 import { useToast } from "@/hooks/use-toast";
 
 // --- Schema ---
@@ -117,7 +117,7 @@ export default function Home() {
             </h2>
 
             {/* Body Text */}
-            <div className="space-y-1.5 text-[17px] leading-snug text-gray-800 font-medium mb-10">
+            <div className="space-y-1 text-[17px] leading-snug text-gray-800 font-medium mb-10">
               <p>
                 You have successfully <br />
                 transferred NGN{formatCurrency(receiptData.amount)} to <br />
@@ -130,7 +130,7 @@ export default function Home() {
             {/* Buttons */}
             <div className="w-full space-y-4">
               <Button 
-                className="w-full h-14 text-[19px] font-semibold bg-[#E60000] hover:bg-[#cc0000] text-white rounded-full shadow-none"
+                className="w-full h-14 text-[19px] font-semibold bg-[#E60000] hover:bg-[#cc0000] text-white rounded-xl shadow-none"
                 onClick={handleClose}
                 data-testid="button-ok"
               >
@@ -138,7 +138,7 @@ export default function Home() {
               </Button>
               
               <Button 
-                className="w-full h-14 text-[19px] font-semibold bg-[#E60000] hover:bg-[#cc0000] text-white rounded-full shadow-none"
+                className="w-full h-14 text-[19px] font-semibold bg-[#E60000] hover:bg-[#cc0000] text-white rounded-xl shadow-none"
                 onClick={handleShare}
                 data-testid="button-share"
               >
