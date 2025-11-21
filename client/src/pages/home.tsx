@@ -66,9 +66,9 @@ export default function Home() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Set canvas size to match reference exactly
+    // Set canvas size - compact layout
     canvas.width = 390;
-    canvas.height = 520;
+    canvas.height = 480;
 
     // Fill white background
     ctx.fillStyle = '#ffffff';
@@ -76,10 +76,10 @@ export default function Home() {
 
     // Draw close X button in top right
     ctx.strokeStyle = '#000000';
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 2.5;
     ctx.lineCap = 'round';
-    const xSize = 18;
-    const xPadding = 20;
+    const xSize = 14;
+    const xPadding = 18;
     ctx.beginPath();
     ctx.moveTo(canvas.width - xPadding - xSize, xPadding);
     ctx.lineTo(canvas.width - xPadding, xPadding + xSize);
@@ -93,26 +93,26 @@ export default function Home() {
     const img = new Image();
     img.crossOrigin = "anonymous";
     img.onload = () => {
-      // Draw avatar centered - match reference sizing
-      const avatarSize = 100;
+      // Draw avatar centered
+      const avatarSize = 90;
       const avatarX = (canvas.width - avatarSize) / 2;
-      const avatarY = 70;
+      const avatarY = 35;
       ctx.drawImage(img, avatarX, avatarY, avatarSize, avatarSize);
 
       // Draw "Success" heading
       ctx.fillStyle = '#000000';
-      ctx.font = 'bold 26px Inter, sans-serif';
+      ctx.font = 'bold 32px -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('Success', canvas.width / 2, avatarY + avatarSize + 60);
+      ctx.fillText('Success', canvas.width / 2, avatarY + avatarSize + 50);
 
-      // Draw transfer details - left aligned with exact spacing
-      ctx.font = '400 15px Inter, sans-serif';
+      // Draw transfer details - left aligned with tight spacing
+      ctx.font = '400 16px -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, sans-serif';
       ctx.textAlign = 'left';
-      ctx.fillStyle = '#1a1a1a';
+      ctx.fillStyle = '#000000';
       
-      const textX = 32;
-      let textY = avatarY + avatarSize + 110;
-      const lineHeight = 22;
+      const textX = 25;
+      let textY = avatarY + avatarSize + 95;
+      const lineHeight = 20;
 
       // Format amount with commas
       const amount = parseFloat(receiptData.amount).toLocaleString('en-NG', { 
@@ -120,13 +120,13 @@ export default function Home() {
         maximumFractionDigits: 2 
       });
 
-      // Multi-line text matching reference exactly
+      // Multi-line text
       ctx.fillText('You have successfully', textX, textY);
       textY += lineHeight;
       ctx.fillText(`transferred NGN${amount} to`, textX, textY);
       textY += lineHeight;
-      ctx.fillText(receiptData.recipientName.toLowerCase(), textX, textY);
-      textY += lineHeight + 4;
+      ctx.fillText(receiptData.recipientName.toUpperCase(), textX, textY);
+      textY += lineHeight + 2;
       ctx.fillText(`Bank Name: ${receiptData.bankName}`, textX, textY);
       textY += lineHeight;
       ctx.fillText(`Account Number: ${receiptData.accountNumber}`, textX, textY);
