@@ -12,12 +12,7 @@ import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import avatarImage from "@assets/images~2_1763755363341.png";
 import { useToast } from "@/hooks/use-toast";
-import { useQuery } from "@tanstack/react-query";
-
-interface Bank {
-  bank_name: string;
-  bank_code: string;
-}
+import { nigerianBanks } from "@/data/nigerian-banks";
 
 // --- Schema ---
 const transferSchema = z.object({
@@ -52,18 +47,6 @@ export default function Home() {
       accountNumber: "",
     },
   });
-
-  // Fetch banks from API
-  const { data: banksData, isLoading: banksLoading } = useQuery({
-    queryKey: ['banks'],
-    queryFn: async () => {
-      const response = await fetch('/api/banks');
-      if (!response.ok) throw new Error('Failed to fetch banks');
-      return response.json();
-    },
-  });
-
-  const banks: Bank[] = banksData?.data || [];
 
   const onSubmit = (data: TransferFormValues) => {
     setReceiptData(data);
@@ -234,24 +217,22 @@ export default function Home() {
                         <Command>
                           <CommandInput placeholder="Search bank..." className="h-9" />
                           <CommandList>
-                            <CommandEmpty>
-                              {banksLoading ? "Loading banks..." : "No bank found."}
-                            </CommandEmpty>
+                            <CommandEmpty>No bank found.</CommandEmpty>
                             <CommandGroup>
-                              {banks.map((bank) => (
+                              {nigerianBanks.map((bank) => (
                                 <CommandItem
-                                  key={bank.bank_code}
-                                  value={bank.bank_name}
+                                  key={bank.code}
+                                  value={bank.name}
                                   onSelect={() => {
-                                    form.setValue("bankName", bank.bank_name);
+                                    form.setValue("bankName", bank.name);
                                     setOpenBankSelector(false);
                                   }}
                                 >
-                                  {bank.bank_name}
+                                  {bank.name}
                                   <Check
                                     className={cn(
                                       "ml-auto h-4 w-4",
-                                      field.value === bank.bank_name
+                                      field.value === bank.name
                                         ? "opacity-100"
                                         : "opacity-0"
                                     )}
