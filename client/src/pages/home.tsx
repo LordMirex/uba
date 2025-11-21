@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -10,6 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { X } from "lucide-react";
 import avatarImage from "@assets/images~2_1763755363341.png";
 import { useToast } from "@/hooks/use-toast";
+import html2canvas from "html2canvas";
 
 // --- Schema ---
 const transferSchema = z.object({
@@ -34,6 +35,7 @@ export default function Home() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [receiptData, setReceiptData] = useState<TransferFormValues | null>(null);
   const { toast } = useToast();
+  const receiptRef = useRef<HTMLDivElement>(null);
 
   const form = useForm<TransferFormValues>({
     resolver: zodResolver(transferSchema),
@@ -47,39 +49,56 @@ export default function Home() {
   });
 
   const onSubmit = (data: TransferFormValues) => {
-    // Simulate API delay
     setTimeout(() => {
       setReceiptData(data);
       setIsSuccess(true);
     }, 500);
   };
 
-  const handleShare = () => {
-    if (!receiptData) return;
-    
-    const shareText = `I just transferred NGN${receiptData.amount} to ${receiptData.recipientName} (Bank: ${receiptData.bankName}, Account: ****${receiptData.accountNumber.slice(-4)})`;
-
-    if (navigator.share) {
-      navigator.share({
-        title: 'Transfer Receipt',
-        text: shareText,
-      }).catch(console.error);
-    } else {
-      navigator.clipboard.writeText(shareText);
-      toast({
-        title: "Copied to clipboard",
-        description: "Receipt details copied to clipboard.",
-      });
+  const handleClose = async () => {
+    if (receiptRef.current) {
+      try {
+        const canvas = await html2canvas(receiptRef.current, {
+          backgroundColor: '#ffffff',
+          scale: 2,
+          logging: false,
+          useCORS: true,
+        });
+        
+        canvas.toBlob((blob) => {
+          if (blob) {
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `transfer-receipt-${Date.now()}.png`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
+            toast({
+              title: "Receipt downloaded",
+              description: "Your transfer receipt has been saved.",
+            });
+          }
+        });
+      } catch (error) {
+        console.error('Failed to capture receipt:', error);
+        toast({
+          title: "Download failed",
+          description: "Could not save the receipt. Please try again.",
+          variant: "destructive",
+        });
+      }
     }
+    
+    setTimeout(() => {
+      setIsSuccess(false);
+      form.reset();
+      setReceiptData(null);
+    }, 500);
   };
 
-  const handleClose = () => {
-    setIsSuccess(false);
-    form.reset();
-    setReceiptData(null);
-  };
-
-  // Format currency with commas
   const formatCurrency = (amount: string) => {
     const num = parseFloat(amount);
     return num.toLocaleString('en-NG', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
@@ -89,16 +108,16 @@ export default function Home() {
   if (isSuccess && receiptData) {
     return (
       <div className="min-h-screen bg-black/50 flex items-center justify-center p-4 font-sans">
-        <Card className="w-full max-w-[400px] bg-white rounded-[24px] shadow-xl border-0 relative overflow-hidden">
+        <Card className="w-full max-w-[400px] bg-white rounded-[24px] shadow-xl border-0 relative overflow-visible">
           <button 
             onClick={handleClose}
-            className="absolute top-6 right-6 text-gray-800 hover:text-gray-600 transition-colors"
+            className="absolute top-6 right-6 text-gray-800 hover:text-gray-600 transition-colors z-10"
             data-testid="button-close"
           >
             <X className="h-6 w-6" strokeWidth={2.5} />
           </button>
 
-          <CardContent className="flex flex-col items-center pt-12 pb-8 px-8 text-center">
+          <CardContent ref={receiptRef} className="flex flex-col items-center pt-12 pb-12 px-8 text-center bg-white rounded-[24px]">
             {/* Avatar */}
             <div className="mb-6 relative">
                <div className="h-24 w-24 mx-auto flex items-center justify-center">
@@ -117,7 +136,7 @@ export default function Home() {
             </h2>
 
             {/* Body Text */}
-            <div className="w-full space-y-1 text-[15px] leading-normal text-gray-800 font-medium mb-8 text-left">
+            <div className="w-full space-y-1 text-[15px] leading-normal text-gray-800 font-medium text-left">
               <p className="mb-1">
                 You have successfully <br />
                 transferred NGN{formatCurrency(receiptData.amount)} to <br />
@@ -125,25 +144,6 @@ export default function Home() {
               </p>
               <p>Bank Name: {receiptData.bankName}</p>
               <p>Account Number: {receiptData.accountNumber}</p>
-            </div>
-
-            {/* Buttons */}
-            <div className="w-full space-y-4">
-              <Button 
-                className="w-full h-14 text-[19px] font-semibold bg-[#E60000] hover:bg-[#cc0000] text-white rounded-md shadow-none"
-                onClick={handleClose}
-                data-testid="button-ok"
-              >
-                OK
-              </Button>
-              
-              <Button 
-                className="w-full h-14 text-[19px] font-semibold bg-[#E60000] hover:bg-[#cc0000] text-white rounded-md shadow-none"
-                onClick={handleShare}
-                data-testid="button-share"
-              >
-                Share
-              </Button>
             </div>
           </CardContent>
         </Card>
