@@ -170,7 +170,7 @@ export default function Home() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    canvas.width = 414; 
+    canvas.width = 390; 
     canvas.height = 700;
 
     // Background
@@ -178,23 +178,23 @@ export default function Home() {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // Main Card (Top)
-    const cardMargin = 20;
+    const cardMargin = 16;
     const cardWidth = canvas.width - (cardMargin * 2);
     
     // Draw shadows/borders for cards
     ctx.shadowColor = 'rgba(0, 0, 0, 0.03)';
-    ctx.shadowBlur = 12;
-    ctx.shadowOffsetY = 4;
+    ctx.shadowBlur = 10;
+    ctx.shadowOffsetY = 2;
 
     ctx.fillStyle = '#ffffff';
     // Top rounded card
     ctx.beginPath();
-    ctx.roundRect(cardMargin, 45, cardWidth, 260, 20);
+    ctx.roundRect(cardMargin, 40, cardWidth, 230, 16);
     ctx.fill();
     
     // Bottom detail card
     ctx.beginPath();
-    ctx.roundRect(cardMargin, 325, cardWidth, 340, 20);
+    ctx.roundRect(cardMargin, 286, cardWidth, 360, 16);
     ctx.fill();
 
     // Reset shadow
@@ -205,7 +205,7 @@ export default function Home() {
     // Draw Network Indicator Circle (Perfectly sized and positioned)
     const centerX = canvas.width / 2;
     ctx.beginPath();
-    ctx.arc(centerX, 60, 36, 0, Math.PI * 2);
+    ctx.arc(centerX, 60, 32, 0, Math.PI * 2);
     if (data.network === "MTN") ctx.fillStyle = "#ffcb05";
     else if (data.network === "Glo") ctx.fillStyle = "#2e7d32";
     else ctx.fillStyle = "#ed1c24";
@@ -214,79 +214,79 @@ export default function Home() {
     // Accurate Network Logo Styling
     if (data.network === "MTN") {
       ctx.strokeStyle = '#000000';
-      ctx.lineWidth = 1.5;
+      ctx.lineWidth = 1.2;
       ctx.beginPath();
-      ctx.ellipse(centerX, 60, 24, 18, 0, 0, Math.PI * 2);
+      ctx.ellipse(centerX, 60, 22, 16, 0, 0, Math.PI * 2);
       ctx.stroke();
       ctx.fillStyle = '#000000';
-      ctx.font = 'bold 12px Inter, sans-serif';
+      ctx.font = 'bold 11px Inter, sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText('MTN', centerX, 64);
     } else if (data.network === "Glo") {
       ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 20px Inter, sans-serif';
+      ctx.font = 'bold 18px Inter, sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('glo', centerX, 67);
+      ctx.fillText('glo', centerX, 66);
     } else if (data.network === "Airtel") {
       ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 24px Inter, sans-serif';
+      ctx.font = 'bold 22px Inter, sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('airtel', centerX, 69);
+      ctx.fillText('airtel', centerX, 68);
     }
 
     ctx.fillStyle = '#333333';
-    ctx.font = '500 22px Inter, sans-serif';
+    ctx.font = '500 20px Inter, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText(data.network, centerX, 115);
+    ctx.fillText(data.network, centerX, 110);
 
     const amountValue = parseFloat(data.amount).toLocaleString('en-NG', { 
       minimumFractionDigits: 2, 
       maximumFractionDigits: 2 
     });
-    ctx.font = 'bold 48px Inter, sans-serif';
+    ctx.font = 'bold 44px Inter, sans-serif';
     ctx.fillStyle = '#111827';
-    ctx.fillText(`₦${amountValue}`, centerX, 175);
+    ctx.fillText(`₦${amountValue}`, centerX, 162);
 
     // Successful checkmark + text
     ctx.fillStyle = '#10B981';
     ctx.beginPath();
-    ctx.arc(centerX - 65, 225, 11, 0, Math.PI * 2);
+    ctx.arc(centerX - 58, 206, 11, 0, Math.PI * 2);
     ctx.fill();
     
     ctx.strokeStyle = '#ffffff';
     ctx.lineWidth = 2.5;
     ctx.lineCap = 'round';
     ctx.beginPath();
-    ctx.moveTo(centerX - 70, 225);
-    ctx.lineTo(centerX - 66, 229);
-    ctx.lineTo(centerX - 60, 221);
+    ctx.moveTo(centerX - 63, 206);
+    ctx.lineTo(centerX - 59, 210);
+    ctx.lineTo(centerX - 53, 202);
     ctx.stroke();
 
     ctx.fillStyle = '#10B981';
-    ctx.font = '500 22px Inter, sans-serif';
+    ctx.font = '500 20px Inter, sans-serif';
     ctx.textAlign = 'left';
-    ctx.fillText('Successful', centerX - 45, 233);
+    ctx.fillText('Successful', centerX - 40, 213);
 
     // Bonus Earned row (Refined position)
     ctx.fillStyle = '#8e8e93';
-    ctx.font = '400 18px Inter, sans-serif';
+    ctx.font = '400 16px Inter, sans-serif';
     ctx.textAlign = 'left';
-    ctx.fillText('Bonus Earned', cardMargin + 25, 275);
+    ctx.fillText('Bonus Earned', cardMargin + 20, 250);
     
     ctx.textAlign = 'right';
     ctx.fillStyle = '#10B981';
-    ctx.fillText(`+₦5.00 Cashback`, canvas.width - cardMargin - 25, 275);
+    ctx.fillText(`+₦5.00 Cashback`, canvas.width - cardMargin - 20, 250);
 
     // Transaction Details Header
     ctx.textAlign = 'left';
     ctx.fillStyle = '#000000';
-    ctx.font = 'bold 24px Inter, sans-serif';
-    ctx.fillText('Transaction Details', cardMargin + 25, 360);
+    ctx.font = 'bold 22px Inter, sans-serif';
+    ctx.fillText('Transaction Details', cardMargin + 20, 330);
 
-    const detailX = cardMargin + 25;
-    const valueX = canvas.width - cardMargin - 25;
-    let currentY = 415;
-    const spacing = 58;
+    const detailX = cardMargin + 20;
+    const valueX = canvas.width - cardMargin - 20;
+    let currentY = 380;
+    const spacing = 52;
 
     const drawDetailRow = (label: string, value: string, hasCopyIcon: boolean = false, isChevron: boolean = false) => {
       ctx.textAlign = 'left';
