@@ -251,88 +251,88 @@ export default function Home() {
     });
 
     ctx.fillStyle = '#111827';
-    ctx.font = '700 58px Inter, sans-serif';
+    ctx.font = '700 52px Inter, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText(`₦${amountValue}`, centerX, 200);
+    ctx.fillText(`₦${amountValue}`, centerX, 190);
 
     // Successful checkmark + text
     ctx.fillStyle = '#10B981';
     ctx.beginPath();
-    ctx.arc(centerX - 75, 250, 15, 0, Math.PI * 2);
+    ctx.arc(centerX - 65, 235, 12, 0, Math.PI * 2);
     ctx.fill();
     
     ctx.strokeStyle = '#ffffff';
-    ctx.lineWidth = 3.8;
+    ctx.lineWidth = 2.8;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
     ctx.beginPath();
-    ctx.moveTo(centerX - 84, 250);
-    ctx.lineTo(centerX - 76, 257);
-    ctx.lineTo(centerX - 66, 243);
+    ctx.moveTo(centerX - 71, 235);
+    ctx.lineTo(centerX - 66, 240);
+    ctx.lineTo(centerX - 59, 230);
     ctx.stroke();
 
     ctx.fillStyle = '#10B981';
-    ctx.font = '500 28px Inter, sans-serif';
+    ctx.font = '500 24px Inter, sans-serif';
     ctx.textAlign = 'left';
-    ctx.fillText('Successful', centerX - 52, 260);
+    ctx.fillText('Successful', centerX - 45, 243);
 
     // Bonus Earned row (Refined position and color)
     ctx.fillStyle = '#6b7280';
-    ctx.font = '400 20px Inter, sans-serif';
+    ctx.font = '400 17px Inter, sans-serif';
     ctx.textAlign = 'left';
-    ctx.fillText('Bonus Earned', cardMargin + 24, 285);
+    ctx.fillText('Bonus Earned', cardMargin + 24, 280);
     
     ctx.textAlign = 'right';
     ctx.fillStyle = '#10B981';
-    ctx.font = '500 20px Inter, sans-serif';
-    ctx.fillText(`+₦5.00 Cashback`, 390 - cardMargin - 24, 285);
+    ctx.font = '500 17px Inter, sans-serif';
+    ctx.fillText(`+₦5.00 Cashback`, 390 - cardMargin - 24, 280);
 
     // Transaction Details Header
     ctx.textAlign = 'left';
     ctx.fillStyle = '#000000';
-    ctx.font = '700 32px Inter, sans-serif';
-    ctx.fillText('Transaction Details', cardMargin + 24, 365);
+    ctx.font = '700 28px Inter, sans-serif';
+    ctx.fillText('Transaction Details', cardMargin + 24, 360);
 
     const detailX = cardMargin + 24;
     const valueX = 390 - cardMargin - 24;
-    let currentY = 430;
-    const spacing = 68;
+    let currentY = 420;
+    const spacing = 58;
 
     const drawDetailRow = (label: string, value: string, hasCopyIcon: boolean = false, isChevron: boolean = false) => {
       ctx.textAlign = 'left';
       ctx.fillStyle = '#6b7280';
-      ctx.font = '400 22px Inter, sans-serif';
+      ctx.font = '400 18px Inter, sans-serif';
       ctx.fillText(label, detailX, currentY);
       
       ctx.textAlign = 'right';
       ctx.fillStyle = '#111827';
-      ctx.font = '400 22px Inter, sans-serif';
+      ctx.font = '400 18px Inter, sans-serif';
       
       let finalValueX = valueX;
-      if (hasCopyIcon || isChevron) finalValueX -= 35;
+      if (hasCopyIcon || isChevron) finalValueX -= 30;
       
-      // Keep readability high but ensure no clashing
-      if (label === 'Transaction No.' || label === 'Transaction Date') {
-        ctx.font = '400 20px Inter, sans-serif';
+      // Significantly reduced font size for values that are long to avoid clashing with label
+      if (label === 'Transaction No.' || label === 'Transaction Date' || label === 'Recipient Mobile') {
+        ctx.font = '400 14px Inter, sans-serif';
       }
       
       ctx.fillText(value, finalValueX, currentY);
       
       if (hasCopyIcon) {
         ctx.strokeStyle = '#9ca3af';
-        ctx.lineWidth = 1.8;
-        const iconSize = 18;
-        ctx.strokeRect(valueX - 22, currentY - 20, iconSize, iconSize);
-        ctx.strokeRect(valueX - 26, currentY - 16, iconSize, iconSize);
+        ctx.lineWidth = 1.2;
+        const iconSize = 14;
+        ctx.strokeRect(valueX - 18, currentY - 14, iconSize, iconSize);
+        ctx.strokeRect(valueX - 22, currentY - 10, iconSize, iconSize);
       }
       
       if (isChevron) {
         ctx.strokeStyle = '#9ca3af';
-        ctx.lineWidth = 3.2;
+        ctx.lineWidth = 2.5;
         ctx.beginPath();
-        ctx.moveTo(valueX - 18, currentY - 14);
-        ctx.lineTo(valueX - 10, currentY - 6);
-        ctx.lineTo(valueX - 18, currentY + 2);
+        ctx.moveTo(valueX - 12, currentY - 10);
+        ctx.lineTo(valueX - 6, currentY - 4);
+        ctx.lineTo(valueX - 12, currentY + 2);
         ctx.stroke();
       }
       currentY += spacing;
