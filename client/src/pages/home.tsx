@@ -278,57 +278,61 @@ export default function Home() {
 
     // Bonus Earned row (Refined position and color)
     ctx.fillStyle = '#6b7280';
-    ctx.font = '400 18px Inter, sans-serif';
+    ctx.font = '400 17px Inter, sans-serif';
     ctx.textAlign = 'left';
-    ctx.fillText('Bonus Earned', cardMargin + 24, 255);
+    ctx.fillText('Bonus Earned', cardMargin + 20, 255);
     
     ctx.textAlign = 'right';
     ctx.fillStyle = '#10B981';
-    ctx.font = '500 18px Inter, sans-serif';
-    ctx.fillText(`+₦5.00 Cashback`, 390 - cardMargin - 24, 255);
+    ctx.font = '500 17px Inter, sans-serif';
+    ctx.fillText(`+₦5.00 Cashback`, 390 - cardMargin - 20, 255);
 
     // Transaction Details Header
     ctx.textAlign = 'left';
     ctx.fillStyle = '#000000';
-    ctx.font = '700 26px Inter, sans-serif';
-    ctx.fillText('Transaction Details', cardMargin + 24, 335);
+    ctx.font = '700 24px Inter, sans-serif';
+    ctx.fillText('Transaction Details', cardMargin + 20, 335);
 
-    const detailX = cardMargin + 24;
-    const valueX = 390 - cardMargin - 24;
+    const detailX = cardMargin + 18;
+    const valueX = 390 - cardMargin - 18;
     let currentY = 390;
-    const spacing = 58;
+    const spacing = 52;
 
     const drawDetailRow = (label: string, value: string, hasCopyIcon: boolean = false, isChevron: boolean = false) => {
       ctx.textAlign = 'left';
       ctx.fillStyle = '#6b7280';
-      ctx.font = '400 18px Inter, sans-serif';
+      ctx.font = '400 16px Inter, sans-serif';
       ctx.fillText(label, detailX, currentY);
       
       ctx.textAlign = 'right';
       ctx.fillStyle = '#111827';
-      ctx.font = '400 18px Inter, sans-serif';
+      ctx.font = '400 16px Inter, sans-serif';
       
       let finalValueX = valueX;
-      if (hasCopyIcon || isChevron) finalValueX -= 30;
+      if (hasCopyIcon || isChevron) finalValueX -= 26;
+      
+      // Significantly reduce font size for transaction number to prevent bulky overlap
+      if (label === 'Transaction No.') {
+        ctx.font = '400 13.5px Inter, sans-serif';
+      }
       
       ctx.fillText(value, finalValueX, currentY);
       
       if (hasCopyIcon) {
         ctx.strokeStyle = '#9ca3af';
-        ctx.lineWidth = 1.5;
-        // Adjusted copy icon size and position
-        const iconSize = 16;
-        ctx.strokeRect(valueX - 20, currentY - 18, iconSize, iconSize);
-        ctx.strokeRect(valueX - 24, currentY - 14, iconSize, iconSize);
+        ctx.lineWidth = 1.1;
+        const iconSize = 13;
+        ctx.strokeRect(valueX - 16, currentY - 14, iconSize, iconSize);
+        ctx.strokeRect(valueX - 20, currentY - 10, iconSize, iconSize);
       }
       
       if (isChevron) {
         ctx.strokeStyle = '#9ca3af';
-        ctx.lineWidth = 2.5;
+        ctx.lineWidth = 2.0;
         ctx.beginPath();
-        ctx.moveTo(valueX - 15, currentY - 12);
-        ctx.lineTo(valueX - 8, currentY - 5);
-        ctx.lineTo(valueX - 15, currentY + 2);
+        ctx.moveTo(valueX - 11, currentY - 9);
+        ctx.lineTo(valueX - 6, currentY - 4);
+        ctx.lineTo(valueX - 11, currentY + 1);
         ctx.stroke();
       }
       currentY += spacing;
