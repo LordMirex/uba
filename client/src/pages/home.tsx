@@ -251,69 +251,69 @@ export default function Home() {
     });
 
     ctx.fillStyle = '#111827';
-    ctx.font = '700 52px Inter, sans-serif';
+    ctx.font = '700 44px Inter, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText(`₦${amountValue}`, centerX, 175);
+    ctx.fillText(`₦${amountValue}`, centerX, 160);
 
     // Successful checkmark + text
     ctx.fillStyle = '#10B981';
     ctx.beginPath();
-    ctx.arc(centerX - 65, 220, 13, 0, Math.PI * 2);
+    ctx.arc(centerX - 58, 204, 11, 0, Math.PI * 2);
     ctx.fill();
     
     ctx.strokeStyle = '#ffffff';
-    ctx.lineWidth = 3.0;
+    ctx.lineWidth = 2.5;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
     ctx.beginPath();
-    ctx.moveTo(centerX - 72, 220);
-    ctx.lineTo(centerX - 66, 226);
-    ctx.lineTo(centerX - 58, 214);
+    ctx.moveTo(centerX - 63, 204);
+    ctx.lineTo(centerX - 59, 209);
+    ctx.lineTo(centerX - 53, 199);
     ctx.stroke();
 
     ctx.fillStyle = '#10B981';
-    ctx.font = '500 24px Inter, sans-serif';
+    ctx.font = '500 20px Inter, sans-serif';
     ctx.textAlign = 'left';
-    ctx.fillText('Successful', centerX - 44, 228);
+    ctx.fillText('Successful', centerX - 40, 211);
 
     // Bonus Earned row (Refined position and color)
     ctx.fillStyle = '#6b7280';
-    ctx.font = '400 18px Inter, sans-serif';
+    ctx.font = '400 16px Inter, sans-serif';
     ctx.textAlign = 'left';
-    ctx.fillText('Bonus Earned', cardMargin + 20, 265);
+    ctx.fillText('Bonus Earned', cardMargin + 20, 248);
     
     ctx.textAlign = 'right';
     ctx.fillStyle = '#10B981';
-    ctx.font = '500 18px Inter, sans-serif';
-    ctx.fillText(`+₦5.00 Cashback`, 390 - cardMargin - 20, 265);
+    ctx.font = '500 16px Inter, sans-serif';
+    ctx.fillText(`+₦5.00 Cashback`, 390 - cardMargin - 20, 248);
 
     // Transaction Details Header
     ctx.textAlign = 'left';
     ctx.fillStyle = '#000000';
-    ctx.font = '700 26px Inter, sans-serif';
-    ctx.fillText('Transaction Details', cardMargin + 20, 345);
+    ctx.font = '700 22px Inter, sans-serif';
+    ctx.fillText('Transaction Details', cardMargin + 20, 325);
 
     const detailX = cardMargin + 20;
     const valueX = 390 - cardMargin - 20;
-    let currentY = 405;
-    const spacing = 58;
+    let currentY = 375;
+    const spacing = 50;
 
     const drawDetailRow = (label: string, value: string, hasCopyIcon: boolean = false, isChevron: boolean = false) => {
       ctx.textAlign = 'left';
       ctx.fillStyle = '#6b7280';
-      ctx.font = '400 18px Inter, sans-serif';
+      ctx.font = '400 16px Inter, sans-serif';
       ctx.fillText(label, detailX, currentY);
       
       ctx.textAlign = 'right';
       ctx.fillStyle = '#111827';
-      ctx.font = '400 18px Inter, sans-serif';
+      ctx.font = '400 16px Inter, sans-serif';
       
       let finalValueX = valueX;
-      if (hasCopyIcon || isChevron) finalValueX -= 28;
+      if (hasCopyIcon || isChevron) finalValueX -= 25;
       
-      // Slightly reduce font size for very long values but keep it readable
-      if (label === 'Transaction No.' || label === 'Transaction Date') {
-        ctx.font = '400 17px Inter, sans-serif';
+      // Significantly reduce font size for transaction number to prevent bulky overlap
+      if (label === 'Transaction No.') {
+        ctx.font = '400 12.5px Inter, sans-serif';
       }
       
       ctx.fillText(value, finalValueX, currentY);
@@ -328,11 +328,11 @@ export default function Home() {
       
       if (isChevron) {
         ctx.strokeStyle = '#9ca3af';
-        ctx.lineWidth = 2.2;
+        ctx.lineWidth = 2.5;
         ctx.beginPath();
-        ctx.moveTo(valueX - 12, currentY - 10);
-        ctx.lineTo(valueX - 6, currentY - 4);
-        ctx.lineTo(valueX - 12, currentY + 2);
+        ctx.moveTo(valueX - 12, currentY - 11);
+        ctx.lineTo(valueX - 6, currentY - 5);
+        ctx.lineTo(valueX - 12, currentY + 1);
         ctx.stroke();
       }
       currentY += spacing;
