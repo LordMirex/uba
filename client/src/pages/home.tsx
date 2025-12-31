@@ -293,46 +293,46 @@ export default function Home() {
     ctx.font = '700 24px Inter, sans-serif';
     ctx.fillText('Transaction Details', cardMargin + 20, 335);
 
-    const detailX = cardMargin + 18;
-    const valueX = 390 - cardMargin - 18;
+    const detailX = cardMargin + 16;
+    const valueX = 390 - cardMargin - 16;
     let currentY = 390;
-    const spacing = 52;
+    const spacing = 50;
 
     const drawDetailRow = (label: string, value: string, hasCopyIcon: boolean = false, isChevron: boolean = false) => {
       ctx.textAlign = 'left';
       ctx.fillStyle = '#6b7280';
-      ctx.font = '400 16px Inter, sans-serif';
+      ctx.font = '400 15px Inter, sans-serif';
       ctx.fillText(label, detailX, currentY);
       
       ctx.textAlign = 'right';
       ctx.fillStyle = '#111827';
-      ctx.font = '400 16px Inter, sans-serif';
+      ctx.font = '400 15px Inter, sans-serif';
       
       let finalValueX = valueX;
-      if (hasCopyIcon || isChevron) finalValueX -= 26;
+      if (hasCopyIcon || isChevron) finalValueX -= 24;
       
-      // Significantly reduce font size for transaction number to prevent bulky overlap
-      if (label === 'Transaction No.') {
-        ctx.font = '400 13.5px Inter, sans-serif';
+      // Significantly reduce font size for transaction number and other potentially long values
+      if (label === 'Transaction No.' || label === 'Transaction Date') {
+        ctx.font = '400 12px Inter, sans-serif';
       }
       
       ctx.fillText(value, finalValueX, currentY);
       
       if (hasCopyIcon) {
         ctx.strokeStyle = '#9ca3af';
-        ctx.lineWidth = 1.1;
-        const iconSize = 13;
-        ctx.strokeRect(valueX - 16, currentY - 14, iconSize, iconSize);
-        ctx.strokeRect(valueX - 20, currentY - 10, iconSize, iconSize);
+        ctx.lineWidth = 1.0;
+        const iconSize = 12;
+        ctx.strokeRect(valueX - 14, currentY - 12, iconSize, iconSize);
+        ctx.strokeRect(valueX - 18, currentY - 8, iconSize, iconSize);
       }
       
       if (isChevron) {
         ctx.strokeStyle = '#9ca3af';
-        ctx.lineWidth = 2.0;
+        ctx.lineWidth = 1.8;
         ctx.beginPath();
-        ctx.moveTo(valueX - 11, currentY - 9);
-        ctx.lineTo(valueX - 6, currentY - 4);
-        ctx.lineTo(valueX - 11, currentY + 1);
+        ctx.moveTo(valueX - 10, currentY - 8);
+        ctx.lineTo(valueX - 5, currentY - 3);
+        ctx.lineTo(valueX - 10, currentY + 2);
         ctx.stroke();
       }
       currentY += spacing;
