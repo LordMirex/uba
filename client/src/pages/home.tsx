@@ -202,92 +202,106 @@ export default function Home() {
     ctx.shadowBlur = 0;
     ctx.shadowOffsetY = 0;
 
-    // Draw Network Indicator Circle (Larger, exactly centered)
+    // Draw Network Indicator Circle (Exactly as in screenshot)
     const centerX = canvas.width / 2;
     ctx.beginPath();
-    ctx.arc(centerX, 65, 36, 0, Math.PI * 2);
+    ctx.arc(centerX, 72, 36, 0, Math.PI * 2);
     if (data.network === "MTN") ctx.fillStyle = "#ffcb05";
     else if (data.network === "Glo") ctx.fillStyle = "#2e7d32";
     else ctx.fillStyle = "#ed1c24";
     ctx.fill();
 
-    // Network Logo Text/Icon placeholder (MTN circle logo style)
+    // Network Logo Style Replication
     if (data.network === "MTN") {
+      // Black elliptical border
       ctx.strokeStyle = '#000000';
-      ctx.lineWidth = 1;
+      ctx.lineWidth = 1.2;
       ctx.beginPath();
-      ctx.ellipse(centerX, 65, 24, 18, 0, 0, Math.PI * 2);
+      ctx.ellipse(centerX, 72, 22, 16, 0, 0, Math.PI * 2);
       ctx.stroke();
+      // MTN Text inside ellipse
       ctx.fillStyle = '#000000';
-      ctx.font = 'bold 12px Inter, sans-serif';
-      ctx.fillText('MTN', centerX, 69);
-    } else {
+      ctx.font = 'bold 11px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('MTN', centerX, 76);
+    } else if (data.network === "Glo") {
+      // Glo logo style
       ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 14px Inter, sans-serif';
-      ctx.fillText(data.network, centerX, 70);
+      ctx.font = 'bold 18px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('glo', centerX, 78);
+    } else if (data.network === "Airtel") {
+      // Airtel logo style
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 22px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('airtel', centerX, 80);
     }
 
     ctx.fillStyle = '#333333';
-    ctx.font = '500 22px Inter, sans-serif';
-    ctx.fillText(data.network, centerX, 125);
+    ctx.font = '500 20px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(data.network, centerX, 135);
 
     const amountValue = parseFloat(data.amount).toLocaleString('en-NG', { 
       minimumFractionDigits: 2, 
       maximumFractionDigits: 2 
     });
-    ctx.font = 'bold 48px Inter, sans-serif';
+    // Massive bold amount font
+    ctx.font = 'bold 44px Inter, sans-serif';
     ctx.fillStyle = '#111827';
     ctx.fillText(`₦${amountValue}`, centerX, 195);
 
-    // Successful checkmark + text (More compact, precise spacing)
+    // Successful checkmark + text
     ctx.fillStyle = '#10B981';
     ctx.beginPath();
-    ctx.arc(centerX - 65, 242, 12, 0, Math.PI * 2);
+    ctx.arc(centerX - 68, 245, 11, 0, Math.PI * 2);
     ctx.fill();
     
     ctx.strokeStyle = '#ffffff';
     ctx.lineWidth = 2.5;
+    ctx.lineCap = 'round';
     ctx.beginPath();
-    ctx.moveTo(centerX - 70, 242);
-    ctx.lineTo(centerX - 66, 246);
-    ctx.lineTo(centerX - 60, 238);
+    ctx.moveTo(centerX - 73, 245);
+    ctx.lineTo(centerX - 69, 249);
+    ctx.lineTo(centerX - 63, 241);
     ctx.stroke();
 
     ctx.fillStyle = '#10B981';
     ctx.font = '500 22px Inter, sans-serif';
     ctx.textAlign = 'left';
-    ctx.fillText('Successful', centerX - 45, 250);
+    ctx.fillText('Successful', centerX - 48, 253);
 
-    // Bonus Earned row (Lower down, specific font)
+    // Bonus Earned row
     ctx.fillStyle = '#8e8e93';
-    ctx.font = '400 18px Inter, sans-serif';
+    ctx.font = '400 17px Inter, sans-serif';
     ctx.textAlign = 'left';
-    ctx.fillText('Bonus Earned', cardMargin + 25, 285);
+    ctx.fillText('Bonus Earned', cardMargin + 25, 305);
     
     ctx.textAlign = 'right';
     ctx.fillStyle = '#10B981';
-    ctx.fillText(`+₦5.00 Cashback`, canvas.width - cardMargin - 25, 285);
+    ctx.fillText(`+₦5.00 Cashback`, canvas.width - cardMargin - 25, 305);
 
     // Transaction Details Header
     ctx.textAlign = 'left';
     ctx.fillStyle = '#000000';
-    ctx.font = 'bold 24px Inter, sans-serif';
-    ctx.fillText('Transaction Details', cardMargin + 25, 375);
+    ctx.font = 'bold 22px Inter, sans-serif';
+    ctx.fillText('Transaction Details', cardMargin + 25, 390);
 
     const detailX = cardMargin + 25;
     const valueX = canvas.width - cardMargin - 25;
-    let currentY = 430;
-    const spacing = 58;
+    let currentY = 445;
+    const spacing = 52;
 
     const drawDetailRow = (label: string, value: string, hasCopyIcon: boolean = false, isChevron: boolean = false) => {
       ctx.textAlign = 'left';
       ctx.fillStyle = '#8e8e93';
-      ctx.font = '400 19px Inter, sans-serif';
+      ctx.font = '400 18px Inter, sans-serif';
       ctx.fillText(label, detailX, currentY);
       
       ctx.textAlign = 'right';
       ctx.fillStyle = '#000000';
-      ctx.font = '400 19px Inter, sans-serif';
+      ctx.font = '400 18px Inter, sans-serif';
       
       let finalValueX = valueX;
       if (hasCopyIcon || isChevron) finalValueX -= 30;
@@ -296,19 +310,18 @@ export default function Home() {
       
       if (hasCopyIcon) {
         ctx.strokeStyle = '#8e8e93';
-        ctx.lineWidth = 1.5;
-        // Accurate copy icon drawing
-        ctx.strokeRect(valueX - 20, currentY - 18, 14, 14);
-        ctx.strokeRect(valueX - 24, currentY - 14, 14, 14);
+        ctx.lineWidth = 1.2;
+        ctx.strokeRect(valueX - 18, currentY - 16, 14, 14);
+        ctx.strokeRect(valueX - 22, currentY - 12, 14, 14);
       }
       
       if (isChevron) {
         ctx.strokeStyle = '#8e8e93';
-        ctx.lineWidth = 2.5;
+        ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.moveTo(valueX - 12, currentY - 12);
-        ctx.lineTo(valueX - 6, currentY - 6);
-        ctx.lineTo(valueX - 12, currentY);
+        ctx.moveTo(valueX - 10, currentY - 11);
+        ctx.lineTo(valueX - 4, currentY - 5);
+        ctx.lineTo(valueX - 10, currentY + 1);
         ctx.stroke();
       }
       currentY += spacing;
