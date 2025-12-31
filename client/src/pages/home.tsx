@@ -170,8 +170,8 @@ export default function Home() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    canvas.width = 400;
-    canvas.height = 580;
+    canvas.width = 414; // Typical mobile width
+    canvas.height = 680;
 
     // Background
     ctx.fillStyle = '#f7f8fa';
@@ -182,19 +182,19 @@ export default function Home() {
     const cardWidth = canvas.width - (cardMargin * 2);
     
     // Draw shadows/borders for cards
-    ctx.shadowColor = 'rgba(0, 0, 0, 0.05)';
-    ctx.shadowBlur = 10;
-    ctx.shadowOffsetY = 4;
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.04)';
+    ctx.shadowBlur = 8;
+    ctx.shadowOffsetY = 2;
 
     ctx.fillStyle = '#ffffff';
     // Top rounded card
     ctx.beginPath();
-    ctx.roundRect(cardMargin, 30, cardWidth, 200, 16);
+    ctx.roundRect(cardMargin, 40, cardWidth, 240, 16);
     ctx.fill();
     
     // Bottom detail card
     ctx.beginPath();
-    ctx.roundRect(cardMargin, 246, cardWidth, 310, 16);
+    ctx.roundRect(cardMargin, 296, cardWidth, 340, 16);
     ctx.fill();
 
     // Reset shadow
@@ -202,117 +202,129 @@ export default function Home() {
     ctx.shadowBlur = 0;
     ctx.shadowOffsetY = 0;
 
-    // Draw Network Indicator Circle
+    // Draw Network Indicator Circle (Larger, higher up)
     const centerX = canvas.width / 2;
     ctx.beginPath();
-    ctx.arc(centerX, 55, 26, 0, Math.PI * 2);
+    ctx.arc(centerX, 60, 32, 0, Math.PI * 2);
     if (data.network === "MTN") ctx.fillStyle = "#ffcb05";
     else if (data.network === "Glo") ctx.fillStyle = "#2e7d32";
     else ctx.fillStyle = "#ed1c24";
     ctx.fill();
 
-    // Network Logo Text/Icon placeholder
-    ctx.fillStyle = '#ffffff';
+    // Network Logo Text/Icon placeholder (Simulating the logo)
+    ctx.fillStyle = data.network === "MTN" ? '#000000' : '#ffffff';
     ctx.textAlign = 'center';
-    ctx.font = 'bold 12px Inter, sans-serif';
-    ctx.fillText(data.network, centerX, 59);
+    ctx.font = 'bold 14px Inter, sans-serif';
+    ctx.fillText(data.network, centerX, 65);
 
     ctx.fillStyle = '#333333';
-    ctx.font = '500 18px Inter, sans-serif';
-    ctx.fillText(data.network, centerX, 105);
+    ctx.font = '500 20px Inter, sans-serif';
+    ctx.fillText(data.network, centerX, 115);
 
-    const amount = parseFloat(data.amount).toLocaleString('en-NG', { 
+    const amountValue = parseFloat(data.amount).toLocaleString('en-NG', { 
       minimumFractionDigits: 2, 
       maximumFractionDigits: 2 
     });
-    ctx.font = 'bold 38px Inter, sans-serif';
+    ctx.font = 'bold 44px Inter, sans-serif';
     ctx.fillStyle = '#000000';
-    ctx.fillText(`₦${amount}`, centerX, 160);
+    ctx.fillText(`₦${amountValue}`, centerX, 180);
 
-    // Successful checkmark + text
+    // Successful checkmark + text (More compact)
     ctx.fillStyle = '#10B981';
     ctx.beginPath();
-    ctx.arc(centerX - 50, 195, 10, 0, Math.PI * 2);
+    ctx.arc(centerX - 60, 225, 12, 0, Math.PI * 2);
     ctx.fill();
     
-    // Draw white checkmark in green circle
     ctx.strokeStyle = '#ffffff';
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 2.5;
     ctx.beginPath();
-    ctx.moveTo(centerX - 54, 195);
-    ctx.lineTo(centerX - 51, 198);
-    ctx.lineTo(centerX - 46, 192);
+    ctx.moveTo(centerX - 65, 225);
+    ctx.lineTo(centerX - 61, 229);
+    ctx.lineTo(centerX - 55, 221);
     ctx.stroke();
 
     ctx.fillStyle = '#10B981';
-    ctx.font = '500 18px Inter, sans-serif';
+    ctx.font = '500 20px Inter, sans-serif';
     ctx.textAlign = 'left';
-    ctx.fillText('Successful', centerX - 34, 201);
+    ctx.fillText('Successful', centerX - 42, 232);
 
-    // Bonus Earned row
-    ctx.fillStyle = '#9ca3af';
-    ctx.font = '400 15px Inter, sans-serif';
+    // Bonus Earned row (Refined position)
+    ctx.fillStyle = '#8e8e93';
+    ctx.font = '400 17px Inter, sans-serif';
     ctx.textAlign = 'left';
-    ctx.fillText('Bonus Earned', cardMargin + 16, 222);
+    ctx.fillText('Bonus Earned', cardMargin + 20, 262);
     
     ctx.textAlign = 'right';
     ctx.fillStyle = '#10B981';
-    ctx.fillText(`+₦5.00 Cashback`, canvas.width - cardMargin - 16, 222);
+    ctx.fillText(`+₦5.00 Cashback`, canvas.width - cardMargin - 20, 262);
 
     // Transaction Details Header
     ctx.textAlign = 'left';
     ctx.fillStyle = '#000000';
-    ctx.font = 'bold 20px Inter, sans-serif';
-    ctx.fillText('Transaction Details', cardMargin + 20, 285);
+    ctx.font = 'bold 22px Inter, sans-serif';
+    ctx.fillText('Transaction Details', cardMargin + 20, 345);
 
     const detailX = cardMargin + 20;
     const valueX = canvas.width - cardMargin - 20;
-    let currentY = 325;
-    const spacing = 45;
+    let currentY = 395;
+    const spacing = 52;
 
-    const drawDetail = (label: string, value: string, hasCopyIcon: boolean = false) => {
+    const drawDetailRow = (label: string, value: string, hasCopyIcon: boolean = false, isChevron: boolean = false) => {
       ctx.textAlign = 'left';
-      ctx.fillStyle = '#9ca3af';
-      ctx.font = '400 16px Inter, sans-serif';
+      ctx.fillStyle = '#8e8e93';
+      ctx.font = '400 18px Inter, sans-serif';
       ctx.fillText(label, detailX, currentY);
       
       ctx.textAlign = 'right';
-      ctx.fillStyle = '#111827';
-      ctx.font = '400 16px Inter, sans-serif';
-      ctx.fillText(value, hasCopyIcon ? valueX - 20 : valueX, currentY);
+      ctx.fillStyle = '#000000';
+      ctx.font = '400 18px Inter, sans-serif';
+      
+      let finalValueX = valueX;
+      if (hasCopyIcon || isChevron) finalValueX -= 25;
+      
+      ctx.fillText(value, finalValueX, currentY);
       
       if (hasCopyIcon) {
-        // Draw small copy icon placeholder
-        ctx.strokeStyle = '#9ca3af';
-        ctx.lineWidth = 1;
-        ctx.strokeRect(valueX - 15, currentY - 12, 12, 12);
+        ctx.strokeStyle = '#8e8e93';
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(valueX - 18, currentY - 15, 16, 16);
+        ctx.strokeRect(valueX - 22, currentY - 11, 16, 16); // Double box look
+      }
+      
+      if (isChevron) {
+        ctx.strokeStyle = '#8e8e93';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(valueX - 10, currentY - 10);
+        ctx.lineTo(valueX - 5, currentY - 5);
+        ctx.lineTo(valueX - 10, currentY);
+        ctx.stroke();
       }
       currentY += spacing;
     };
 
-    drawDetail('Recipient Mobile', data.phoneNumber);
-    drawDetail('Transaction Type', 'Airtime');
-    drawDetail('Payment Method', 'OWealth', true);
+    drawDetailRow('Recipient Mobile', data.phoneNumber);
+    drawDetailRow('Transaction Type', 'Airtime');
+    drawDetailRow('Payment Method', 'OWealth', false, true);
     
-    // Generate Random Ref mimicking the OPay format
-    const randomRef = "2512" + Math.floor(Math.random() * 1000000000000000).toString().padStart(16, '0');
-    drawDetail('Transaction No.', randomRef, true);
+    const refPrefix = data.network === "MTN" ? "251227" : data.network === "Glo" ? "251228" : "251231";
+    const randomRefNum = refPrefix + Math.floor(Math.random() * 10000000000000).toString().padStart(14, '0');
+    drawDetailRow('Transaction No.', randomRefNum, true);
 
-    // Date formatting matching "Dec 27th, 2025 21:21:56"
     const dateObj = new Date(data.date);
-    const day = dateObj.getDate();
-    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    const suffix = (day: number) => {
-      if (day > 3 && day < 21) return 'th';
-      switch (day % 10) {
+    const dayVal = dateObj.getDate();
+    const monthNamesArr = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const getSuffix = (d: number) => {
+      if (d > 3 && d < 21) return 'th';
+      switch (d % 10) {
         case 1:  return "st";
         case 2:  return "nd";
         case 3:  return "rd";
         default: return "th";
       }
     };
-    const formattedDate = `${monthNames[dateObj.getMonth()]} ${day}${suffix(day)}, ${dateObj.getFullYear()} ${data.time}:56`;
-    drawDetail('Transaction Date', formattedDate);
+    const finalFormattedDate = `${monthNamesArr[dateObj.getMonth()]} ${dayVal}${getSuffix(dayVal)}, ${dateObj.getFullYear()} ${data.time}:56`;
+    drawDetailRow('Transaction Date', finalFormattedDate);
   };
 
   const handleDownload = () => {
