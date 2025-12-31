@@ -240,6 +240,16 @@ export default function Home() {
       ctx.fillText('airtel', centerX, 68);
     }
 
+    ctx.fillStyle = '#333333';
+    ctx.font = '500 20px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(data.network, centerX, 110);
+
+    const amountValue = parseFloat(data.amount).toLocaleString('en-NG', { 
+      minimumFractionDigits: 2, 
+      maximumFractionDigits: 2 
+    });
+
     ctx.fillStyle = '#111827';
     ctx.font = '700 48px Inter, sans-serif';
     ctx.textAlign = 'center';
