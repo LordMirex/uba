@@ -170,31 +170,31 @@ export default function Home() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    canvas.width = 414; // Typical mobile width
-    canvas.height = 680;
+    canvas.width = 414; 
+    canvas.height = 700;
 
     // Background
     ctx.fillStyle = '#f7f8fa';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // Main Card (Top)
-    const cardMargin = 16;
+    const cardMargin = 20;
     const cardWidth = canvas.width - (cardMargin * 2);
     
     // Draw shadows/borders for cards
-    ctx.shadowColor = 'rgba(0, 0, 0, 0.04)';
-    ctx.shadowBlur = 8;
-    ctx.shadowOffsetY = 2;
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.03)';
+    ctx.shadowBlur = 12;
+    ctx.shadowOffsetY = 4;
 
     ctx.fillStyle = '#ffffff';
     // Top rounded card
     ctx.beginPath();
-    ctx.roundRect(cardMargin, 40, cardWidth, 240, 16);
+    ctx.roundRect(cardMargin, 45, cardWidth, 260, 20);
     ctx.fill();
     
     // Bottom detail card
     ctx.beginPath();
-    ctx.roundRect(cardMargin, 296, cardWidth, 340, 16);
+    ctx.roundRect(cardMargin, 325, cardWidth, 340, 20);
     ctx.fill();
 
     // Reset shadow
@@ -202,102 +202,113 @@ export default function Home() {
     ctx.shadowBlur = 0;
     ctx.shadowOffsetY = 0;
 
-    // Draw Network Indicator Circle (Larger, higher up)
+    // Draw Network Indicator Circle (Larger, exactly centered)
     const centerX = canvas.width / 2;
     ctx.beginPath();
-    ctx.arc(centerX, 60, 32, 0, Math.PI * 2);
+    ctx.arc(centerX, 65, 36, 0, Math.PI * 2);
     if (data.network === "MTN") ctx.fillStyle = "#ffcb05";
     else if (data.network === "Glo") ctx.fillStyle = "#2e7d32";
     else ctx.fillStyle = "#ed1c24";
     ctx.fill();
 
-    // Network Logo Text/Icon placeholder (Simulating the logo)
-    ctx.fillStyle = data.network === "MTN" ? '#000000' : '#ffffff';
-    ctx.textAlign = 'center';
-    ctx.font = 'bold 14px Inter, sans-serif';
-    ctx.fillText(data.network, centerX, 65);
+    // Network Logo Text/Icon placeholder (MTN circle logo style)
+    if (data.network === "MTN") {
+      ctx.strokeStyle = '#000000';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.ellipse(centerX, 65, 24, 18, 0, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.fillStyle = '#000000';
+      ctx.font = 'bold 12px Inter, sans-serif';
+      ctx.fillText('MTN', centerX, 69);
+    } else {
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 14px Inter, sans-serif';
+      ctx.fillText(data.network, centerX, 70);
+    }
 
     ctx.fillStyle = '#333333';
-    ctx.font = '500 20px Inter, sans-serif';
-    ctx.fillText(data.network, centerX, 115);
+    ctx.font = '500 22px Inter, sans-serif';
+    ctx.fillText(data.network, centerX, 125);
 
     const amountValue = parseFloat(data.amount).toLocaleString('en-NG', { 
       minimumFractionDigits: 2, 
       maximumFractionDigits: 2 
     });
-    ctx.font = 'bold 44px Inter, sans-serif';
-    ctx.fillStyle = '#000000';
-    ctx.fillText(`₦${amountValue}`, centerX, 180);
+    ctx.font = 'bold 48px Inter, sans-serif';
+    ctx.fillStyle = '#111827';
+    ctx.fillText(`₦${amountValue}`, centerX, 195);
 
-    // Successful checkmark + text (More compact)
+    // Successful checkmark + text (More compact, precise spacing)
     ctx.fillStyle = '#10B981';
     ctx.beginPath();
-    ctx.arc(centerX - 60, 225, 12, 0, Math.PI * 2);
+    ctx.arc(centerX - 65, 242, 12, 0, Math.PI * 2);
     ctx.fill();
     
     ctx.strokeStyle = '#ffffff';
     ctx.lineWidth = 2.5;
     ctx.beginPath();
-    ctx.moveTo(centerX - 65, 225);
-    ctx.lineTo(centerX - 61, 229);
-    ctx.lineTo(centerX - 55, 221);
+    ctx.moveTo(centerX - 70, 242);
+    ctx.lineTo(centerX - 66, 246);
+    ctx.lineTo(centerX - 60, 238);
     ctx.stroke();
 
     ctx.fillStyle = '#10B981';
-    ctx.font = '500 20px Inter, sans-serif';
+    ctx.font = '500 22px Inter, sans-serif';
     ctx.textAlign = 'left';
-    ctx.fillText('Successful', centerX - 42, 232);
+    ctx.fillText('Successful', centerX - 45, 250);
 
-    // Bonus Earned row (Refined position)
+    // Bonus Earned row (Lower down, specific font)
     ctx.fillStyle = '#8e8e93';
-    ctx.font = '400 17px Inter, sans-serif';
+    ctx.font = '400 18px Inter, sans-serif';
     ctx.textAlign = 'left';
-    ctx.fillText('Bonus Earned', cardMargin + 20, 262);
+    ctx.fillText('Bonus Earned', cardMargin + 25, 285);
     
     ctx.textAlign = 'right';
     ctx.fillStyle = '#10B981';
-    ctx.fillText(`+₦5.00 Cashback`, canvas.width - cardMargin - 20, 262);
+    ctx.fillText(`+₦5.00 Cashback`, canvas.width - cardMargin - 25, 285);
 
     // Transaction Details Header
     ctx.textAlign = 'left';
     ctx.fillStyle = '#000000';
-    ctx.font = 'bold 22px Inter, sans-serif';
-    ctx.fillText('Transaction Details', cardMargin + 20, 345);
+    ctx.font = 'bold 24px Inter, sans-serif';
+    ctx.fillText('Transaction Details', cardMargin + 25, 375);
 
-    const detailX = cardMargin + 20;
-    const valueX = canvas.width - cardMargin - 20;
-    let currentY = 395;
-    const spacing = 52;
+    const detailX = cardMargin + 25;
+    const valueX = canvas.width - cardMargin - 25;
+    let currentY = 430;
+    const spacing = 58;
 
     const drawDetailRow = (label: string, value: string, hasCopyIcon: boolean = false, isChevron: boolean = false) => {
       ctx.textAlign = 'left';
       ctx.fillStyle = '#8e8e93';
-      ctx.font = '400 18px Inter, sans-serif';
+      ctx.font = '400 19px Inter, sans-serif';
       ctx.fillText(label, detailX, currentY);
       
       ctx.textAlign = 'right';
       ctx.fillStyle = '#000000';
-      ctx.font = '400 18px Inter, sans-serif';
+      ctx.font = '400 19px Inter, sans-serif';
       
       let finalValueX = valueX;
-      if (hasCopyIcon || isChevron) finalValueX -= 25;
+      if (hasCopyIcon || isChevron) finalValueX -= 30;
       
       ctx.fillText(value, finalValueX, currentY);
       
       if (hasCopyIcon) {
         ctx.strokeStyle = '#8e8e93';
         ctx.lineWidth = 1.5;
-        ctx.strokeRect(valueX - 18, currentY - 15, 16, 16);
-        ctx.strokeRect(valueX - 22, currentY - 11, 16, 16); // Double box look
+        // Accurate copy icon drawing
+        ctx.strokeRect(valueX - 20, currentY - 18, 14, 14);
+        ctx.strokeRect(valueX - 24, currentY - 14, 14, 14);
       }
       
       if (isChevron) {
         ctx.strokeStyle = '#8e8e93';
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 2.5;
         ctx.beginPath();
-        ctx.moveTo(valueX - 10, currentY - 10);
-        ctx.lineTo(valueX - 5, currentY - 5);
-        ctx.lineTo(valueX - 10, currentY);
+        ctx.moveTo(valueX - 12, currentY - 12);
+        ctx.lineTo(valueX - 6, currentY - 6);
+        ctx.lineTo(valueX - 12, currentY);
         ctx.stroke();
       }
       currentY += spacing;
