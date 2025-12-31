@@ -45,6 +45,15 @@
   --color-brand-red: #E60000;
 }
 
+/* Hide Replit Dev Banner */
+#replit-dev-banner,
+.replit-dev-banner,
+[class*="replit-dev-banner"] {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
 /* LIGHT MODE */
 :root {
   --background: 0 0% 100%;
