@@ -46,7 +46,7 @@ const airtimeSchema = z.object({
 type TransferFormValues = z.infer<typeof transferSchema>;
 type AirtimeFormValues = z.infer<typeof airtimeSchema>;
 
-type AppMode = "landing" | "uba" | "op";
+type AppMode = "landing" | "uba" | "opay";
 
 export default function Home() {
   const [mode, setMode] = useState<AppMode>("landing");
@@ -89,7 +89,7 @@ export default function Home() {
     if (receiptData && canvasRef.current) {
       if (mode === "uba") {
         generateUBAReceiptCanvas();
-      } else if (mode === "op") {
+      } else if (mode === "opay") {
         generateOPReceiptCanvas();
       }
     }
@@ -164,95 +164,142 @@ export default function Home() {
 
   const generateOPReceiptCanvas = () => {
     const canvas = canvasRef.current;
-    if (!canvas || !receiptData || mode !== "op") return;
+    if (!canvas || !receiptData || mode !== "opay") return;
     const data = receiptData as AirtimeFormValues;
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
     canvas.width = 400;
-    canvas.height = 550;
+    canvas.height = 580;
 
     // Background
-    ctx.fillStyle = '#f8f9fa';
+    ctx.fillStyle = '#f7f8fa';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Main Card
-    const cardMargin = 20;
+    // Main Card (Top)
+    const cardMargin = 16;
     const cardWidth = canvas.width - (cardMargin * 2);
+    
+    // Draw shadows/borders for cards
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.05)';
+    ctx.shadowBlur = 10;
+    ctx.shadowOffsetY = 4;
+
     ctx.fillStyle = '#ffffff';
     // Top rounded card
     ctx.beginPath();
-    ctx.roundRect(cardMargin, 40, cardWidth, 180, 15);
+    ctx.roundRect(cardMargin, 30, cardWidth, 200, 16);
     ctx.fill();
     
     // Bottom detail card
     ctx.beginPath();
-    ctx.roundRect(cardMargin, 230, cardWidth, 280, 15);
+    ctx.roundRect(cardMargin, 246, cardWidth, 310, 16);
     ctx.fill();
 
-    // Draw Network Indicator Circle (Placeholder for logo)
+    // Reset shadow
+    ctx.shadowColor = 'transparent';
+    ctx.shadowBlur = 0;
+    ctx.shadowOffsetY = 0;
+
+    // Draw Network Indicator Circle
+    const centerX = canvas.width / 2;
     ctx.beginPath();
-    ctx.arc(canvas.width / 2, 60, 25, 0, Math.PI * 2);
-    if (data.network === "MTN") ctx.fillStyle = "#FFCC00";
-    else if (data.network === "Glo") ctx.fillStyle = "#008000";
-    else ctx.fillStyle = "#FF0000";
+    ctx.arc(centerX, 55, 26, 0, Math.PI * 2);
+    if (data.network === "MTN") ctx.fillStyle = "#ffcb05";
+    else if (data.network === "Glo") ctx.fillStyle = "#2e7d32";
+    else ctx.fillStyle = "#ed1c24";
     ctx.fill();
 
-    ctx.fillStyle = '#000000';
+    // Network Logo Text/Icon placeholder
+    ctx.fillStyle = '#ffffff';
     ctx.textAlign = 'center';
-    ctx.font = 'bold 18px Inter, sans-serif';
-    ctx.fillText(data.network, canvas.width / 2, 105);
+    ctx.font = 'bold 12px Inter, sans-serif';
+    ctx.fillText(data.network, centerX, 59);
+
+    ctx.fillStyle = '#333333';
+    ctx.font = '500 18px Inter, sans-serif';
+    ctx.fillText(data.network, centerX, 105);
 
     const amount = parseFloat(data.amount).toLocaleString('en-NG', { 
       minimumFractionDigits: 2, 
       maximumFractionDigits: 2 
     });
-    ctx.font = 'bold 36px Inter, sans-serif';
-    ctx.fillText(`₦${amount}`, canvas.width / 2, 155);
+    ctx.font = 'bold 38px Inter, sans-serif';
+    ctx.fillStyle = '#000000';
+    ctx.fillText(`₦${amount}`, centerX, 160);
 
-    // Successful checkmark
+    // Successful checkmark + text
     ctx.fillStyle = '#10B981';
     ctx.beginPath();
-    ctx.arc(canvas.width / 2 - 50, 185, 10, 0, Math.PI * 2);
+    ctx.arc(centerX - 50, 195, 10, 0, Math.PI * 2);
     ctx.fill();
+    
+    // Draw white checkmark in green circle
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(centerX - 54, 195);
+    ctx.lineTo(centerX - 51, 198);
+    ctx.lineTo(centerX - 46, 192);
+    ctx.stroke();
+
     ctx.fillStyle = '#10B981';
-    ctx.font = 'bold 18px Inter, sans-serif';
+    ctx.font = '500 18px Inter, sans-serif';
     ctx.textAlign = 'left';
-    ctx.fillText('Successful', canvas.width / 2 - 35, 192);
+    ctx.fillText('Successful', centerX - 34, 201);
+
+    // Bonus Earned row
+    ctx.fillStyle = '#9ca3af';
+    ctx.font = '400 15px Inter, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Bonus Earned', cardMargin + 16, 222);
+    
+    ctx.textAlign = 'right';
+    ctx.fillStyle = '#10B981';
+    const cashback = (parseFloat(data.amount) * 0.01).toFixed(2);
+    ctx.fillText(`+₦${cashback} Cashback`, canvas.width - cardMargin - 16, 222);
 
     // Transaction Details Header
+    ctx.textAlign = 'left';
     ctx.fillStyle = '#000000';
     ctx.font = 'bold 20px Inter, sans-serif';
-    ctx.fillText('Transaction Details', cardMargin + 15, 270);
+    ctx.fillText('Transaction Details', cardMargin + 20, 285);
 
-    const detailX = cardMargin + 15;
-    const valueX = canvas.width - cardMargin - 15;
-    let currentY = 310;
-    const spacing = 40;
+    const detailX = cardMargin + 20;
+    const valueX = canvas.width - cardMargin - 20;
+    let currentY = 325;
+    const spacing = 45;
 
-    const drawDetail = (label: string, value: string) => {
+    const drawDetail = (label: string, value: string, hasCopyIcon: boolean = false) => {
       ctx.textAlign = 'left';
-      ctx.fillStyle = '#6B7280';
+      ctx.fillStyle = '#9ca3af';
       ctx.font = '400 16px Inter, sans-serif';
       ctx.fillText(label, detailX, currentY);
       
       ctx.textAlign = 'right';
       ctx.fillStyle = '#111827';
-      ctx.font = '500 16px Inter, sans-serif';
-      ctx.fillText(value, valueX, currentY);
+      ctx.font = '400 16px Inter, sans-serif';
+      ctx.fillText(value, hasCopyIcon ? valueX - 20 : valueX, currentY);
+      
+      if (hasCopyIcon) {
+        // Draw small copy icon placeholder
+        ctx.strokeStyle = '#9ca3af';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(valueX - 15, currentY - 12, 12, 12);
+      }
       currentY += spacing;
     };
 
     drawDetail('Recipient Mobile', data.phoneNumber);
     drawDetail('Transaction Type', 'Airtime');
-    drawDetail('Payment Method', 'OWealth');
+    drawDetail('Payment Method', 'OWealth', true);
     
-    // Generate Random Ref
+    // Generate Random Ref mimicking the OPay format
     const randomRef = "2512" + Math.floor(Math.random() * 1000000000000000).toString().padStart(16, '0');
-    drawDetail('Transaction No.', randomRef);
+    drawDetail('Transaction No.', randomRef, true);
 
-    // Date formatting
+    // Date formatting matching "Dec 27th, 2025 21:21:56"
     const dateObj = new Date(data.date);
     const day = dateObj.getDate();
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -265,7 +312,7 @@ export default function Home() {
         default: return "th";
       }
     };
-    const formattedDate = `${monthNames[dateObj.getMonth()]} ${day}${suffix(day)}, ${dateObj.getFullYear()} ${data.time}:00`;
+    const formattedDate = `${monthNames[dateObj.getMonth()]} ${day}${suffix(day)}, ${dateObj.getFullYear()} ${data.time}:56`;
     drawDetail('Transaction Date', formattedDate);
   };
 
@@ -313,14 +360,14 @@ export default function Home() {
 
           <Card 
             className="cursor-pointer hover:shadow-md transition-shadow border-2 hover:border-[#10B981]"
-            onClick={() => setMode("op")}
-            data-testid="card-select-op"
+            onClick={() => setMode("opay")}
+            data-testid="card-select-opay"
           >
             <CardContent className="flex flex-col items-center p-8">
               <div className="w-16 h-16 bg-[#10B981] rounded-full flex items-center justify-center mb-4">
                 <Smartphone className="text-white w-8 h-8" />
               </div>
-              <h2 className="text-xl font-bold">OP</h2>
+              <h2 className="text-xl font-bold">OPay</h2>
               <p className="text-gray-500 text-center mt-2">Airtime Receipt Demo</p>
             </CardContent>
           </Card>
@@ -349,7 +396,7 @@ export default function Home() {
       <Card className="w-full max-w-md bg-white shadow-sm border border-gray-100">
         <CardContent className="pt-6 px-6 pb-8">
           <h1 className="text-2xl font-bold text-gray-900 mb-6">
-            {mode === "uba" ? "UBA Transfer" : "OP Airtime"}
+            {mode === "uba" ? "UBA Transfer" : "OPay Airtime"}
           </h1>
           
           {mode === "uba" ? (
