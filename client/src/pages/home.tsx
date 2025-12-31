@@ -195,12 +195,12 @@ export default function Home() {
     ctx.fillStyle = '#ffffff';
     // Top rounded card
     ctx.beginPath();
-    ctx.roundRect(cardMargin, 40, cardWidth, 230, 16);
+    ctx.roundRect(cardMargin, 40, cardWidth, 260, 16);
     ctx.fill();
     
     // Bottom detail card
     ctx.beginPath();
-    ctx.roundRect(cardMargin, 286, cardWidth, 360, 16);
+    ctx.roundRect(cardMargin, 316, cardWidth, 380, 16);
     ctx.fill();
 
     // Reset shadow
@@ -211,7 +211,7 @@ export default function Home() {
     // Draw Network Indicator Circle (Perfectly sized and positioned)
     const centerX = 390 / 2;
     ctx.beginPath();
-    ctx.arc(centerX, 64, 34, 0, Math.PI * 2);
+    ctx.arc(centerX, 75, 38, 0, Math.PI * 2);
     if (data.network === "MTN") ctx.fillStyle = "#ffcb05";
     else if (data.network === "Glo") ctx.fillStyle = "#2e7d32";
     else ctx.fillStyle = "#ed1c24";
@@ -220,30 +220,30 @@ export default function Home() {
     // Accurate Network Logo Styling
     if (data.network === "MTN") {
       ctx.strokeStyle = '#000000';
-      ctx.lineWidth = 1.4;
+      ctx.lineWidth = 1.6;
       ctx.beginPath();
-      ctx.ellipse(centerX, 64, 24, 18, 0, 0, Math.PI * 2);
+      ctx.ellipse(centerX, 75, 28, 22, 0, 0, Math.PI * 2);
       ctx.stroke();
       ctx.fillStyle = '#000000';
-      ctx.font = 'bold 12px Inter, sans-serif';
+      ctx.font = 'bold 14px Inter, sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('MTN', centerX, 68);
+      ctx.fillText('MTN', centerX, 80);
     } else if (data.network === "Glo") {
-      ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 20px Inter, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('glo', centerX, 70);
-    } else if (data.network === "Airtel") {
       ctx.fillStyle = '#ffffff';
       ctx.font = 'bold 24px Inter, sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('airtel', centerX, 72);
+      ctx.fillText('glo', centerX, 82);
+    } else if (data.network === "Airtel") {
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 28px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('airtel', centerX, 84);
     }
 
     ctx.fillStyle = '#333333';
-    ctx.font = '500 22px Inter, sans-serif';
+    ctx.font = '500 24px Inter, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText(data.network, centerX, 118);
+    ctx.fillText(data.network, centerX, 135);
 
     const amountValue = parseFloat(data.amount).toLocaleString('en-NG', { 
       minimumFractionDigits: 2, 
@@ -251,88 +251,88 @@ export default function Home() {
     });
 
     ctx.fillStyle = '#111827';
-    ctx.font = '700 44px Inter, sans-serif';
+    ctx.font = '700 58px Inter, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText(`₦${amountValue}`, centerX, 160);
+    ctx.fillText(`₦${amountValue}`, centerX, 200);
 
     // Successful checkmark + text
     ctx.fillStyle = '#10B981';
     ctx.beginPath();
-    ctx.arc(centerX - 58, 204, 11, 0, Math.PI * 2);
+    ctx.arc(centerX - 75, 250, 15, 0, Math.PI * 2);
     ctx.fill();
     
     ctx.strokeStyle = '#ffffff';
-    ctx.lineWidth = 2.5;
+    ctx.lineWidth = 3.8;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
     ctx.beginPath();
-    ctx.moveTo(centerX - 63, 204);
-    ctx.lineTo(centerX - 59, 209);
-    ctx.lineTo(centerX - 53, 199);
+    ctx.moveTo(centerX - 84, 250);
+    ctx.lineTo(centerX - 76, 257);
+    ctx.lineTo(centerX - 66, 243);
     ctx.stroke();
 
     ctx.fillStyle = '#10B981';
-    ctx.font = '500 20px Inter, sans-serif';
+    ctx.font = '500 28px Inter, sans-serif';
     ctx.textAlign = 'left';
-    ctx.fillText('Successful', centerX - 40, 211);
+    ctx.fillText('Successful', centerX - 52, 260);
 
     // Bonus Earned row (Refined position and color)
     ctx.fillStyle = '#6b7280';
-    ctx.font = '400 16px Inter, sans-serif';
+    ctx.font = '400 20px Inter, sans-serif';
     ctx.textAlign = 'left';
-    ctx.fillText('Bonus Earned', cardMargin + 20, 248);
+    ctx.fillText('Bonus Earned', cardMargin + 24, 285);
     
     ctx.textAlign = 'right';
     ctx.fillStyle = '#10B981';
-    ctx.font = '500 16px Inter, sans-serif';
-    ctx.fillText(`+₦5.00 Cashback`, 390 - cardMargin - 20, 248);
+    ctx.font = '500 20px Inter, sans-serif';
+    ctx.fillText(`+₦5.00 Cashback`, 390 - cardMargin - 24, 285);
 
     // Transaction Details Header
     ctx.textAlign = 'left';
     ctx.fillStyle = '#000000';
-    ctx.font = '700 22px Inter, sans-serif';
-    ctx.fillText('Transaction Details', cardMargin + 20, 325);
+    ctx.font = '700 32px Inter, sans-serif';
+    ctx.fillText('Transaction Details', cardMargin + 24, 365);
 
-    const detailX = cardMargin + 20;
-    const valueX = 390 - cardMargin - 20;
-    let currentY = 375;
-    const spacing = 50;
+    const detailX = cardMargin + 24;
+    const valueX = 390 - cardMargin - 24;
+    let currentY = 430;
+    const spacing = 68;
 
     const drawDetailRow = (label: string, value: string, hasCopyIcon: boolean = false, isChevron: boolean = false) => {
       ctx.textAlign = 'left';
       ctx.fillStyle = '#6b7280';
-      ctx.font = '400 16px Inter, sans-serif';
+      ctx.font = '400 22px Inter, sans-serif';
       ctx.fillText(label, detailX, currentY);
       
       ctx.textAlign = 'right';
       ctx.fillStyle = '#111827';
-      ctx.font = '400 16px Inter, sans-serif';
+      ctx.font = '400 22px Inter, sans-serif';
       
       let finalValueX = valueX;
-      if (hasCopyIcon || isChevron) finalValueX -= 25;
+      if (hasCopyIcon || isChevron) finalValueX -= 35;
       
-      // Significantly reduce font size for transaction number to prevent bulky overlap
-      if (label === 'Transaction No.') {
-        ctx.font = '400 12.5px Inter, sans-serif';
+      // Keep readability high but ensure no clashing
+      if (label === 'Transaction No.' || label === 'Transaction Date') {
+        ctx.font = '400 20px Inter, sans-serif';
       }
       
       ctx.fillText(value, finalValueX, currentY);
       
       if (hasCopyIcon) {
         ctx.strokeStyle = '#9ca3af';
-        ctx.lineWidth = 1.2;
-        const iconSize = 14;
-        ctx.strokeRect(valueX - 18, currentY - 15, iconSize, iconSize);
-        ctx.strokeRect(valueX - 22, currentY - 11, iconSize, iconSize);
+        ctx.lineWidth = 1.8;
+        const iconSize = 18;
+        ctx.strokeRect(valueX - 22, currentY - 20, iconSize, iconSize);
+        ctx.strokeRect(valueX - 26, currentY - 16, iconSize, iconSize);
       }
       
       if (isChevron) {
         ctx.strokeStyle = '#9ca3af';
-        ctx.lineWidth = 2.5;
+        ctx.lineWidth = 3.2;
         ctx.beginPath();
-        ctx.moveTo(valueX - 12, currentY - 11);
-        ctx.lineTo(valueX - 6, currentY - 5);
-        ctx.lineTo(valueX - 12, currentY + 1);
+        ctx.moveTo(valueX - 18, currentY - 14);
+        ctx.lineTo(valueX - 10, currentY - 6);
+        ctx.lineTo(valueX - 18, currentY + 2);
         ctx.stroke();
       }
       currentY += spacing;
