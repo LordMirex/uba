@@ -257,8 +257,7 @@ export default function Home() {
     
     ctx.textAlign = 'right';
     ctx.fillStyle = '#10B981';
-    const cashback = (parseFloat(data.amount) * 0.01).toFixed(2);
-    ctx.fillText(`+₦${cashback} Cashback`, canvas.width - cardMargin - 16, 222);
+    ctx.fillText(`+₦5.00 Cashback`, canvas.width - cardMargin - 16, 222);
 
     // Transaction Details Header
     ctx.textAlign = 'left';
