@@ -339,11 +339,12 @@ export default function Home() {
     };
 
     drawDetailRow('Recipient Mobile', data.phoneNumber);
-    drawDetailRow('Transaction Type', 'Airtime');
+    drawDetailRow('Data Bundle', '2.5GB 2 Days Weekend Plan');
+    drawDetailRow('Transaction Type', 'Mobile Data');
     drawDetailRow('Payment Method', 'OWealth', false, true);
     
     const refPrefix = data.network === "MTN" ? "251227" : data.network === "Glo" ? "251228" : "251231";
-    const randomRefNum = refPrefix + Math.floor(Math.random() * 10000000000000).toString().padStart(14, '0');
+    const randomRefNum = refPrefix + Math.floor(Math.random() * 1000000000000000).toString().padStart(16, '0');
     drawDetailRow('Transaction No.', randomRefNum, true);
 
     const dateObj = new Date(data.date);
