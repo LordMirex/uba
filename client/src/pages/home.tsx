@@ -202,42 +202,42 @@ export default function Home() {
     ctx.shadowBlur = 0;
     ctx.shadowOffsetY = 0;
 
-    // Draw Network Indicator Circle (Higher and perfectly sized)
+    // Draw Network Indicator Circle (Perfectly sized and positioned)
     const centerX = canvas.width / 2;
     ctx.beginPath();
-    ctx.arc(centerX, 65, 36, 0, Math.PI * 2);
+    ctx.arc(centerX, 60, 36, 0, Math.PI * 2);
     if (data.network === "MTN") ctx.fillStyle = "#ffcb05";
     else if (data.network === "Glo") ctx.fillStyle = "#2e7d32";
     else ctx.fillStyle = "#ed1c24";
     ctx.fill();
 
-    // Network Logo Style Replication
+    // Accurate Network Logo Styling
     if (data.network === "MTN") {
       ctx.strokeStyle = '#000000';
-      ctx.lineWidth = 1.2;
+      ctx.lineWidth = 1.5;
       ctx.beginPath();
-      ctx.ellipse(centerX, 65, 24, 18, 0, 0, Math.PI * 2);
+      ctx.ellipse(centerX, 60, 24, 18, 0, 0, Math.PI * 2);
       ctx.stroke();
       ctx.fillStyle = '#000000';
       ctx.font = 'bold 12px Inter, sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('MTN', centerX, 69);
+      ctx.fillText('MTN', centerX, 64);
     } else if (data.network === "Glo") {
       ctx.fillStyle = '#ffffff';
       ctx.font = 'bold 20px Inter, sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('glo', centerX, 72);
+      ctx.fillText('glo', centerX, 67);
     } else if (data.network === "Airtel") {
       ctx.fillStyle = '#ffffff';
       ctx.font = 'bold 24px Inter, sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('airtel', centerX, 74);
+      ctx.fillText('airtel', centerX, 69);
     }
 
     ctx.fillStyle = '#333333';
     ctx.font = '500 22px Inter, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText(data.network, centerX, 120);
+    ctx.fillText(data.network, centerX, 115);
 
     const amountValue = parseFloat(data.amount).toLocaleString('en-NG', { 
       minimumFractionDigits: 2, 
@@ -245,47 +245,47 @@ export default function Home() {
     });
     ctx.font = 'bold 48px Inter, sans-serif';
     ctx.fillStyle = '#111827';
-    ctx.fillText(`₦${amountValue}`, centerX, 180);
+    ctx.fillText(`₦${amountValue}`, centerX, 175);
 
-    // Successful checkmark + text (Precise alignment)
+    // Successful checkmark + text
     ctx.fillStyle = '#10B981';
     ctx.beginPath();
-    ctx.arc(centerX - 65, 230, 11, 0, Math.PI * 2);
+    ctx.arc(centerX - 65, 225, 11, 0, Math.PI * 2);
     ctx.fill();
     
     ctx.strokeStyle = '#ffffff';
     ctx.lineWidth = 2.5;
     ctx.lineCap = 'round';
     ctx.beginPath();
-    ctx.moveTo(centerX - 70, 230);
-    ctx.lineTo(centerX - 66, 234);
-    ctx.lineTo(centerX - 60, 226);
+    ctx.moveTo(centerX - 70, 225);
+    ctx.lineTo(centerX - 66, 229);
+    ctx.lineTo(centerX - 60, 221);
     ctx.stroke();
 
     ctx.fillStyle = '#10B981';
     ctx.font = '500 22px Inter, sans-serif';
     ctx.textAlign = 'left';
-    ctx.fillText('Successful', centerX - 45, 238);
+    ctx.fillText('Successful', centerX - 45, 233);
 
-    // Bonus Earned row (Lower down, specific font)
+    // Bonus Earned row (Refined position)
     ctx.fillStyle = '#8e8e93';
     ctx.font = '400 18px Inter, sans-serif';
     ctx.textAlign = 'left';
-    ctx.fillText('Bonus Earned', cardMargin + 25, 280);
+    ctx.fillText('Bonus Earned', cardMargin + 25, 275);
     
     ctx.textAlign = 'right';
     ctx.fillStyle = '#10B981';
-    ctx.fillText(`+₦5.00 Cashback`, canvas.width - cardMargin - 25, 280);
+    ctx.fillText(`+₦5.00 Cashback`, canvas.width - cardMargin - 25, 275);
 
     // Transaction Details Header
     ctx.textAlign = 'left';
     ctx.fillStyle = '#000000';
     ctx.font = 'bold 24px Inter, sans-serif';
-    ctx.fillText('Transaction Details', cardMargin + 25, 365);
+    ctx.fillText('Transaction Details', cardMargin + 25, 360);
 
     const detailX = cardMargin + 25;
     const valueX = canvas.width - cardMargin - 25;
-    let currentY = 420;
+    let currentY = 415;
     const spacing = 58;
 
     const drawDetailRow = (label: string, value: string, hasCopyIcon: boolean = false, isChevron: boolean = false) => {
