@@ -339,8 +339,7 @@ export default function Home() {
     };
 
     drawDetailRow('Recipient Mobile', data.phoneNumber);
-    drawDetailRow('Data Bundle', '2.5GB 2 Days Weekend Plan');
-    drawDetailRow('Transaction Type', 'Mobile Data');
+    drawDetailRow('Transaction Type', 'Airtime');
     drawDetailRow('Payment Method', 'OWealth', false, true);
     
     const refPrefix = data.network === "MTN" ? "251227" : data.network === "Glo" ? "251228" : "251231";
