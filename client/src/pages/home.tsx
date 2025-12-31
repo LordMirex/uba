@@ -103,11 +103,14 @@ export default function Home() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    canvas.width = 390;
-    canvas.height = 360;
+    // Fixed High-DPI scaling for device-independent perfect output
+    const scale = 2;
+    canvas.width = 390 * scale;
+    canvas.height = 360 * scale;
+    ctx.scale(scale, scale);
 
     ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillRect(0, 0, 390, 360);
 
     ctx.strokeStyle = '#000000';
     ctx.lineWidth = 2.5;
@@ -115,28 +118,28 @@ export default function Home() {
     const xSize = 14;
     const xPadding = 18;
     ctx.beginPath();
-    ctx.moveTo(canvas.width - xPadding - xSize, xPadding);
-    ctx.lineTo(canvas.width - xPadding, xPadding + xSize);
+    ctx.moveTo(390 - xPadding - xSize, xPadding);
+    ctx.lineTo(390 - xPadding, xPadding + xSize);
     ctx.stroke();
     ctx.beginPath();
-    ctx.moveTo(canvas.width - xPadding, xPadding);
-    ctx.lineTo(canvas.width - xPadding - xSize, xPadding + xSize);
+    ctx.moveTo(390 - xPadding, xPadding);
+    ctx.lineTo(390 - xPadding - xSize, xPadding + xSize);
     ctx.stroke();
 
     const img = new Image();
     img.crossOrigin = "anonymous";
     img.onload = () => {
       const avatarSize = 110;
-      const avatarX = (canvas.width - avatarSize) / 2;
+      const avatarX = (390 - avatarSize) / 2;
       const avatarY = 30;
       ctx.drawImage(img, avatarX, avatarY, avatarSize, avatarSize);
 
       ctx.fillStyle = '#000000';
-      ctx.font = 'bold 32px -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, sans-serif';
+      ctx.font = 'bold 32px Inter, sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('Success', canvas.width / 2, avatarY + avatarSize + 50);
+      ctx.fillText('Success', 390 / 2, avatarY + avatarSize + 50);
 
-      ctx.font = '400 16px -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, sans-serif';
+      ctx.font = '400 16px Inter, sans-serif';
       ctx.textAlign = 'left';
       ctx.fillStyle = '#000000';
       
@@ -170,16 +173,19 @@ export default function Home() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    canvas.width = 390; 
-    canvas.height = 700;
+    // Fixed High-DPI scaling for device-independent perfect output
+    const scale = 2;
+    canvas.width = 390 * scale; 
+    canvas.height = 700 * scale;
+    ctx.scale(scale, scale);
 
     // Background
     ctx.fillStyle = '#f7f8fa';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillRect(0, 0, 390, 700);
 
     // Main Card (Top)
     const cardMargin = 16;
-    const cardWidth = canvas.width - (cardMargin * 2);
+    const cardWidth = 390 - (cardMargin * 2);
     
     // Draw shadows/borders for cards
     ctx.shadowColor = 'rgba(0, 0, 0, 0.03)';
@@ -203,7 +209,7 @@ export default function Home() {
     ctx.shadowOffsetY = 0;
 
     // Draw Network Indicator Circle (Perfectly sized and positioned)
-    const centerX = canvas.width / 2;
+    const centerX = 390 / 2;
     ctx.beginPath();
     ctx.arc(centerX, 60, 32, 0, Math.PI * 2);
     if (data.network === "MTN") ctx.fillStyle = "#ffcb05";
@@ -275,7 +281,7 @@ export default function Home() {
     
     ctx.textAlign = 'right';
     ctx.fillStyle = '#10B981';
-    ctx.fillText(`+₦5.00 Cashback`, canvas.width - cardMargin - 20, 250);
+    ctx.fillText(`+₦5.00 Cashback`, 390 - cardMargin - 20, 250);
 
     // Transaction Details Header
     ctx.textAlign = 'left';
@@ -284,39 +290,39 @@ export default function Home() {
     ctx.fillText('Transaction Details', cardMargin + 20, 330);
 
     const detailX = cardMargin + 20;
-    const valueX = canvas.width - cardMargin - 20;
+    const valueX = 390 - cardMargin - 20;
     let currentY = 380;
     const spacing = 52;
 
     const drawDetailRow = (label: string, value: string, hasCopyIcon: boolean = false, isChevron: boolean = false) => {
       ctx.textAlign = 'left';
       ctx.fillStyle = '#8e8e93';
-      ctx.font = '400 19px Inter, sans-serif';
+      ctx.font = '400 17px Inter, sans-serif';
       ctx.fillText(label, detailX, currentY);
       
       ctx.textAlign = 'right';
       ctx.fillStyle = '#000000';
-      ctx.font = '400 19px Inter, sans-serif';
+      ctx.font = '400 17px Inter, sans-serif';
       
       let finalValueX = valueX;
-      if (hasCopyIcon || isChevron) finalValueX -= 30;
+      if (hasCopyIcon || isChevron) finalValueX -= 25;
       
       ctx.fillText(value, finalValueX, currentY);
       
       if (hasCopyIcon) {
         ctx.strokeStyle = '#8e8e93';
         ctx.lineWidth = 1.2;
-        ctx.strokeRect(valueX - 20, currentY - 18, 14, 14);
-        ctx.strokeRect(valueX - 24, currentY - 14, 14, 14);
+        ctx.strokeRect(valueX - 18, currentY - 16, 14, 14);
+        ctx.strokeRect(valueX - 22, currentY - 12, 14, 14);
       }
       
       if (isChevron) {
         ctx.strokeStyle = '#8e8e93';
         ctx.lineWidth = 2.5;
         ctx.beginPath();
-        ctx.moveTo(valueX - 12, currentY - 12);
-        ctx.lineTo(valueX - 6, currentY - 6);
-        ctx.lineTo(valueX - 12, currentY);
+        ctx.moveTo(valueX - 12, currentY - 11);
+        ctx.lineTo(valueX - 6, currentY - 5);
+        ctx.lineTo(valueX - 12, currentY + 1);
         ctx.stroke();
       }
       currentY += spacing;
