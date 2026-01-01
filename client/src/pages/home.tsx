@@ -244,7 +244,7 @@ export default function Home() {
     ctx.font = '400 14.5px sans-serif';
     ctx.textAlign = 'center';
     ctx.letterSpacing = '0.2px';
-    ctx.fillText(data.network, centerX, 115);
+    ctx.fillText(data.network, centerX, 112);
 
     const amountValue = parseFloat(data.amount).toLocaleString('en-NG', { 
       minimumFractionDigits: 2, 
@@ -254,12 +254,12 @@ export default function Home() {
     ctx.fillStyle = '#111827';
     ctx.font = '700 42px sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText(`₦${amountValue}`, centerX, 175);
+    ctx.fillText(`₦${amountValue}`, centerX, 160);
 
     // Successful checkmark + text
     ctx.fillStyle = '#0fb47a';
     ctx.beginPath();
-    ctx.arc(centerX - 52, 205, 10, 0, Math.PI * 2);
+    ctx.arc(centerX - 52, 195, 10, 0, Math.PI * 2);
     ctx.fill();
     
     ctx.strokeStyle = '#ffffff';
@@ -267,26 +267,26 @@ export default function Home() {
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
     ctx.beginPath();
-    ctx.moveTo(centerX - 56, 205);
-    ctx.lineTo(centerX - 53, 209);
-    ctx.lineTo(centerX - 48, 201);
+    ctx.moveTo(centerX - 56, 195);
+    ctx.lineTo(centerX - 53, 199);
+    ctx.lineTo(centerX - 48, 191);
     ctx.stroke();
 
     ctx.fillStyle = '#0fb47a';
     ctx.font = '500 18px sans-serif';
     ctx.textAlign = 'left';
-    ctx.fillText('Successful', centerX - 36, 211);
+    ctx.fillText('Successful', centerX - 36, 201);
 
     // Bonus Earned row (Refined position and color)
     ctx.fillStyle = '#8e94a3';
     ctx.font = '400 14px sans-serif';
     ctx.textAlign = 'left';
-    ctx.fillText('Bonus Earned', cardMargin + 20, 238);
+    ctx.fillText('Bonus Earned', cardMargin + 20, 232);
     
     ctx.textAlign = 'right';
     ctx.fillStyle = '#0fb47a';
     ctx.font = '400 14px sans-serif';
-    ctx.fillText(`+₦5.00 Cashback`, 390 - cardMargin - 20, 238);
+    ctx.fillText(`+₦5.00 Cashback`, 390 - cardMargin - 20, 232);
 
     // Transaction Details Header
     ctx.textAlign = 'left';
