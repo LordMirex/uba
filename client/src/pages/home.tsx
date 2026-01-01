@@ -101,7 +101,7 @@ export default function Home() {
       if (mode === "uba") {
         generateUBAReceiptCanvas();
       } else if (mode === "opay") {
-        generateOPReceiptCanvas();
+        generateOPayReceiptCanvas();
       }
     }
   }, [receiptData]);
@@ -158,14 +158,14 @@ export default function Home() {
       let textY = avatarY + avatarSize + 95;
       const lineHeight = 20;
 
-      const amount = parseFloat(data.amount).toLocaleString('en-NG', { 
+      const amountValue = parseFloat(data.amount).toLocaleString('en-NG', { 
         minimumFractionDigits: 0, 
         maximumFractionDigits: 2 
       });
 
       ctx.fillText('You have successfully', textX, textY);
       textY += lineHeight;
-      ctx.fillText(`transferred NGN${amount} to`, textX, textY);
+      ctx.fillText(`transferred NGN${amountValue} to`, textX, textY);
       textY += lineHeight;
       ctx.fillText(data.recipientName.toUpperCase(), textX, textY);
       textY += lineHeight + 2;
@@ -176,7 +176,7 @@ export default function Home() {
     img.src = avatarImage;
   };
 
-  const generateOPReceiptCanvas = () => {
+  const generateOPayReceiptCanvas = () => {
     // Preload logos locally to ensure they're available
     [mtnLogo, gloLogo, airtelLogo].forEach(src => {
       const img = new Image();
