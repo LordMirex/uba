@@ -280,6 +280,9 @@ export default function Home() {
         };
         // Check if image is already cached
         logoImg.src = logoSrc;
+        
+        // REINFORCEMENT: Force immediate draw if complete, 
+        // and ensure we don't skip the Airtel logo logic
         if (logoImg.complete) {
           ctx.save();
           ctx.beginPath();
@@ -528,15 +531,15 @@ export default function Home() {
       if (abortRef.current) break;
 
       setReceiptData(batchData[i]);
-      // Reduced delay from 500ms to 200ms for faster processing
-      await new Promise(resolve => setTimeout(resolve, 200)); 
+      // Balanced delay: 350ms to ensure logo rendering stability
+      await new Promise(resolve => setTimeout(resolve, 350)); 
       
       const canvas = canvasRef.current;
       if (canvas) {
         // Optimized wait for frame
         await new Promise(resolve => requestAnimationFrame(resolve));
         
-        const blob = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve, 'image/png', 0.8)); // Slightly reduced quality for faster compression
+        const blob = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve, 'image/png', 0.9)); // Quality 0.9 for better logo detail
         if (blob) {
           const item = batchData[i];
           const fileName = mode === "uba" 
