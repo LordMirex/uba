@@ -253,19 +253,20 @@ export default function Home() {
       ctx.textAlign = 'center';
       ctx.fillText('glo', centerX, 61);
     } else if (data.network === "Airtel") {
-      // Precise Airtel logo from reference: white mark with central circle
+      // Precise Airtel logo: white circle inside red circle with white dot
       ctx.fillStyle = '#e60000';
       ctx.beginPath();
       ctx.arc(centerX, 55, 22, 0, Math.PI * 2);
       ctx.fill();
       
+      // White ring
       ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 4.0;
-      ctx.lineCap = 'round';
+      ctx.lineWidth = 3.5;
       ctx.beginPath();
-      ctx.arc(centerX, 55, 8, 0, Math.PI * 2);
+      ctx.arc(centerX, 55, 9, 0, Math.PI * 2);
       ctx.stroke();
       
+      // Central dot
       ctx.beginPath();
       ctx.arc(centerX, 55, 2.5, 0, Math.PI * 2);
       ctx.fillStyle = '#ffffff';
