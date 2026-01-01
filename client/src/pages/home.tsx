@@ -221,21 +221,21 @@ export default function Home() {
     if (data.network === "MTN") {
       // Precise MTN Oval and Text from Receipt
       ctx.strokeStyle = '#000000';
-      ctx.lineWidth = 1.2;
+      ctx.lineWidth = 1.3;
       ctx.beginPath();
-      ctx.ellipse(centerX, 54, 17, 12, 0, 0, Math.PI * 2);
+      ctx.ellipse(centerX, 54.5, 17, 12, 0, 0, Math.PI * 2);
       ctx.stroke();
       
       ctx.fillStyle = '#000000';
       ctx.font = 'bold 8.5px sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('MTN', centerX, 57.5);
+      ctx.fillText('MTN', centerX, 58);
     } else if (data.network === "Glo") {
       // Precise Glo Sphere with the exact glow and text from Receipt
-      // Subtle outer glow
+      // Subtle outer glow/halo
       ctx.beginPath();
       ctx.arc(centerX, 55, 23, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(76, 175, 80, 0.15)';
+      ctx.fillStyle = 'rgba(76, 175, 80, 0.2)';
       ctx.fill();
 
       // The green sphere
@@ -253,22 +253,24 @@ export default function Home() {
       ctx.textAlign = 'center';
       ctx.fillText('glo', centerX, 61);
     } else if (data.network === "Airtel") {
-      // Precise Airtel logo: white circle inside red circle with white dot
+      // Precise Airtel Red Circle with stylized white mark from Receipt
       ctx.fillStyle = '#e60000';
       ctx.beginPath();
-      ctx.arc(centerX, 55, 22, 0, Math.PI * 2);
+      ctx.arc(centerX, 55, 23, 0, Math.PI * 2);
       ctx.fill();
       
-      // White ring
+      // The stylized white 'a' mark - precisely drawn as a swirl
       ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 3.5;
+      ctx.lineWidth = 4.2;
+      ctx.lineCap = 'round';
       ctx.beginPath();
-      ctx.arc(centerX, 55, 9, 0, Math.PI * 2);
+      // Swirl part
+      ctx.arc(centerX, 54, 8, 0.25 * Math.PI, 1.85 * Math.PI);
       ctx.stroke();
       
-      // Central dot
+      // Central dot/tail part
       ctx.beginPath();
-      ctx.arc(centerX, 55, 2.5, 0, Math.PI * 2);
+      ctx.arc(centerX + 2.2, 55, 2.5, 0, Math.PI * 2);
       ctx.fillStyle = '#ffffff';
       ctx.fill();
     }
