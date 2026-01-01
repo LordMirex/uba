@@ -214,9 +214,17 @@ export default function Home() {
 
     const centerX = 390 / 2;
 
+    // Restore the perfect indicator circle background
+    ctx.beginPath();
+    ctx.arc(centerX, 55, 26, 0, Math.PI * 2);
+    if (data.network === "MTN") ctx.fillStyle = "#ffcc00";
+    else if (data.network === "Glo") ctx.fillStyle = "#4caf50";
+    else ctx.fillStyle = "#e60000";
+    ctx.fill();
+
     // Precise Network Logo Placement - NO DESIGN, JUST REFERENCE IMAGE
     const drawNetworkLogo = () => {
-      const logoSize = 52;
+      const logoSize = 52; // Full size of the 26px radius circle
       const logoX = centerX - (logoSize / 2);
       const logoY = 55 - (logoSize / 2);
 
@@ -228,7 +236,13 @@ export default function Home() {
       if (logoSrc) {
         const logoImg = new Image();
         logoImg.onload = () => {
+          ctx.save();
+          // Clip to the circle to ensure no bleed
+          ctx.beginPath();
+          ctx.arc(centerX, 55, 26, 0, Math.PI * 2);
+          ctx.clip();
           ctx.drawImage(logoImg, logoX, logoY, logoSize, logoSize);
+          ctx.restore();
         };
         logoImg.src = logoSrc;
       }
