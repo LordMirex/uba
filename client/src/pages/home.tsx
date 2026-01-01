@@ -283,9 +283,9 @@ export default function Home() {
     await drawNetworkLogo();
 
     ctx.fillStyle = '#111827';
-    ctx.font = '400 14.5px sans-serif';
+    ctx.font = '500 13px sans-serif';
     ctx.textAlign = 'center';
-    ctx.letterSpacing = '0.2px';
+    ctx.letterSpacing = '0.3px';
     ctx.fillText(data.network, centerX, 108);
 
     const amountValue = parseFloat(data.amount).toLocaleString('en-NG', { 
@@ -359,10 +359,13 @@ export default function Home() {
       
       if (hasCopyIcon) {
         ctx.strokeStyle = '#b1b6c1';
-        ctx.lineWidth = 1.1;
-        const iconSize = 12;
-        ctx.strokeRect(valueX - 14, currentY - 13, iconSize, iconSize);
-        ctx.strokeRect(valueX - 17, currentY - 10, iconSize, iconSize);
+        ctx.lineWidth = 1.2;
+        const iconSize = 13;
+        // Drawing a more precise copy icon
+        ctx.strokeRect(valueX - 14, currentY - 11, iconSize - 2, iconSize - 2);
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(valueX - 18, currentY - 7, iconSize - 2, iconSize - 2);
+        ctx.strokeRect(valueX - 18, currentY - 7, iconSize - 2, iconSize - 2);
       }
       
       if (isChevron) {
