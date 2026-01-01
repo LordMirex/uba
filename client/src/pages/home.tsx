@@ -335,8 +335,8 @@ export default function Home() {
 
     const detailX = cardMargin + 22;
     const valueX = 390 - cardMargin - 22;
-    let currentY = 378;
-    const spacing = 44;
+    let currentY = 376;
+    const spacing = 41;
 
     const drawDetailRow = (label: string, value: string, hasCopyIcon: boolean = false, isChevron: boolean = false) => {
       ctx.textAlign = 'left';
