@@ -481,11 +481,19 @@ export default function Home() {
       console.error("Failed to preload assets", err);
     }
 
-    // NUBAN Algorithm (Simplified Nigerian Standard)
-    const generateNuban = (bankCode: string) => {
+    // Standard 10-digit NUBAN logic
+    const generateNuban = (bank: { name: string, code: string }) => {
+      // OPay and PalmPay often use phone numbers as account numbers
+      if (bank.name === "OPay" || bank.name === "PalmPay") {
+        const prefixes = ["0803", "0806", "0813", "0703", "0706", "0810", "0814", "0903", "0805", "0815", "0705", "0905", "0802", "0808", "0812"];
+        const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+        const rest = Math.floor(Math.random() * 9000000 + 1000000).toString();
+        return prefix + rest;
+      }
+
       const serial = Math.floor(Math.random() * 900000000 + 100000000).toString(); // 9 digits
       const weights = [3, 7, 3, 3, 7, 3, 3, 7, 3, 3, 7, 3];
-      const combined = bankCode.padStart(3, '0') + serial;
+      const combined = bank.code.padStart(3, '0').slice(-3) + serial;
       let sum = 0;
       for (let i = 0; i < 12; i++) {
         sum += parseInt(combined[i]) * weights[i];
@@ -520,7 +528,7 @@ export default function Home() {
       
       const randomBank = nigerianBanks[Math.floor(Math.random() * nigerianBanks.length)];
       const randomName = generateRandomName();
-      const randomAcc = generateNuban(randomBank.code.slice(-3));
+      const randomAcc = generateNuban(randomBank);
       
       const networks = ["MTN", "Glo", "Airtel"];
       const randomNetwork = networks[Math.floor(Math.random() * networks.length)] as "MTN" | "Glo" | "Airtel";
