@@ -367,10 +367,10 @@ export default function Home() {
         // Base rectangle
         ctx.strokeRect(iconX, iconY, iconSize - 3, iconSize - 3);
         
-        // Overlap rectangle
+        // Overlap rectangle - moved closer (offset reduced from 3 to 2)
         ctx.fillStyle = '#ffffff';
-        ctx.fillRect(iconX - 3, iconY + 3, iconSize - 3, iconSize - 3);
-        ctx.strokeRect(iconX - 3, iconY + 3, iconSize - 3, iconSize - 3);
+        ctx.fillRect(iconX - 2, iconY + 2, iconSize - 3, iconSize - 3);
+        ctx.strokeRect(iconX - 2, iconY + 2, iconSize - 3, iconSize - 3);
       }
       
       if (isChevron) {
