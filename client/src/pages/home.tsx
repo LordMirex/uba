@@ -219,60 +219,55 @@ export default function Home() {
 
     // Accurate Network Logo Styling
     if (data.network === "MTN") {
-      // Draw the black oval for MTN logo
+      // Precise MTN Oval and Text from Receipt
       ctx.strokeStyle = '#000000';
       ctx.lineWidth = 1.2;
       ctx.beginPath();
-      ctx.ellipse(centerX, 54, 16, 11, 0, 0, Math.PI * 2);
+      ctx.ellipse(centerX, 54, 17, 12, 0, 0, Math.PI * 2);
       ctx.stroke();
       
-      // Draw the "MTN" text inside the oval
       ctx.fillStyle = '#000000';
-      ctx.font = 'bold 8px sans-serif';
+      ctx.font = 'bold 8.5px sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('MTN', centerX, 57);
+      ctx.fillText('MTN', centerX, 57.5);
     } else if (data.network === "Glo") {
-      // Precise Glo Sphere from JPEG
-      // Outer subtle glow
+      // Precise Glo Sphere with the exact glow and text from Receipt
+      // Subtle outer glow
       ctx.beginPath();
       ctx.arc(centerX, 55, 23, 0, Math.PI * 2);
       ctx.fillStyle = 'rgba(76, 175, 80, 0.15)';
       ctx.fill();
 
-      // The sphere with highlight and shadow
+      // The green sphere
       ctx.beginPath();
       ctx.arc(centerX, 55, 19, 0, Math.PI * 2);
       const gradient = ctx.createRadialGradient(centerX - 6, 50, 2, centerX, 55, 19);
-      gradient.addColorStop(0, '#a5d6a7'); // Light highlight
-      gradient.addColorStop(0.4, '#4caf50'); // Main green
-      gradient.addColorStop(1, '#1b5e20'); // Dark depth at edges
+      gradient.addColorStop(0, '#a5d6a7'); 
+      gradient.addColorStop(0.4, '#4caf50'); 
+      gradient.addColorStop(1, '#1b5e20'); 
       ctx.fillStyle = gradient;
       ctx.fill();
       
-      // "glo" text with exact weight and position
       ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 17px sans-serif';
+      ctx.font = 'bold 18px sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText('glo', centerX, 61);
     } else if (data.network === "Airtel") {
-      // Precise Airtel Red Circle with white 'a' mark from JPEG
-      ctx.fillStyle = '#e60000'; // Pure Airtel Red
+      // Precise Airtel logo from reference: white mark with central circle
+      ctx.fillStyle = '#e60000';
       ctx.beginPath();
       ctx.arc(centerX, 55, 22, 0, Math.PI * 2);
       ctx.fill();
       
-      // Stylized white 'a' (swirl-like)
       ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 4;
+      ctx.lineWidth = 4.0;
       ctx.lineCap = 'round';
       ctx.beginPath();
-      // Drawing the 'a' swirl precisely
-      ctx.arc(centerX, 55, 8, 0.2 * Math.PI, 1.8 * Math.PI);
+      ctx.arc(centerX, 55, 8, 0, Math.PI * 2);
       ctx.stroke();
       
-      // Inner dot/part of 'a'
       ctx.beginPath();
-      ctx.arc(centerX + 2, 55, 2, 0, Math.PI * 2);
+      ctx.arc(centerX, 55, 2.5, 0, Math.PI * 2);
       ctx.fillStyle = '#ffffff';
       ctx.fill();
     }
