@@ -483,9 +483,9 @@ export default function Home() {
 
     // Standard 10-digit NUBAN logic
     const generateNuban = (bank: { name: string, code: string }) => {
-      // OPay and PalmPay often use phone numbers as account numbers
+      // OPay and PalmPay use phone numbers as account numbers with the first 0 removed (10 digits)
       if (bank.name === "OPay" || bank.name === "PalmPay") {
-        const prefixes = ["0803", "0806", "0813", "0703", "0706", "0810", "0814", "0903", "0805", "0815", "0705", "0905", "0802", "0808", "0812"];
+        const prefixes = ["803", "806", "813", "703", "706", "810", "814", "903", "805", "815", "705", "905", "802", "808", "812"];
         const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
         const rest = Math.floor(Math.random() * 9000000 + 1000000).toString();
         return prefix + rest;
