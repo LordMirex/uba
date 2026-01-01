@@ -195,6 +195,7 @@ export default function Home() {
     ctx.shadowBlur = 8;
     ctx.shadowOffsetY = 1;
 
+    // Accurately positioned Background Shapes
     ctx.fillStyle = '#ffffff';
     // Top rounded card
     ctx.beginPath();
@@ -211,18 +212,11 @@ export default function Home() {
     ctx.shadowBlur = 0;
     ctx.shadowOffsetY = 0;
 
-    // Draw Network Indicator Circle (Perfectly sized and positioned - half-in, half-out)
     const centerX = 390 / 2;
-    ctx.beginPath();
-    ctx.arc(centerX, 55, 26, 0, Math.PI * 2);
-    if (data.network === "MTN") ctx.fillStyle = "#ffcc00"; // Exact MTN Yellow
-    else if (data.network === "Glo") ctx.fillStyle = "#2e7d32";
-    else ctx.fillStyle = "#e60000"; // Exact Airtel Red
-    ctx.fill();
 
-    // Accurate Network Logo Styling
+    // Precise Network Logo Placement - NO DESIGN, JUST REFERENCE IMAGE
     const drawNetworkLogo = () => {
-      const logoSize = 52; // Increased size to perfectly fill the circular area
+      const logoSize = 52;
       const logoX = centerX - (logoSize / 2);
       const logoY = 55 - (logoSize / 2);
 
@@ -234,10 +228,7 @@ export default function Home() {
       if (logoSrc) {
         const logoImg = new Image();
         logoImg.onload = () => {
-          ctx.save();
-          // Draw the logo exactly as-is, centered and filling the space
           ctx.drawImage(logoImg, logoX, logoY, logoSize, logoSize);
-          ctx.restore();
         };
         logoImg.src = logoSrc;
       }
