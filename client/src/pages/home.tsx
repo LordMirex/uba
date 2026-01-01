@@ -9,6 +9,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Check, ChevronsUpDown, ArrowLeft, Smartphone, Send } from "lucide-react";
+import mtnLogo from "@assets/stock_images/mtn_nigeria_logo_cir_49b503d3.jpg";
+import gloLogo from "@assets/stock_images/glo_nigeria_logo_sph_73d340df.jpg";
+import airtelLogo from "@assets/stock_images/airtel_nigeria_logo__b2996101.jpg";
 import { cn } from "@/lib/utils";
 import avatarImage from "@assets/images~2_1763755363341.png";
 import { useToast } from "@/hooks/use-toast";
@@ -218,54 +221,31 @@ export default function Home() {
     ctx.fill();
 
     // Accurate Network Logo Styling
-    if (data.network === "MTN") {
-      // Precise MTN Oval and Text from Receipt
-      ctx.strokeStyle = '#000000';
-      ctx.lineWidth = 1.3;
-      ctx.beginPath();
-      ctx.ellipse(centerX, 54.5, 17, 12, 0, 0, Math.PI * 2);
-      ctx.stroke();
-      
-      ctx.fillStyle = '#000000';
-      ctx.font = 'bold 8.5px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('MTN', centerX, 58);
-    } else if (data.network === "Glo") {
-      // Correct Glo sphere as per JPEG: green orb with white "glo"
-      ctx.beginPath();
-      ctx.arc(centerX, 55, 20, 0, Math.PI * 2);
-      const gradient = ctx.createRadialGradient(centerX - 6, 51, 3, centerX, 55, 20);
-      gradient.addColorStop(0, '#8ed991'); 
-      gradient.addColorStop(0.5, '#4caf50'); 
-      gradient.addColorStop(1, '#0c4d10'); 
-      ctx.fillStyle = gradient;
-      ctx.fill();
-      
-      ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 18px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('glo', centerX, 61);
-    } else if (data.network === "Airtel") {
-      // Exact Airtel Logo from JPEG: red circle with a stylized 'c' containing a dot
-      ctx.fillStyle = '#e60000';
-      ctx.beginPath();
-      ctx.arc(centerX, 55, 23, 0, Math.PI * 2);
-      ctx.fill();
-      
-      // The stylized 'c' or 'a' mark
-      ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 4.0;
-      ctx.lineCap = 'round';
-      ctx.beginPath();
-      ctx.arc(centerX, 55, 8, 0.2 * Math.PI, 1.8 * Math.PI);
-      ctx.stroke();
-      
-      // Central dot
-      ctx.beginPath();
-      ctx.arc(centerX + 3, 55, 2.5, 0, Math.PI * 2);
-      ctx.fillStyle = '#ffffff';
-      ctx.fill();
-    }
+    const drawNetworkLogo = () => {
+      const logoSize = 46;
+      const logoX = centerX - (logoSize / 2);
+      const logoY = 55 - (logoSize / 2);
+
+      let logoSrc = "";
+      if (data.network === "MTN") logoSrc = mtnLogo;
+      else if (data.network === "Glo") logoSrc = gloLogo;
+      else if (data.network === "Airtel") logoSrc = airtelLogo;
+
+      if (logoSrc) {
+        const logoImg = new Image();
+        logoImg.onload = () => {
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(centerX, 55, logoSize / 2, 0, Math.PI * 2);
+          ctx.clip();
+          ctx.drawImage(logoImg, logoX, logoY, logoSize, logoSize);
+          ctx.restore();
+        };
+        logoImg.src = logoSrc;
+      }
+    };
+
+    drawNetworkLogo();
 
     ctx.fillStyle = '#111827';
     ctx.font = '400 14.5px sans-serif';
