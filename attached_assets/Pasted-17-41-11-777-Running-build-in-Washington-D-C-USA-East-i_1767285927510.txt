@@ -1,0 +1,50 @@
+17:41:11.777 Running build in Washington, D.C., USA (East) – iad1
+17:41:11.777 Build machine configuration: 2 cores, 8 GB
+17:41:11.910 Cloning github.com/LordMirex/uba (Branch: main, Commit: b9ce886)
+17:41:11.911 Previous build caches not available.
+17:41:12.130 Cloning completed: 220.000ms
+17:41:12.496 Running "vercel build"
+17:41:12.904 Vercel CLI 50.1.3
+17:41:13.603 Installing dependencies...
+17:41:17.047 npm warn deprecated @esbuild-kit/esm-loader@2.6.5: Merged into tsx: https://tsx.is
+17:41:17.100 npm warn deprecated @esbuild-kit/core-utils@3.3.2: Merged into tsx: https://tsx.is
+17:41:22.943 
+17:41:22.943 added 459 packages in 9s
+17:41:22.944 
+17:41:22.944 42 packages are looking for funding
+17:41:22.944   run `npm fund` for details
+17:41:23.003 Running "npm run build"
+17:41:23.146 
+17:41:23.146 > rest-express@1.0.0 build
+17:41:23.148 > vite build && esbuild server/index-prod.ts --platform=node --packages=external --bundle --format=esm --outfile=dist/index.js
+17:41:23.148 
+17:41:23.527 [36mvite v7.1.12 [32mbuilding for production...[36m[39m
+17:41:23.611 transforming...
+17:41:27.024 [32m✓[39m 1855 modules transformed.
+17:41:27.563 rendering chunks...
+17:41:27.577 computing gzip size...
+17:41:27.600 [2m../dist/public/[22m[32mindex.html                  [39m[1m[2m  1.66 kB[22m[1m[22m[2m │ gzip:   0.64 kB[22m
+17:41:27.601 [2m../dist/public/[22m[2massets/[22m[32mavatar-3ROKc8HG.png  [39m[1m[2m 23.57 kB[22m[1m[22m
+17:41:27.601 [2m../dist/public/[22m[2massets/[22m[32mmtn-BhxH_su7.png     [39m[1m[2m172.84 kB[22m[1m[22m
+17:41:27.601 [2m../dist/public/[22m[2massets/[22m[32mglo-DK1v92Bn.png     [39m[1m[2m353.05 kB[22m[1m[22m
+17:41:27.601 [2m../dist/public/[22m[2massets/[22m[32mairtel-BlCY35Lq.png  [39m[1m[2m366.18 kB[22m[1m[22m
+17:41:27.601 [2m../dist/public/[22m[2massets/[22m[35mindex-BJqTGV3k.css   [39m[1m[2m 92.03 kB[22m[1m[22m[2m │ gzip:  15.31 kB[22m
+17:41:27.602 [2m../dist/public/[22m[2massets/[22m[36mindex-Crj6WC4k.js    [39m[1m[33m580.36 kB[39m[22m[2m │ gzip: 180.10 kB[22m
+17:41:27.603 [33m
+17:41:27.606 (!) Some chunks are larger than 500 kB after minification. Consider:
+17:41:27.606 - Using dynamic import() to code-split the application
+17:41:27.606 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+17:41:27.606 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[39m
+17:41:27.606 [32m✓ built in 4.04s[39m
+17:41:27.649 
+17:41:27.650   dist/index.js  2.5kb
+17:41:27.650 
+17:41:27.650 ⚡ Done in 3ms
+17:41:27.882 Using TypeScript 5.6.3 (local user-provided)
+17:41:32.640 Build Completed in /vercel/output [19s]
+17:41:32.803 Deploying outputs...
+17:41:35.957 Deployment completed
+17:41:36.879 Creating build cache...
+17:41:56.368 Created build cache: 19.485s
+17:41:56.368 Uploading build cache [57.86 MB]
+17:41:57.409 Build cache uploaded: 1.043s
