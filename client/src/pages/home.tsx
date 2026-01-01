@@ -64,6 +64,7 @@ export default function Home() {
   const [isGenerating, setIsGenerating] = useState(false);
   const abortRef = useRef(false);
   const [progress, setProgress] = useState(0);
+  const [batchResults, setBatchResults] = useState<{name: string, blob: Blob}[]>([]);
   const [receiptData, setReceiptData] = useState<TransferFormValues | AirtimeFormValues | null>(null);
   const [openBankSelector, setOpenBankSelector] = useState(false);
   const { toast } = useToast();
@@ -446,6 +447,7 @@ export default function Home() {
     setIsGenerating(true);
     abortRef.current = false;
     setProgress(0);
+    setBatchResults([]);
     const zip = new JSZip();
 
     // Helper to preload an image
@@ -574,6 +576,7 @@ export default function Home() {
             ? `${currentBatchMode}_${(item as TransferFormValues).recipientName.replace(/\s/g, '_')}_${i + 1}.png`
             : `${currentBatchMode}_${(item as AirtimeFormValues).network}_${i + 1}.png`;
           zip.file(fileName, blob);
+          setBatchResults(prev => [...prev, { name: fileName, blob }]);
         }
       }
       
@@ -988,12 +991,45 @@ export default function Home() {
                 </Button>
               </div>
             ) : (
-              <Button 
-                onClick={generateBatch}
-                className="w-full h-12 text-lg bg-blue-600 hover:bg-blue-700 text-white"
-              >
-                Start Batch Generation
-              </Button>
+              <div className="space-y-4">
+                <Button 
+                  onClick={generateBatch}
+                  className="w-full h-12 text-lg bg-blue-600 hover:bg-blue-700 text-white"
+                >
+                  Start Batch Generation
+                </Button>
+                
+                {batchResults.length > 0 && (
+                  <div className="mt-6 space-y-4 pt-4 border-t border-gray-100">
+                    <h3 className="font-semibold text-gray-900 flex items-center justify-between">
+                      Generated Receipts
+                      <span className="text-xs font-normal text-gray-500">{batchResults.length} items</span>
+                    </h3>
+                    <div className="grid grid-cols-1 gap-2 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
+                      {batchResults.map((result, idx) => (
+                        <div key={idx} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-100 group hover:border-blue-200 transition-colors">
+                          <span className="text-xs text-gray-600 truncate mr-4 max-w-[180px]">{result.name}</span>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="h-8 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                            onClick={() => {
+                              const url = URL.createObjectURL(result.blob);
+                              const link = document.createElement('a');
+                              link.href = url;
+                              link.download = result.name;
+                              link.click();
+                              URL.revokeObjectURL(url);
+                            }}
+                          >
+                            Download
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
             )}
 
             <Button 
