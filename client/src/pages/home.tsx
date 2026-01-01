@@ -178,7 +178,7 @@ export default function Home() {
       textY += lineHeight;
       ctx.fillText(`transferred NGN${amountValue} to`, textX, textY);
       textY += lineHeight;
-      ctx.fillText(data.recipientName.toUpperCase(), textX, textY);
+    ctx.fillText(data.recipientName.toUpperCase(), textX, textY);
       textY += lineHeight + 2;
       ctx.fillText(`Bank Name: ${data.bankName}`, textX, textY);
       textY += lineHeight;
