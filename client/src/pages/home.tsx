@@ -488,16 +488,32 @@ export default function Home() {
         const prefixes = ["803", "806", "813", "703", "706", "810", "814", "903", "805", "815", "705", "905", "802", "808", "812"];
         const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
         const rest = Math.floor(Math.random() * 9000000 + 1000000).toString();
-        return prefix + rest;
+        return (prefix + rest).slice(0, 10);
       }
 
-      const serial = Math.floor(Math.random() * 900000000 + 100000000).toString(); // 9 digits
+      // Bank specific serial number patterns
+      let serialPrefix = "";
+      if (bank.name.includes("Zenith")) serialPrefix = ["10", "20", "60"][Math.floor(Math.random() * 3)];
+      else if (bank.name.includes("Guaranty") || bank.name.includes("GTB")) serialPrefix = "0";
+      else if (bank.name.includes("Access")) serialPrefix = ["00", "01", "10"][Math.floor(Math.random() * 3)];
+      else if (bank.name.includes("First Bank")) serialPrefix = "30";
+      else if (bank.name.includes("UBA") || bank.name.includes("United Bank")) serialPrefix = ["10", "20"][Math.floor(Math.random() * 2)];
+      else serialPrefix = Math.floor(Math.random() * 9).toString();
+
+      const remainingLength = 9 - serialPrefix.length;
+      const serialBody = Math.floor(Math.random() * Math.pow(10, remainingLength)).toString().padStart(remainingLength, '0');
+      const serial = serialPrefix + serialBody; // 9 digits total
+
+      // NUBAN Check Digit Algorithm
       const weights = [3, 7, 3, 3, 7, 3, 3, 7, 3, 3, 7, 3];
-      const combined = bank.code.padStart(3, '0').slice(-3) + serial;
+      const bankCode = bank.code.padStart(3, '0').slice(-3);
+      const combined = bankCode + serial; // 3 + 9 = 12 digits
+      
       let sum = 0;
       for (let i = 0; i < 12; i++) {
         sum += parseInt(combined[i]) * weights[i];
       }
+      
       const checkDigit = (10 - (sum % 10)) % 10;
       return serial + checkDigit.toString();
     };
