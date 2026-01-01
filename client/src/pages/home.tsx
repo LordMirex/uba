@@ -32,8 +32,7 @@ const transferSchema = z.object({
   bankName: z.string().min(2, "Bank name is required"),
   accountNumber: z.string()
     .regex(/^\d+$/, "Account number must be digits only")
-    .min(6, "Account number must be at least 6 digits")
-    .max(20, "Account number must be less than 20 digits"),
+    .length(10, "Account number must be exactly 10 digits"),
 });
 
 const airtimeSchema = z.object({
@@ -732,7 +731,12 @@ export default function Home() {
                     <FormItem>
                       <FormLabel>Amount (NGN)</FormLabel>
                       <FormControl>
-                        <Input placeholder="20000" type="number" {...field} />
+                        <Input 
+                          placeholder="20000" 
+                          type="number" 
+                          inputMode="decimal"
+                          {...field} 
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -750,15 +754,15 @@ export default function Home() {
                             <Button
                               variant="outline"
                               role="combobox"
-                              className={cn("justify-between font-normal", !field.value && "text-muted-foreground")}
+                              className={cn("w-full justify-between h-11 font-normal", !field.value && "text-muted-foreground")}
                             >
                               {field.value || "Select a bank"}
                               <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                             </Button>
                           </FormControl>
                         </PopoverTrigger>
-                        <PopoverContent className="w-full p-0" align="start">
-                          <Command>
+                        <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
+                          <Command className="w-full">
                             <CommandInput placeholder="Search bank..." />
                             <CommandList>
                               <CommandEmpty>No bank found.</CommandEmpty>
@@ -772,8 +776,8 @@ export default function Home() {
                                       setOpenBankSelector(false);
                                     }}
                                   >
+                                    <Check className={cn("mr-2 h-4 w-4", field.value === bank.name ? "opacity-100" : "opacity-0")} />
                                     {bank.name}
-                                    <Check className={cn("ml-auto h-4 w-4", field.value === bank.name ? "opacity-100" : "opacity-0")} />
                                   </CommandItem>
                                 ))}
                               </CommandGroup>
@@ -792,7 +796,13 @@ export default function Home() {
                     <FormItem>
                       <FormLabel>Account number</FormLabel>
                       <FormControl>
-                        <Input placeholder="7056172558" maxLength={20} {...field} />
+                        <Input 
+                          placeholder="7056172558" 
+                          type="tel"
+                          inputMode="numeric"
+                          maxLength={10} 
+                          {...field} 
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
