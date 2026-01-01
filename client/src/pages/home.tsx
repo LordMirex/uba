@@ -421,13 +421,23 @@ export default function Home() {
 
   const generateRandomName = () => {
     const isEdo = Math.random() < 0.75;
+    const hasMiddleName = Math.random() < 0.4; // 40% chance of middle name
+    
     if (isEdo) {
-      const first = edoNames[Math.floor(Math.random() * 40)]; // First 40 are Edo-specific
+      const first = edoNames[Math.floor(Math.random() * 40)];
       const last = edoSurnames[Math.floor(Math.random() * edoSurnames.length)];
+      if (hasMiddleName) {
+        const middle = edoNames[Math.floor(Math.random() * 40)];
+        return `${first} ${middle} ${last}`;
+      }
       return `${first} ${last}`;
     } else {
-      const first = edoNames[40 + Math.floor(Math.random() * 20)]; // Others
+      const first = edoNames[40 + Math.floor(Math.random() * 20)];
       const last = ["Okonkwo", "Abubakar", "Olawale", "Adeyemi", "Chinedu"][Math.floor(Math.random() * 5)];
+      if (hasMiddleName) {
+        const middle = ["Chukwuma", "Ngozi", "Emeka", "Okon", "Segun"][Math.floor(Math.random() * 5)];
+        return `${first} ${middle} ${last}`;
+      }
       return `${first} ${last}`;
     }
   };
