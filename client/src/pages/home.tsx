@@ -232,48 +232,49 @@ export default function Home() {
       ctx.textAlign = 'center';
       ctx.fillText('MTN', centerX, 57);
     } else if (data.network === "Glo") {
-      // Improved Glo logo matching the receipt's detailed sphere
-      // Outer glow/border
+      // Precise Glo Sphere from JPEG
+      // Outer subtle glow
       ctx.beginPath();
-      ctx.arc(centerX, 55, 22, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(76, 175, 80, 0.2)';
+      ctx.arc(centerX, 55, 23, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(76, 175, 80, 0.15)';
       ctx.fill();
 
-      // Main sphere
+      // The sphere with highlight and shadow
       ctx.beginPath();
-      ctx.arc(centerX, 55, 18, 0, Math.PI * 2);
-      const gradient = ctx.createRadialGradient(centerX - 5, 50, 2, centerX, 55, 18);
-      gradient.addColorStop(0, '#81c784'); // Highlight
-      gradient.addColorStop(1, '#2e7d32'); // Depth
+      ctx.arc(centerX, 55, 19, 0, Math.PI * 2);
+      const gradient = ctx.createRadialGradient(centerX - 6, 50, 2, centerX, 55, 19);
+      gradient.addColorStop(0, '#a5d6a7'); // Light highlight
+      gradient.addColorStop(0.4, '#4caf50'); // Main green
+      gradient.addColorStop(1, '#1b5e20'); // Dark depth at edges
       ctx.fillStyle = gradient;
       ctx.fill();
       
-      // "glo" text with correct spacing and weight
+      // "glo" text with exact weight and position
       ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 16px sans-serif';
+      ctx.font = 'bold 17px sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText('glo', centerX, 61);
     } else if (data.network === "Airtel") {
-      // Improved Airtel logo matching the white-on-red stylized 'a'
-      ctx.fillStyle = '#ffffff';
+      // Precise Airtel Red Circle with white 'a' mark from JPEG
+      ctx.fillStyle = '#e60000'; // Pure Airtel Red
       ctx.beginPath();
-      ctx.arc(centerX, 55, 20, 0, Math.PI * 2);
+      ctx.arc(centerX, 55, 22, 0, Math.PI * 2);
       ctx.fill();
       
-      // Red background for the logo mark
-      ctx.fillStyle = '#e60000';
+      // Stylized white 'a' (swirl-like)
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 4;
+      ctx.lineCap = 'round';
       ctx.beginPath();
-      ctx.arc(centerX, 55, 12, 0, Math.PI * 2);
-      ctx.fill();
+      // Drawing the 'a' swirl precisely
+      ctx.arc(centerX, 55, 8, 0.2 * Math.PI, 1.8 * Math.PI);
+      ctx.stroke();
       
-      // White 'a' character (stylized)
+      // Inner dot/part of 'a'
+      ctx.beginPath();
+      ctx.arc(centerX + 2, 55, 2, 0, Math.PI * 2);
       ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 15px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('a', centerX, 60);
-      
-      // "airtel" wordmark is usually NOT inside the circle on receipts, 
-      // but if the user wants it exact from the jpeg, it's just the logo mark.
+      ctx.fill();
     }
 
     ctx.fillStyle = '#111827';
