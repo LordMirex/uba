@@ -10,11 +10,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Check, ChevronsUpDown, ArrowLeft, Smartphone, Send } from "lucide-react";
-import mtnLogo from "@assets/cropped_circle_image_(1)_1767256543970.png";
-import gloLogo from "@assets/cropped_circle_image_(2)_1767256543970.png";
-import airtelLogo from "@assets/cropped_circle_image_(3)_1767256543970.png";
+import mtnLogo from "@/assets/logos/mtn.png";
+import gloLogo from "@/assets/logos/glo.png";
+import airtelLogo from "@/assets/logos/airtel.png";
 import { cn } from "@/lib/utils";
-import avatarImage from "@assets/images~2_1763755363341.png";
+import avatarImage from "@/assets/logos/avatar.png";
 import { useToast } from "@/hooks/use-toast";
 import { nigerianBanks } from "@/data/nigerian-banks";
 
