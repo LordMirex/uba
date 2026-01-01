@@ -9,9 +9,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Check, ChevronsUpDown, ArrowLeft, Smartphone, Send } from "lucide-react";
-import mtnLogo from "@assets/stock_images/mtn_nigeria_logo_cir_49b503d3.jpg";
-import gloLogo from "@assets/stock_images/glo_nigeria_logo_sph_73d340df.jpg";
-import airtelLogo from "@assets/stock_images/airtel_nigeria_logo__b2996101.jpg";
+import mtnLogo from "@assets/cropped_circle_image_(1)_1767256543970.png";
+import gloLogo from "@assets/cropped_circle_image_(2)_1767256543970.png";
+import airtelLogo from "@assets/cropped_circle_image_(3)_1767256543970.png";
 import { cn } from "@/lib/utils";
 import avatarImage from "@assets/images~2_1763755363341.png";
 import { useToast } from "@/hooks/use-toast";
@@ -222,7 +222,7 @@ export default function Home() {
 
     // Accurate Network Logo Styling
     const drawNetworkLogo = () => {
-      const logoSize = 46;
+      const logoSize = 52; // Increased size to perfectly fill the circular area
       const logoX = centerX - (logoSize / 2);
       const logoY = 55 - (logoSize / 2);
 
@@ -235,9 +235,7 @@ export default function Home() {
         const logoImg = new Image();
         logoImg.onload = () => {
           ctx.save();
-          ctx.beginPath();
-          ctx.arc(centerX, 55, logoSize / 2, 0, Math.PI * 2);
-          ctx.clip();
+          // Draw the logo exactly as-is, centered and filling the space
           ctx.drawImage(logoImg, logoX, logoY, logoSize, logoSize);
           ctx.restore();
         };
