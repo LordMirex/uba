@@ -285,7 +285,7 @@ export default function Home() {
     ctx.font = '500 15px sans-serif';
     ctx.textAlign = 'center';
     ctx.letterSpacing = '0.3px';
-    ctx.fillText(data.network, centerX, 108);
+    ctx.fillText(data.network, centerX, 104);
 
     const amountValue = parseFloat(data.amount).toLocaleString('en-NG', { 
       minimumFractionDigits: 2, 
@@ -295,11 +295,11 @@ export default function Home() {
     ctx.fillStyle = '#111827';
     ctx.font = '700 25px sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText(`₦${amountValue}`, centerX, 160);
+    ctx.fillText(`₦${amountValue}`, centerX, 145);
 
     ctx.fillStyle = '#0fb47a';
     ctx.beginPath();
-    ctx.arc(centerX - 52, 202, 10, 0, Math.PI * 2);
+    ctx.arc(centerX - 52, 178, 10, 0, Math.PI * 2);
     ctx.fill();
     
     ctx.strokeStyle = '#ffffff';
@@ -307,35 +307,35 @@ export default function Home() {
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
     ctx.beginPath();
-    ctx.moveTo(centerX - 56, 202);
-    ctx.lineTo(centerX - 53, 206);
-    ctx.lineTo(centerX - 48, 198);
+    ctx.moveTo(centerX - 56, 178);
+    ctx.lineTo(centerX - 53, 182);
+    ctx.lineTo(centerX - 48, 174);
     ctx.stroke();
 
     ctx.fillStyle = '#0fb47a';
     ctx.font = '500 16px sans-serif';
     ctx.textAlign = 'left';
-    ctx.fillText('Successful', centerX - 36, 208);
+    ctx.fillText('Successful', centerX - 36, 184);
 
     ctx.fillStyle = '#8e94a3';
     ctx.font = '400 13px sans-serif';
     ctx.textAlign = 'left';
-    ctx.fillText('Bonus Earned', cardMargin + 20, 255);
+    ctx.fillText('Bonus Earned', cardMargin + 20, 225);
     
     ctx.textAlign = 'right';
     ctx.fillStyle = '#0fb47a';
     ctx.font = '400 13px sans-serif';
-    ctx.fillText(`+₦5.00 Cashback`, 390 - cardMargin - 20, 255);
+    ctx.fillText(`+₦5.00 Cashback`, 390 - cardMargin - 20, 225);
 
     ctx.textAlign = 'left';
     ctx.fillStyle = '#111827';
     ctx.font = '700 18px sans-serif';
-    ctx.fillText('Transaction Details', cardMargin + 20, 335);
+    ctx.fillText('Transaction Details', cardMargin + 20, 310);
 
     const detailX = cardMargin + 22;
     const valueX = 390 - cardMargin - 22;
-    let currentY = 376;
-    const spacing = 41;
+    let currentY = 345;
+    const spacing = 32;
 
     const drawDetailRow = (label: string, value: string, hasCopyIcon: boolean = false, isChevron: boolean = false) => {
       ctx.textAlign = 'left';
