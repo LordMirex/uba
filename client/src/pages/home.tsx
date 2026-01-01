@@ -110,7 +110,7 @@ export default function Home() {
   // Generate receipt canvas when receipt data changes
   useEffect(() => {
     const generate = async () => {
-      if (receiptData && canvasRef.current) {
+      if (receiptData && (canvasRef.current || subMode === "auto")) {
         if (mode === "uba") {
           await generateUBAReceiptCanvas();
         } else if (mode === "opay") {
@@ -1045,8 +1045,8 @@ export default function Home() {
       </CardContent>
       </Card>
 
-      {/* Canvas Preview */}
-      {receiptData && (
+      {/* Canvas Preview - Only show in manual mode */}
+      {receiptData && subMode === "manual" && (
         <Card className="w-full max-w-md bg-white shadow-sm border border-gray-100 mt-6">
           <CardContent className="pt-6 px-6 pb-8">
             <h2 className="text-xl font-bold text-gray-900 mb-4">Receipt Preview</h2>
@@ -1070,6 +1070,13 @@ export default function Home() {
           </CardContent>
         </Card>
       )}
+
+      {/* Hidden canvas for batch generation */}
+      <canvas 
+        ref={canvasRef} 
+        className={cn("hidden", subMode === "manual" && "hidden")} 
+        style={{ display: subMode === "manual" ? 'none' : 'none' }}
+      />
     </div>
   );
 }
