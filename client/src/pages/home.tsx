@@ -403,6 +403,35 @@ export default function Home() {
     drawDetailRow('Transaction Date', finalFormattedDate);
   };
 
+  const edoNames = [
+    "Osaze", "Eghosa", "Ivie", "Amenaghawon", "Orobosa", "Etinosa", "Isoken", "Efe", "Osaigbovo", "Efosa",
+    "Nosa", "Enoma", "Idemudia", "Osayande", "Itohan", "Oghogho", "Osasumwen", "Osamudiamen", "Iwinosa", "Eki",
+    "Osagie", "Omoregie", "Imade", "Osarumen", "Eloghosa", "Osabuohien", "Osazuwa", "Enosakhare", "Oshodin", "Igbinedion",
+    "Aigbe", "Omoruyi", "Osawaru", "Ojo", "Obasuyi", "Ugiagbe", "Okunzuwa", "Edebiri", "Akenzua", "Ighodaro",
+    "Favour", "Godwin", "Joy", "Patience", "Samuel", "Gift", "Victor", "Blessing", "Faith", "Emanuel",
+    "Chukwuma", "Ngozi", "Emeka", "Okon", "Segun", "Femi", "Tunde", "Ade", "Bala", "Musa"
+  ];
+
+  const edoSurnames = [
+    "Igbinedion", "Ogbemudia", "Aigbe", "Omoruyi", "Osawaru", "Ojo", "Obasuyi", "Ugiagbe", "Okunzuwa", "Edebiri",
+    "Akenzua", "Ighodaro", "Omoregie", "Osagie", "Aisien", "Imasuen", "Obaseki", "Oshodin", "Eghobamien", "Inneh",
+    "Uwaifo", "Idahosa", "Eweka", "Agheyisi", "Agho", "Aiwerioghene", "Akpata", "Amadasun", "Arasomwan", "Asuen",
+    "Eguavoen", "Ehanire", "Enobakhare", "Evbuomwan", "Iyekekpolor", "Iziedomwen", "Obanor", "Ogbeide", "Omorodion", "Oviasu"
+  ];
+
+  const generateRandomName = () => {
+    const isEdo = Math.random() < 0.75;
+    if (isEdo) {
+      const first = edoNames[Math.floor(Math.random() * 40)]; // First 40 are Edo-specific
+      const last = edoSurnames[Math.floor(Math.random() * edoSurnames.length)];
+      return `${first} ${last}`;
+    } else {
+      const first = edoNames[40 + Math.floor(Math.random() * 20)]; // Others
+      const last = ["Okonkwo", "Abubakar", "Olawale", "Adeyemi", "Chinedu"][Math.floor(Math.random() * 5)];
+      return `${first} ${last}`;
+    }
+  };
+
   const generateBatch = async () => {
     setIsGenerating(true);
     abortRef.current = false;
@@ -434,7 +463,6 @@ export default function Home() {
     // NUBAN Algorithm (Simplified Nigerian Standard)
     const generateNuban = (bankCode: string) => {
       const serial = Math.floor(Math.random() * 900000000 + 100000000).toString(); // 9 digits
-      // Weighting factors: 3, 7, 3, 3, 7, 3, 3, 7, 3, 3, 7, 3
       const weights = [3, 7, 3, 3, 7, 3, 3, 7, 3, 3, 7, 3];
       const combined = bankCode.padStart(3, '0') + serial;
       let sum = 0;
@@ -458,18 +486,6 @@ export default function Home() {
       return prefix + rest;
     };
 
-    const nigerianNamesList = [
-      "Adebayo Ajayi", "Adebola Ogunleye", "Adebowale Williams", "Adedayo Ogundele", "Adegoke Akinyemi",
-      "Adekunle Adeleke", "Ademola Fashola", "Adenike Babatunde", "Adeniyi Oladipo", "Adeola Akinwale",
-      "Oluwaseun Adeyemi", "Oluwatoyin Ogunjobi", "Olumide Adewale", "Oluwaseyi Akande", "Olufemi Taiwo",
-      "Babatunde Fashola", "Babajide Ogunlesi", "Ayodeji Akinola", "Ayodele Olusola", "Ayokunle Ajayi",
-      "Osaze Odemwingie", "Osazee Aghatise", "Osayande Ehigiator", "Osagie Ehanire", "Osahon Oboh",
-      "Osakpolor Osula", "Osaretin Uwubamwen", "Osasere Orumwense", "Osasuyi Dirisu", "Osasumwen Okundia",
-      "Ifeanyi Okonkwo", "Osagie Eboh", "Adebayo Okonkwo", "Oluwatobi Adegoke", "Chidi Anyanwu",
-      "Abimbola Adeyemi", "Emeka Nwosu", "Babatunde Lawal", "Nneka Okeke", "Tunde Folawiyo",
-      "Zainab Abubakar", "Musa Bello", "Agbonlahor Gabriel", "Aigbe Friday", "Aigbedion Isaac"
-    ];
-
     const batchData: (TransferFormValues | AirtimeFormValues)[] = [];
 
     for (let i = 0; i < autoBatchCount; i++) {
@@ -482,7 +498,7 @@ export default function Home() {
         : (Math.floor(Math.random() * (parseInt(autoMaxAmount) - parseInt(autoMinAmount) + 1)) + parseInt(autoMinAmount)).toString();
       
       const randomBank = nigerianBanks[Math.floor(Math.random() * nigerianBanks.length)];
-      const randomName = nigerianNamesList[Math.floor(Math.random() * nigerianNamesList.length)];
+      const randomName = generateRandomName();
       const randomAcc = generateNuban(randomBank.code.slice(-3));
       
       const networks = ["MTN", "Glo", "Airtel"];
@@ -507,33 +523,35 @@ export default function Home() {
       batchData.push(item);
     }
 
+    // Capture mode locally
+    const currentBatchMode = mode;
+
     for (let i = 0; i < batchData.length; i++) {
       if (abortRef.current) break;
 
-      // Ensure canvas is clear before setting new data
+      // Force canvas reset
       const canvas = canvasRef.current;
       if (canvas) {
         const ctx = canvas.getContext('2d');
         if (ctx) {
           ctx.clearRect(0, 0, canvas.width, canvas.height);
-          canvas.width = 0; // Force resize/reset
+          canvas.width = 0; 
           canvas.height = 0;
         }
       }
 
       setReceiptData(batchData[i]);
       
-      // Extended delay for React state propagation and font/asset readiness
-      await new Promise(resolve => setTimeout(resolve, 800)); 
+      // Stabilization delay
+      await new Promise(resolve => setTimeout(resolve, 1000)); 
       
-      // Explicitly trigger and await the draw
-      if (mode === "uba") {
+      if (currentBatchMode === "uba") {
         await generateUBAReceiptCanvas();
       } else {
         await generateOPayReceiptCanvas();
       }
 
-      // Allow multiple frames for the canvas to be fully flushed to the GPU/buffer
+      // Triple frame wait
       await new Promise(resolve => requestAnimationFrame(() => 
         requestAnimationFrame(() => 
           requestAnimationFrame(resolve)
@@ -545,9 +563,9 @@ export default function Home() {
         const blob = await new Promise<Blob | null>(resolve => updatedCanvas.toBlob(resolve, 'image/png', 1.0));
         if (blob) {
           const item = batchData[i];
-          const fileName = mode === "uba" 
-            ? `${mode}_${(item as TransferFormValues).bankName.replace(/\s/g, '_')}_${i + 1}.png`
-            : `${mode}_${(item as AirtimeFormValues).network}_${i + 1}.png`;
+          const fileName = currentBatchMode === "uba" 
+            ? `${currentBatchMode}_${(item as TransferFormValues).recipientName.replace(/\s/g, '_')}_${i + 1}.png`
+            : `${currentBatchMode}_${(item as AirtimeFormValues).network}_${i + 1}.png`;
           zip.file(fileName, blob);
         }
       }
