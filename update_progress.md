@@ -20,3 +20,5 @@
 - [x] Debugging Automatic Generation Logic (Fixing hook errors)
 - [x] Fix "Invalid hook call" in automatic generation
 - [x] Fix destructuring error in FormField components during auto-gen
+- [x] Verification of batch processing and data integrity
+- [x] UI/UX testing for both Manual and Auto modes
