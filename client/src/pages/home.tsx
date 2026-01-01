@@ -545,15 +545,14 @@ export default function Home() {
         const ctx = canvas.getContext('2d');
         if (ctx) {
           ctx.clearRect(0, 0, canvas.width, canvas.height);
-          canvas.width = 0; 
-          canvas.height = 0;
+          // Don't zero out dimensions to avoid flicker, just clear
         }
       }
 
       setReceiptData(batchData[i]);
       
-      // Stabilization delay
-      await new Promise(resolve => setTimeout(resolve, 1000)); 
+      // Stabilization delay - reduced for better UX while maintaining reliability
+      await new Promise(resolve => setTimeout(resolve, 800)); 
       
       if (currentBatchMode === "uba") {
         await generateUBAReceiptCanvas();
@@ -561,16 +560,14 @@ export default function Home() {
         await generateOPayReceiptCanvas();
       }
 
-      // Triple frame wait
+      // Ensure rendering is complete
       await new Promise(resolve => requestAnimationFrame(() => 
-        requestAnimationFrame(() => 
-          requestAnimationFrame(resolve)
-        )
+        requestAnimationFrame(resolve)
       ));
       
       const updatedCanvas = canvasRef.current;
       if (updatedCanvas && updatedCanvas.width > 0) {
-        const blob = await new Promise<Blob | null>(resolve => updatedCanvas.toBlob(resolve, 'image/png', 1.0));
+        const blob = await new Promise<Blob | null>(resolve => updatedCanvas.toBlob(resolve, 'image/png', 0.9));
         if (blob) {
           const item = batchData[i];
           const fileName = currentBatchMode === "uba" 
@@ -586,15 +583,17 @@ export default function Home() {
     if (Object.keys(zip.files).length > 0) {
       const content = await zip.generateAsync({ 
         type: "blob",
-        compression: "STORE" // Faster, no compression
+        compression: "DEFLATE",
+        compressionOptions: { level: 6 }
       });
       const url = URL.createObjectURL(content);
       const link = document.createElement("a");
       link.href = url;
-      link.download = `${mode}_batch_${Date.now()}.zip`;
+      link.download = `${mode}_batch_${new Date().toISOString().slice(0,10)}_${Date.now()}.zip`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+      URL.revokeObjectURL(url);
     }
     
     setIsGenerating(false);
