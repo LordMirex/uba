@@ -17,3 +17,6 @@
 - [x] Final UI Polish and Landing Page refinement (Receipt Generator Title)
 - [x] Add Receipt Generator title to landing page
 - [x] Re-arrange landing page cards for better presentation (OPay first, then UBA)
+- [x] Debugging Automatic Generation Logic (Fixing hook errors)
+- [x] Fix "Invalid hook call" in automatic generation
+- [x] Fix destructuring error in FormField components during auto-gen

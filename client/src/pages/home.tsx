@@ -18,6 +18,8 @@ import avatarImage from "@assets/images~2_1763755363341.png";
 import { useToast } from "@/hooks/use-toast";
 import { nigerianBanks } from "@/data/nigerian-banks";
 
+import { Label } from "@/components/ui/label";
+
 // --- Schema ---
 const transferSchema = z.object({
   recipientName: z.string()
@@ -451,6 +453,8 @@ export default function Home() {
       "Zainab Abubakar", "Musa Bello", "Agbonlahor Gabriel", "Aigbe Friday", "Aigbedion Isaac"
     ];
 
+    const batchData: (TransferFormValues | AirtimeFormValues)[] = [];
+
     for (let i = 0; i < autoBatchCount; i++) {
       const now = new Date();
       const randomTime = now.toLocaleTimeString('en-GB', { hour12: false }).slice(0, 5);
@@ -468,8 +472,7 @@ export default function Home() {
       const randomNetwork = networks[Math.floor(Math.random() * networks.length)] as "MTN" | "Glo" | "Airtel";
       const randomPhoneNum = generatePhone(randomNetwork);
 
-      // Simulate receipt generation with real-time data
-      const data: TransferFormValues | AirtimeFormValues = mode === "uba" 
+      const item: TransferFormValues | AirtimeFormValues = mode === "uba" 
         ? {
             recipientName: randomName,
             amount: randomAmount,
@@ -483,17 +486,22 @@ export default function Home() {
             date: randomDate,
             time: randomTime
           };
+      
+      batchData.push(item);
+    }
 
-      setReceiptData(data);
-      await new Promise(resolve => setTimeout(resolve, 100)); // Wait for render
+    for (let i = 0; i < batchData.length; i++) {
+      setReceiptData(batchData[i]);
+      await new Promise(resolve => setTimeout(resolve, 300)); // Longer wait for canvas to render
 
       const canvas = canvasRef.current;
       if (canvas) {
         const blob = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve));
         if (blob) {
+          const item = batchData[i];
           const fileName = mode === "uba" 
-            ? `${mode}_${randomBank.name.replace(/\s/g, '_')}_${i + 1}.png`
-            : `${mode}_${randomNetwork}_${i + 1}.png`;
+            ? `${mode}_${(item as TransferFormValues).bankName.replace(/\s/g, '_')}_${i + 1}.png`
+            : `${mode}_${(item as AirtimeFormValues).network}_${i + 1}.png`;
           zip.file(fileName, blob);
         }
       }
@@ -815,7 +823,7 @@ export default function Home() {
           <div className="space-y-6">
             <div className="space-y-4">
               <div>
-                <FormLabel>Number of Receipts</FormLabel>
+                <Label>Number of Receipts</Label>
                 <Input 
                   type="number" 
                   value={autoBatchCount} 
@@ -826,7 +834,7 @@ export default function Home() {
               </div>
 
               <div>
-                <FormLabel>Amount Mode</FormLabel>
+                <Label>Amount Mode</Label>
                 <div className="flex gap-2 mt-2">
                   <Button 
                     variant={autoAmountMode === "fixed" ? "default" : "outline"}
@@ -847,7 +855,7 @@ export default function Home() {
 
               {autoAmountMode === "fixed" ? (
                 <div>
-                  <FormLabel>Fixed Amount (NGN)</FormLabel>
+                  <Label>Fixed Amount (NGN)</Label>
                   <Input 
                     type="number" 
                     value={autoFixedAmount} 
@@ -857,7 +865,7 @@ export default function Home() {
               ) : (
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <FormLabel>Min Amount</FormLabel>
+                    <Label>Min Amount</Label>
                     <Input 
                       type="number" 
                       value={autoMinAmount} 
@@ -865,7 +873,7 @@ export default function Home() {
                     />
                   </div>
                   <div>
-                    <FormLabel>Max Amount</FormLabel>
+                    <Label>Max Amount</Label>
                     <Input 
                       type="number" 
                       value={autoMaxAmount} 
