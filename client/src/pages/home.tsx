@@ -606,22 +606,22 @@ export default function Home() {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    canvas.toBlob((blob) => {
-      if (blob) {
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `${mode}-receipt-${Date.now()}.png`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-        
-        toast({
-          title: "Receipt downloaded",
-          description: "Your receipt has been saved.",
-        });
-      }
+    // Use a more robust download method for iOS compatibility
+    const dataUrl = canvas.toDataURL('image/png');
+    const link = document.createElement('a');
+    link.href = dataUrl;
+    link.download = `${mode}-receipt-${Date.now()}.png`;
+    
+    // Append to body for mobile Safari compatibility
+    document.body.appendChild(link);
+    link.click();
+    setTimeout(() => {
+      document.body.removeChild(link);
+    }, 100);
+
+    toast({
+      title: "Receipt downloaded",
+      description: "Your receipt has been saved.",
     });
   };
 
@@ -1004,14 +1004,18 @@ export default function Home() {
                     {batchZip && (
                       <Button 
                         onClick={() => {
-                          const url = URL.createObjectURL(batchZip);
-                          const link = document.createElement("a");
-                          link.href = url;
-                          link.download = `${mode}_batch_${new Date().toISOString().slice(0,10)}_${Date.now()}.zip`;
-                          document.body.appendChild(link);
-                          link.click();
-                          document.body.removeChild(link);
-                          URL.revokeObjectURL(url);
+                          const reader = new FileReader();
+                          reader.onloadend = () => {
+                            const link = document.createElement("a");
+                            link.href = reader.result as string;
+                            link.download = `${mode}_batch_${new Date().toISOString().slice(0,10)}_${Date.now()}.zip`;
+                            document.body.appendChild(link);
+                            link.click();
+                            setTimeout(() => {
+                              document.body.removeChild(link);
+                            }, 100);
+                          };
+                          reader.readAsDataURL(batchZip);
                         }}
                         className="w-full h-12 text-lg bg-[#10B981] hover:bg-[#059669] text-white flex items-center justify-center gap-2 mb-4"
                       >
@@ -1031,12 +1035,18 @@ export default function Home() {
                             variant="ghost"
                             className="h-8 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
                             onClick={() => {
-                              const url = URL.createObjectURL(result.blob);
-                              const link = document.createElement('a');
-                              link.href = url;
-                              link.download = result.name;
-                              link.click();
-                              URL.revokeObjectURL(url);
+                              const reader = new FileReader();
+                              reader.onloadend = () => {
+                                const link = document.createElement('a');
+                                link.href = reader.result as string;
+                                link.download = result.name;
+                                document.body.appendChild(link);
+                                link.click();
+                                setTimeout(() => {
+                                  document.body.removeChild(link);
+                                }, 100);
+                              };
+                              reader.readAsDataURL(result.blob);
                             }}
                           >
                             Download
