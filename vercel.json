@@ -1,11 +1,13 @@
 {
   "version": 2,
-  "public": true,
+  "framework": "vite",
   "builds": [
     {
       "src": "package.json",
       "use": "@vercel/static-build",
-      "config": { "distDir": "dist/public" }
+      "config": {
+        "distDir": "dist/public"
+      }
     }
   ],
   "rewrites": [
