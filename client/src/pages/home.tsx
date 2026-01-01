@@ -243,7 +243,7 @@ export default function Home() {
 
     const drawNetworkLogo = () => {
       return new Promise<void>((resolve) => {
-        const logoSize = 52;
+        const logoSize = 68; // Increased by 30% from 52
         const logoX = centerX - (logoSize / 2);
         const logoY = 55 - (logoSize / 2);
 
@@ -257,7 +257,7 @@ export default function Home() {
           logoImg.onload = () => {
             ctx.save();
             ctx.beginPath();
-            ctx.arc(centerX, 55, 26, 0, Math.PI * 2);
+            ctx.arc(centerX, 55, 34, 0, Math.PI * 2); // Increased arc radius by 30% from 26
             ctx.clip();
             ctx.drawImage(logoImg, logoX, logoY, logoSize, logoSize);
             ctx.restore();
@@ -267,7 +267,7 @@ export default function Home() {
           if (logoImg.complete) {
             ctx.save();
             ctx.beginPath();
-            ctx.arc(centerX, 55, 26, 0, Math.PI * 2);
+            ctx.arc(centerX, 55, 34, 0, Math.PI * 2);
             ctx.clip();
             ctx.drawImage(logoImg, logoX, logoY, logoSize, logoSize);
             ctx.restore();
@@ -285,7 +285,7 @@ export default function Home() {
     ctx.font = '500 13px sans-serif';
     ctx.textAlign = 'center';
     ctx.letterSpacing = '0.3px';
-    ctx.fillText(data.network, centerX, 108);
+    ctx.fillText(data.network, centerX, 114); // Moved down slightly to accommodate larger logo
 
     const amountValue = parseFloat(data.amount).toLocaleString('en-NG', { 
       minimumFractionDigits: 2, 
@@ -295,7 +295,7 @@ export default function Home() {
     ctx.fillStyle = '#111827';
     ctx.font = '700 42px sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText(`₦${amountValue}`, centerX, 160);
+    ctx.fillText(`₦${amountValue}`, centerX, 166); // Moved down slightly to accommodate larger logo
 
     ctx.fillStyle = '#0fb47a';
     ctx.beginPath();
