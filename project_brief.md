@@ -21,17 +21,36 @@ A web-based high-fidelity receipt generation system designed to produce pixel-pe
   - **Authentic Layout**: Matching original reference images for spacing, typography, and transaction details.
   - **Performance**: Preloaded images for instant generation.
 
-## 3. Technical Architecture
-- **Frontend**: React 18 with TypeScript & Vite.
-- **UI System**: Tailwind CSS, shadcn/ui components (Radix UI).
-- **Canvas Rendering**: Manual drawing using HTML5 Canvas API for pixel-perfect precision.
-- **State Management**: React Hook Form for validated inputs.
-- **Storage**: PostgreSQL with Drizzle ORM (backend ready for historical tracking).
+## 3. Technical Architecture & Core Logic
+### Frontend Architecture
+- **Framework**: React 18 with TypeScript.
+- **Routing**: `wouter` for lightweight client-side navigation.
+- **Form Management**: `react-hook-form` with `zod` for strict input validation.
 
-## 4. Design Standards
-- **Typography**: Precision font sizing and weights (e.g., 14.5px sans-serif for OPay details).
-- **Dimensions**: Standard mobile viewport width (390px).
-- **Assets**: High-quality cropped circular logos for MTN, Glo, and Airtel.
+### Canvas Rendering Logic (The "Heart" of the System)
+The system uses the HTML5 Canvas API to manually "paint" receipts pixel-by-pixel. This ensures absolute control over layout that CSS cannot guarantee across different devices.
+
+**Key Logic Steps:**
+1. **DPI Scaling**: To avoid "blurry" receipts on high-resolution screens, the canvas is initialized at 2x the display size (`width * 2`), and then the context is scaled down (`ctx.scale(2, 2)`). This ensures 300DPI-equivalent sharpness.
+2. **Background Layering**:
+   - Background color: `#f2f3f7`.
+   - Card segments: Rounded rectangles (`ctx.roundRect`) with precise shadow properties (`shadowBlur: 8`, `shadowOffsetY: 1`).
+3. **Asset Handling (Logo Logic)**:
+   - **Preloading**: Images are initialized in a `useEffect` hook to ensure they are in the browser cache before the user clicks "Generate".
+   - **Circular Clipping**: To place logos perfectly, the system uses `ctx.save()`, draws a `ctx.arc`, calls `ctx.clip()`, then `ctx.drawImage()`, and finally `ctx.restore()`. This creates a perfect circular mask for any network logo.
+4. **Dynamic Text Rendering**:
+   - **Alignment**: Mix of `textAlign = 'center'` for headers and `textAlign = 'left' / 'right'` for key-value pairs in the transaction details.
+   - **Font Precision**: Uses specific font strings like `400 14.5px sans-serif` to match the native OPay app typography.
+   - **Price Formatting**: Logic to convert strings to localized currency (e.g., `NGN 100.00`) using `toLocaleString`.
+
+### Backend & Storage
+- **Server**: Express.js with TypeScript.
+- **Persistence**: PostgreSQL with Drizzle ORM.
+- **Schema**: Centralized `shared/schema.ts` defining user and transaction tables, allowing for future "History" features.
+
+## 4. Design Standards & Spacing Logic
+- **Vertical Rhythm**: OPay details use a fixed `lineHeight` of 32px to ensure items like "Transaction No." and "Order No." align perfectly with the mobile app's spacing.
+- **Margins**: Consistent 15px horizontal padding (`cardMargin`) for all content blocks.
 
 ## 5. Potential Improvement Areas (Brainstorming)
 - **Multi-Bank Support**: Expand to Zenith, GTBank, Access, etc.
