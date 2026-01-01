@@ -510,24 +510,39 @@ export default function Home() {
     for (let i = 0; i < batchData.length; i++) {
       if (abortRef.current) break;
 
+      // Ensure canvas is clear before setting new data
+      const canvas = canvasRef.current;
+      if (canvas) {
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          canvas.width = 0; // Force resize/reset
+          canvas.height = 0;
+        }
+      }
+
       setReceiptData(batchData[i]);
       
-      // Wait for state update and React to trigger the useEffect
-      await new Promise(resolve => setTimeout(resolve, 300)); 
+      // Extended delay for React state propagation and font/asset readiness
+      await new Promise(resolve => setTimeout(resolve, 800)); 
       
-      // Explicitly trigger the draw and await it to be absolutely sure
+      // Explicitly trigger and await the draw
       if (mode === "uba") {
         await generateUBAReceiptCanvas();
       } else {
         await generateOPayReceiptCanvas();
       }
 
-      // Allow one more frame for the canvas to be ready for blob extraction
-      await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      // Allow multiple frames for the canvas to be fully flushed to the GPU/buffer
+      await new Promise(resolve => requestAnimationFrame(() => 
+        requestAnimationFrame(() => 
+          requestAnimationFrame(resolve)
+        )
+      ));
       
-      const canvas = canvasRef.current;
-      if (canvas) {
-        const blob = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve, 'image/png', 0.95));
+      const updatedCanvas = canvasRef.current;
+      if (updatedCanvas && updatedCanvas.width > 0) {
+        const blob = await new Promise<Blob | null>(resolve => updatedCanvas.toBlob(resolve, 'image/png', 1.0));
         if (blob) {
           const item = batchData[i];
           const fileName = mode === "uba" 
