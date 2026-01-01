@@ -212,32 +212,48 @@ export default function Home() {
     const centerX = 390 / 2;
     ctx.beginPath();
     ctx.arc(centerX, 55, 26, 0, Math.PI * 2);
-    if (data.network === "MTN") ctx.fillStyle = "#ffcb05";
+    if (data.network === "MTN") ctx.fillStyle = "#ffcc00"; // Exact MTN Yellow
     else if (data.network === "Glo") ctx.fillStyle = "#2e7d32";
-    else ctx.fillStyle = "#ed1c24";
+    else ctx.fillStyle = "#e60000"; // Exact Airtel Red
     ctx.fill();
 
     // Accurate Network Logo Styling
     if (data.network === "MTN") {
+      // Draw the black oval for MTN logo
       ctx.strokeStyle = '#000000';
-      ctx.lineWidth = 1.0;
+      ctx.lineWidth = 1.2;
       ctx.beginPath();
-      ctx.ellipse(centerX, 55, 18, 14, 0, 0, Math.PI * 2);
+      ctx.ellipse(centerX, 54, 16, 11, 0, 0, Math.PI * 2);
       ctx.stroke();
+      
+      // Draw the "MTN" text inside the oval
       ctx.fillStyle = '#000000';
-      ctx.font = 'bold 9px sans-serif';
+      ctx.font = 'bold 8px sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('MTN', centerX, 58);
+      ctx.fillText('MTN', centerX, 57);
     } else if (data.network === "Glo") {
+      // Glo logo is "glo" in white inside a dark green circle with a slight glow/gradient usually, 
+      // but in the receipt it's flat white text.
       ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 14px sans-serif';
+      ctx.font = 'bold 16px sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('glo', centerX, 60);
+      ctx.fillText('glo', centerX, 61);
     } else if (data.network === "Airtel") {
+      // Airtel logo is the "airtel" wordmark with the 'a' logo above it usually, 
+      // but in the receipt it's the logo mark (white) and "airtel" text below.
+      
+      // White logo mark (simplified 'a' swirl)
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.arc(centerX, 50, 6, 0.2 * Math.PI, 1.8 * Math.PI);
+      ctx.stroke();
+      
+      // "airtel" text
       ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 18px sans-serif';
+      ctx.font = 'bold 10px sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('airtel', centerX, 62);
+      ctx.fillText('airtel', centerX, 65);
     }
 
     ctx.fillStyle = '#111827';
