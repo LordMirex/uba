@@ -14,3 +14,6 @@
 - [x] Implement OPay Airtime auto-generation logic
 - [x] Develop batch generation UI and zip download functionality
 - [x] Ensure manual methods remain intact and functional
+- [x] Final UI Polish and Landing Page refinement (Receipt Generator Title)
+- [x] Add Receipt Generator title to landing page
+- [x] Re-arrange landing page cards for better presentation (OPay first, then UBA)

@@ -540,46 +540,47 @@ export default function Home() {
   if (mode === "landing") {
     return (
       <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Select Application</h1>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-2xl">
+        <h1 className="text-4xl font-extrabold text-gray-900 mb-2">Receipt Generators</h1>
+        <p className="text-gray-500 mb-10 text-lg">Select a receipt type to get started</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 w-full max-w-3xl">
           <Card 
-            className="cursor-pointer hover:shadow-md transition-shadow border-2 hover:border-[#E60000]"
-            onClick={() => {
-              setMode("uba");
-              setSubMode("manual");
-            }}
-            data-testid="card-select-uba"
-          >
-            <CardContent className="flex flex-col items-center p-8">
-              <div className="w-16 h-16 bg-[#E60000] rounded-full flex items-center justify-center mb-4">
-                <Send className="text-white w-8 h-8" />
-              </div>
-              <h2 className="text-xl font-bold">UBA</h2>
-              <p className="text-gray-500 text-center mt-2">Transfer Receipt Demo</p>
-              <div className="flex gap-2 mt-4">
-                <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); setMode("uba"); setSubMode("manual"); }}>Manual</Button>
-                <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); setMode("uba"); setSubMode("auto"); }}>Auto</Button>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card 
-            className="cursor-pointer hover:shadow-md transition-shadow border-2 hover:border-[#10B981]"
+            className="cursor-pointer hover:shadow-xl transition-all duration-300 border-2 hover:border-[#10B981] group"
             onClick={() => {
               setMode("opay");
               setSubMode("manual");
             }}
             data-testid="card-select-opay"
           >
-            <CardContent className="flex flex-col items-center p-8">
-              <div className="w-16 h-16 bg-[#10B981] rounded-full flex items-center justify-center mb-4">
-                <Smartphone className="text-white w-8 h-8" />
+            <CardContent className="flex flex-col items-center p-10">
+              <div className="w-20 h-20 bg-[#10B981] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <Smartphone className="text-white w-10 h-10" />
               </div>
-              <h2 className="text-xl font-bold">OPay</h2>
-              <p className="text-gray-500 text-center mt-2">Airtime Receipt Demo</p>
-              <div className="flex gap-2 mt-4">
-                <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); setMode("opay"); setSubMode("manual"); }}>Manual</Button>
-                <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); setMode("opay"); setSubMode("auto"); }}>Auto</Button>
+              <h2 className="text-2xl font-bold mb-2">OPay Receipts</h2>
+              <p className="text-gray-500 text-center">Airtime & Transaction Receipts</p>
+              <div className="flex gap-3 mt-6">
+                <Button variant="outline" className="px-6" onClick={(e) => { e.stopPropagation(); setMode("opay"); setSubMode("manual"); }}>Manual</Button>
+                <Button variant="default" className="bg-[#10B981] hover:bg-[#059669] px-6" onClick={(e) => { e.stopPropagation(); setMode("opay"); setSubMode("auto"); }}>Auto Gateway</Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card 
+            className="cursor-pointer hover:shadow-xl transition-all duration-300 border-2 hover:border-[#E60000] group"
+            onClick={() => {
+              setMode("uba");
+              setSubMode("manual");
+            }}
+            data-testid="card-select-uba"
+          >
+            <CardContent className="flex flex-col items-center p-10">
+              <div className="w-20 h-20 bg-[#E60000] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <Send className="text-white w-10 h-10" />
+              </div>
+              <h2 className="text-2xl font-bold mb-2">UBA Receipts</h2>
+              <p className="text-gray-500 text-center">Transfer & Payment Receipts</p>
+              <div className="flex gap-3 mt-6">
+                <Button variant="outline" className="px-6" onClick={(e) => { e.stopPropagation(); setMode("uba"); setSubMode("manual"); }}>Manual</Button>
+                <Button variant="default" className="bg-[#E60000] hover:bg-[#C40000] px-6" onClick={(e) => { e.stopPropagation(); setMode("uba"); setSubMode("auto"); }}>Auto Gateway</Button>
               </div>
             </CardContent>
           </Card>
