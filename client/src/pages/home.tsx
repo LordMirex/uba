@@ -195,7 +195,7 @@ export default function Home() {
     ctx.fillStyle = '#ffffff';
     // Top rounded card
     ctx.beginPath();
-    ctx.roundRect(cardMargin, 30, cardWidth, 215, 12);
+    ctx.roundRect(cardMargin, 55, cardWidth, 190, 12);
     ctx.fill();
     
     // Bottom detail card
@@ -208,10 +208,10 @@ export default function Home() {
     ctx.shadowBlur = 0;
     ctx.shadowOffsetY = 0;
 
-    // Draw Network Indicator Circle (Perfectly sized and positioned)
+    // Draw Network Indicator Circle (Perfectly sized and positioned - half-in, half-out)
     const centerX = 390 / 2;
     ctx.beginPath();
-    ctx.arc(centerX, 60, 26, 0, Math.PI * 2);
+    ctx.arc(centerX, 55, 26, 0, Math.PI * 2);
     if (data.network === "MTN") ctx.fillStyle = "#ffcb05";
     else if (data.network === "Glo") ctx.fillStyle = "#2e7d32";
     else ctx.fillStyle = "#ed1c24";
@@ -222,29 +222,29 @@ export default function Home() {
       ctx.strokeStyle = '#000000';
       ctx.lineWidth = 1.0;
       ctx.beginPath();
-      ctx.ellipse(centerX, 60, 18, 14, 0, 0, Math.PI * 2);
+      ctx.ellipse(centerX, 55, 18, 14, 0, 0, Math.PI * 2);
       ctx.stroke();
       ctx.fillStyle = '#000000';
       ctx.font = 'bold 9px sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('MTN', centerX, 63);
+      ctx.fillText('MTN', centerX, 58);
     } else if (data.network === "Glo") {
       ctx.fillStyle = '#ffffff';
       ctx.font = 'bold 14px sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('glo', centerX, 65);
+      ctx.fillText('glo', centerX, 60);
     } else if (data.network === "Airtel") {
       ctx.fillStyle = '#ffffff';
       ctx.font = 'bold 18px sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('airtel', centerX, 67);
+      ctx.fillText('airtel', centerX, 62);
     }
 
     ctx.fillStyle = '#111827';
-    ctx.font = '600 16px sans-serif';
+    ctx.font = '400 15px sans-serif';
     ctx.textAlign = 'center';
-    ctx.letterSpacing = '0.4px';
-    ctx.fillText(data.network, centerX, 102);
+    ctx.letterSpacing = '0.2px';
+    ctx.fillText(data.network, centerX, 100);
 
     const amountValue = parseFloat(data.amount).toLocaleString('en-NG', { 
       minimumFractionDigits: 2, 
@@ -252,7 +252,7 @@ export default function Home() {
     });
 
     ctx.fillStyle = '#111827';
-    ctx.font = '700 44px sans-serif';
+    ctx.font = '700 40px sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText(`₦${amountValue}`, centerX, 155);
 
