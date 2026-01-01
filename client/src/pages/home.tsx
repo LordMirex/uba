@@ -281,12 +281,12 @@ export default function Home() {
     ctx.fillStyle = '#8e94a3';
     ctx.font = '400 14px sans-serif';
     ctx.textAlign = 'left';
-    ctx.fillText('Bonus Earned', cardMargin + 20, 232);
+    ctx.fillText('Bonus Earned', cardMargin + 20, 240);
     
     ctx.textAlign = 'right';
     ctx.fillStyle = '#0fb47a';
     ctx.font = '400 14px sans-serif';
-    ctx.fillText(`+₦5.00 Cashback`, 390 - cardMargin - 20, 232);
+    ctx.fillText(`+₦5.00 Cashback`, 390 - cardMargin - 20, 240);
 
     // Transaction Details Header
     ctx.textAlign = 'left';
