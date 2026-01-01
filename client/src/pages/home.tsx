@@ -268,14 +268,16 @@ export default function Home() {
           ctx.clip();
           ctx.drawImage(logoImg, logoX, logoY, logoSize, logoSize);
           ctx.restore();
-          
-          // Force a re-render or notification if needed, but since we're drawing 
-          // directly to canvas in an effect-like flow, it should be fine.
         };
         // Check if image is already cached
         logoImg.src = logoSrc;
         if (logoImg.complete) {
-          logoImg.onload(null as any);
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(centerX, 55, 26, 0, Math.PI * 2);
+          ctx.clip();
+          ctx.drawImage(logoImg, logoX, logoY, logoSize, logoSize);
+          ctx.restore();
         }
       }
     };
