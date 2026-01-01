@@ -52,6 +52,7 @@ type AppMode = "landing" | "uba" | "opay";
 
 export default function Home() {
   const [mode, setMode] = useState<AppMode>("landing");
+  const [subMode, setSubMode] = useState<"manual" | "auto">("manual");
   const [receiptData, setReceiptData] = useState<TransferFormValues | AirtimeFormValues | null>(null);
   const [openBankSelector, setOpenBankSelector] = useState(false);
   const { toast } = useToast();
@@ -428,7 +429,10 @@ export default function Home() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-2xl">
           <Card 
             className="cursor-pointer hover:shadow-md transition-shadow border-2 hover:border-[#E60000]"
-            onClick={() => setMode("uba")}
+            onClick={() => {
+              setMode("uba");
+              setSubMode("manual");
+            }}
             data-testid="card-select-uba"
           >
             <CardContent className="flex flex-col items-center p-8">
@@ -437,12 +441,19 @@ export default function Home() {
               </div>
               <h2 className="text-xl font-bold">UBA</h2>
               <p className="text-gray-500 text-center mt-2">Transfer Receipt Demo</p>
+              <div className="flex gap-2 mt-4">
+                <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); setMode("uba"); setSubMode("manual"); }}>Manual</Button>
+                <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); setMode("uba"); setSubMode("auto"); }}>Auto</Button>
+              </div>
             </CardContent>
           </Card>
 
           <Card 
             className="cursor-pointer hover:shadow-md transition-shadow border-2 hover:border-[#10B981]"
-            onClick={() => setMode("opay")}
+            onClick={() => {
+              setMode("opay");
+              setSubMode("manual");
+            }}
             data-testid="card-select-opay"
           >
             <CardContent className="flex flex-col items-center p-8">
@@ -451,6 +462,10 @@ export default function Home() {
               </div>
               <h2 className="text-xl font-bold">OPay</h2>
               <p className="text-gray-500 text-center mt-2">Airtime Receipt Demo</p>
+              <div className="flex gap-2 mt-4">
+                <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); setMode("opay"); setSubMode("manual"); }}>Manual</Button>
+                <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); setMode("opay"); setSubMode("auto"); }}>Auto</Button>
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -478,10 +493,11 @@ export default function Home() {
       <Card className="w-full max-w-md bg-white shadow-sm border border-gray-100">
         <CardContent className="pt-6 px-6 pb-8">
           <h1 className="text-2xl font-bold text-gray-900 mb-6">
-            {mode === "uba" ? "UBA Transfer" : "OPay Airtime"}
+            {mode === "uba" ? "UBA Transfer" : "OPay Airtime"} - {subMode === "manual" ? "Manual" : "Auto"}
           </h1>
           
-          {mode === "uba" ? (
+          {subMode === "manual" ? (
+            mode === "uba" ? (
             <Form {...transferForm}>
               <form onSubmit={transferForm.handleSubmit(onTransferSubmit)} className="space-y-6">
                 <FormField
@@ -678,8 +694,23 @@ export default function Home() {
                 </Button>
               </form>
             </Form>
-          )}
-        </CardContent>
+          )
+        ) : (
+          <div className="space-y-6">
+            <div className="p-4 bg-blue-50 text-blue-700 rounded-md border border-blue-100">
+              <p className="font-medium">Automatic Batch Mode</p>
+              <p className="text-sm">Generate multiple receipts at once. (Coming soon)</p>
+            </div>
+            <Button 
+              onClick={() => setSubMode("manual")}
+              variant="outline"
+              className="w-full"
+            >
+              Back to Manual
+            </Button>
+          </div>
+        )}
+      </CardContent>
       </Card>
 
       {/* Canvas Preview */}
