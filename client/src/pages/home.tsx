@@ -512,18 +512,18 @@ export default function Home() {
 
       setReceiptData(batchData[i]);
       
-      // Wait for state update and then explicitly trigger and await the canvas generation
-      // to ensure we capture exactly what we just set without race conditions.
-      await new Promise(resolve => setTimeout(resolve, 50)); 
+      // Wait for state update and React to trigger the useEffect
+      await new Promise(resolve => setTimeout(resolve, 300)); 
       
+      // Explicitly trigger the draw and await it to be absolutely sure
       if (mode === "uba") {
         await generateUBAReceiptCanvas();
       } else {
         await generateOPayReceiptCanvas();
       }
 
-      // Final short wait for browser paint
-      await new Promise(resolve => requestAnimationFrame(resolve));
+      // Allow one more frame for the canvas to be ready for blob extraction
+      await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
       
       const canvas = canvasRef.current;
       if (canvas) {
