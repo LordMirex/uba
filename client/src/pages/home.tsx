@@ -440,12 +440,22 @@ export default function Home() {
     };
 
     const nigerianNamesList = [
-      "Ifeanyi Okonkwo", "Osagie Eboh", "Adebayo Okonkwo", "Oluwatobi Adegoke",
-      "Chidi Anyanwu", "Abimbola Adeyemi", "Emeka Nwosu", "Babatunde Lawal",
-      "Nneka Okeke", "Tunde Folawiyo", "Zainab Abubakar", "Musa Bello"
+      "Adebayo Ajayi", "Adebola Ogunleye", "Adebowale Williams", "Adedayo Ogundele", "Adegoke Akinyemi",
+      "Adekunle Adeleke", "Ademola Fashola", "Adenike Babatunde", "Adeniyi Oladipo", "Adeola Akinwale",
+      "Oluwaseun Adeyemi", "Oluwatoyin Ogunjobi", "Olumide Adewale", "Oluwaseyi Akande", "Olufemi Taiwo",
+      "Babatunde Fashola", "Babajide Ogunlesi", "Ayodeji Akinola", "Ayodele Olusola", "Ayokunle Ajayi",
+      "Osaze Odemwingie", "Osazee Aghatise", "Osayande Ehigiator", "Osagie Ehanire", "Osahon Oboh",
+      "Osakpolor Osula", "Osaretin Uwubamwen", "Osasere Orumwense", "Osasuyi Dirisu", "Osasumwen Okundia",
+      "Ifeanyi Okonkwo", "Osagie Eboh", "Adebayo Okonkwo", "Oluwatobi Adegoke", "Chidi Anyanwu",
+      "Abimbola Adeyemi", "Emeka Nwosu", "Babatunde Lawal", "Nneka Okeke", "Tunde Folawiyo",
+      "Zainab Abubakar", "Musa Bello", "Agbonlahor Gabriel", "Aigbe Friday", "Aigbedion Isaac"
     ];
 
     for (let i = 0; i < autoBatchCount; i++) {
+      const now = new Date();
+      const randomTime = now.toLocaleTimeString('en-GB', { hour12: false }).slice(0, 5);
+      const randomDate = now.toISOString().split('T')[0];
+
       const randomAmount = autoAmountMode === "fixed" 
         ? autoFixedAmount 
         : (Math.floor(Math.random() * (parseInt(autoMaxAmount) - parseInt(autoMinAmount) + 1)) + parseInt(autoMinAmount)).toString();
@@ -453,17 +463,38 @@ export default function Home() {
       const randomBank = nigerianBanks[Math.floor(Math.random() * nigerianBanks.length)];
       const randomName = nigerianNamesList[Math.floor(Math.random() * nigerianNamesList.length)];
       const randomAcc = generateNuban(randomBank.code.slice(-3));
-      const randomNetwork = ["MTN", "Glo", "Airtel"][Math.floor(Math.random() * 3)];
+      
+      const networks = ["MTN", "Glo", "Airtel"];
+      const randomNetwork = networks[Math.floor(Math.random() * networks.length)] as "MTN" | "Glo" | "Airtel";
       const randomPhoneNum = generatePhone(randomNetwork);
 
-      // Trigger redraw with temp data for capture
-      // This is a simplified simulation for batch mode in Fast Mode
+      // Simulate receipt generation with real-time data
+      const data: TransferFormValues | AirtimeFormValues = mode === "uba" 
+        ? {
+            recipientName: randomName,
+            amount: randomAmount,
+            bankName: randomBank.name,
+            accountNumber: randomAcc
+          }
+        : {
+            network: randomNetwork,
+            phoneNumber: randomPhoneNum,
+            amount: randomAmount,
+            date: randomDate,
+            time: randomTime
+          };
+
+      setReceiptData(data);
+      await new Promise(resolve => setTimeout(resolve, 100)); // Wait for render
+
       const canvas = canvasRef.current;
       if (canvas) {
-        await new Promise(resolve => setTimeout(resolve, 50));
         const blob = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve));
         if (blob) {
-          zip.file(`${mode}_${randomBank.name.replace(/\s/g, '_')}_${i + 1}.png`, blob);
+          const fileName = mode === "uba" 
+            ? `${mode}_${randomBank.name.replace(/\s/g, '_')}_${i + 1}.png`
+            : `${mode}_${randomNetwork}_${i + 1}.png`;
+          zip.file(fileName, blob);
         }
       }
       
