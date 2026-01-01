@@ -108,16 +108,19 @@ export default function Home() {
 
   // Generate receipt canvas when receipt data changes
   useEffect(() => {
-    if (receiptData && canvasRef.current) {
-      if (mode === "uba") {
-        generateUBAReceiptCanvas();
-      } else if (mode === "opay") {
-        generateOPayReceiptCanvas();
+    const generate = async () => {
+      if (receiptData && canvasRef.current) {
+        if (mode === "uba") {
+          await generateUBAReceiptCanvas();
+        } else if (mode === "opay") {
+          await generateOPayReceiptCanvas();
+        }
       }
-    }
-  }, [receiptData]);
+    };
+    generate();
+  }, [receiptData, mode]);
 
-  const generateUBAReceiptCanvas = () => {
+  const generateUBAReceiptCanvas = async () => {
     const canvas = canvasRef.current;
     if (!canvas || !receiptData || mode !== "uba") return;
     const data = receiptData as TransferFormValues;
@@ -125,7 +128,7 @@ export default function Home() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Fixed High-DPI scaling for device-independent perfect output
+    // Clear canvas before drawing
     const scale = 2;
     canvas.width = 390 * scale;
     canvas.height = 360 * scale;
@@ -148,69 +151,57 @@ export default function Home() {
     ctx.lineTo(390 - xPadding - xSize, xPadding + xSize);
     ctx.stroke();
 
-    const img = new Image();
-    img.crossOrigin = "anonymous";
-    img.onload = () => {
-      const avatarSize = 110;
-      const avatarX = (390 - avatarSize) / 2;
-      const avatarY = 30;
-      ctx.drawImage(img, avatarX, avatarY, avatarSize, avatarSize);
+    return new Promise<void>((resolve) => {
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload = () => {
+        const avatarSize = 110;
+        const avatarX = (390 - avatarSize) / 2;
+        const avatarY = 30;
+        ctx.drawImage(img, avatarX, avatarY, avatarSize, avatarSize);
 
-      ctx.fillStyle = '#000000';
-      ctx.font = 'bold 32px Inter, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('Success', 390 / 2, avatarY + avatarSize + 50);
+        ctx.fillStyle = '#000000';
+        ctx.font = 'bold 32px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('Success', 390 / 2, avatarY + avatarSize + 50);
 
-      ctx.font = '400 16px Inter, sans-serif';
-      ctx.textAlign = 'left';
-      ctx.fillStyle = '#000000';
-      
-      const textX = 25;
-      let textY = avatarY + avatarSize + 95;
-      const lineHeight = 20;
+        ctx.font = '400 16px Inter, sans-serif';
+        ctx.textAlign = 'left';
+        ctx.fillStyle = '#000000';
+        
+        const textX = 25;
+        let textY = avatarY + avatarSize + 95;
+        const lineHeight = 20;
 
-      const amountValue = parseFloat(data.amount).toLocaleString('en-NG', { 
-        minimumFractionDigits: 0, 
-        maximumFractionDigits: 2 
-      });
+        const amountValue = parseFloat(data.amount).toLocaleString('en-NG', { 
+          minimumFractionDigits: 0, 
+          maximumFractionDigits: 2 
+        });
 
-      ctx.fillText('You have successfully', textX, textY);
-      textY += lineHeight;
-      ctx.fillText(`transferred NGN${amountValue} to`, textX, textY);
-      textY += lineHeight;
-    ctx.fillText(data.recipientName.toUpperCase(), textX, textY);
-      textY += lineHeight + 2;
-      ctx.fillText(`Bank Name: ${data.bankName}`, textX, textY);
-      textY += lineHeight;
-      ctx.fillText(`Account Number: ${data.accountNumber}`, textX, textY);
-    };
-    img.src = avatarImage;
+        ctx.fillText('You have successfully', textX, textY);
+        textY += lineHeight;
+        ctx.fillText(`transferred NGN${amountValue} to`, textX, textY);
+        textY += lineHeight;
+        ctx.fillText(data.recipientName.toUpperCase(), textX, textY);
+        textY += lineHeight + 2;
+        ctx.fillText(`Bank Name: ${data.bankName}`, textX, textY);
+        textY += lineHeight;
+        ctx.fillText(`Account Number: ${data.accountNumber}`, textX, textY);
+        resolve();
+      };
+      img.src = avatarImage;
+    });
   };
 
-  const generateOPayReceiptCanvas = () => {
-    // Preload logos locally to ensure they're available
-    [mtnLogo, gloLogo, airtelLogo].forEach(src => {
-      const img = new Image();
-      img.src = src;
-    });
-
+  const generateOPayReceiptCanvas = async () => {
     const canvas = canvasRef.current;
     if (!canvas || !receiptData || mode !== "opay") return;
     const data = receiptData as AirtimeFormValues;
 
-    // Format phone number for display: 080 3063 9305
-    const getFormattedPhone = (num: string) => {
-      if (num.length === 11) {
-        return `${num.slice(0, 3)} ${num.slice(3, 7)} ${num.slice(7)}`;
-      }
-      return num;
-    };
-    const opayFormattedPhone = getFormattedPhone(data.phoneNumber);
-
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Fixed High-DPI scaling for device-independent perfect output
+    // Clear canvas
     const scale = 2;
     canvas.width = 390 * scale; 
     canvas.height = 580 * scale;
@@ -224,31 +215,24 @@ export default function Home() {
     const cardMargin = 14;
     const cardWidth = 390 - (cardMargin * 2);
     
-    // Draw shadows/borders for cards
     ctx.shadowColor = 'rgba(0, 0, 0, 0.02)';
     ctx.shadowBlur = 8;
     ctx.shadowOffsetY = 1;
 
-    // Accurately positioned Background Shapes
     ctx.fillStyle = '#ffffff';
-    // Top rounded card
     ctx.beginPath();
     ctx.roundRect(cardMargin, 55, cardWidth, 230, 12);
     ctx.fill();
-    
-    // Bottom detail card
     ctx.beginPath();
     ctx.roundRect(cardMargin, 300, cardWidth, 285, 12);
     ctx.fill();
 
-    // Reset shadow
     ctx.shadowColor = 'transparent';
     ctx.shadowBlur = 0;
     ctx.shadowOffsetY = 0;
 
     const centerX = 390 / 2;
 
-    // Restore the perfect indicator circle background
     ctx.beginPath();
     ctx.arc(centerX, 55, 26, 0, Math.PI * 2);
     if (data.network === "MTN") ctx.fillStyle = "#ffcc00";
@@ -256,45 +240,45 @@ export default function Home() {
     else ctx.fillStyle = "#e60000";
     ctx.fill();
 
-    // Precise Network Logo Placement - NO DESIGN, JUST REFERENCE IMAGE
     const drawNetworkLogo = () => {
-      const logoSize = 52; // Full size of the 26px radius circle
-      const logoX = centerX - (logoSize / 2);
-      const logoY = 55 - (logoSize / 2);
+      return new Promise<void>((resolve) => {
+        const logoSize = 52;
+        const logoX = centerX - (logoSize / 2);
+        const logoY = 55 - (logoSize / 2);
 
-      let logoSrc = "";
-      if (data.network === "MTN") logoSrc = mtnLogo;
-      else if (data.network === "Glo") logoSrc = gloLogo;
-      else if (data.network === "Airtel") logoSrc = airtelLogo;
+        let logoSrc = "";
+        if (data.network === "MTN") logoSrc = mtnLogo;
+        else if (data.network === "Glo") logoSrc = gloLogo;
+        else if (data.network === "Airtel") logoSrc = airtelLogo;
 
-      if (logoSrc) {
-        const logoImg = new Image();
-        logoImg.onload = () => {
-          ctx.save();
-          // Clip to the circle to ensure no bleed
-          ctx.beginPath();
-          ctx.arc(centerX, 55, 26, 0, Math.PI * 2);
-          ctx.clip();
-          ctx.drawImage(logoImg, logoX, logoY, logoSize, logoSize);
-          ctx.restore();
-        };
-        // Check if image is already cached
-        logoImg.src = logoSrc;
-        
-        // REINFORCEMENT: Force immediate draw if complete, 
-        // and ensure we don't skip the Airtel logo logic
-        if (logoImg.complete) {
-          ctx.save();
-          ctx.beginPath();
-          ctx.arc(centerX, 55, 26, 0, Math.PI * 2);
-          ctx.clip();
-          ctx.drawImage(logoImg, logoX, logoY, logoSize, logoSize);
-          ctx.restore();
+        if (logoSrc) {
+          const logoImg = new Image();
+          logoImg.onload = () => {
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(centerX, 55, 26, 0, Math.PI * 2);
+            ctx.clip();
+            ctx.drawImage(logoImg, logoX, logoY, logoSize, logoSize);
+            ctx.restore();
+            resolve();
+          };
+          logoImg.src = logoSrc;
+          if (logoImg.complete) {
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(centerX, 55, 26, 0, Math.PI * 2);
+            ctx.clip();
+            ctx.drawImage(logoImg, logoX, logoY, logoSize, logoSize);
+            ctx.restore();
+            resolve();
+          }
+        } else {
+          resolve();
         }
-      }
+      });
     };
 
-    drawNetworkLogo();
+    await drawNetworkLogo();
 
     ctx.fillStyle = '#111827';
     ctx.font = '400 14.5px sans-serif';
@@ -312,7 +296,6 @@ export default function Home() {
     ctx.textAlign = 'center';
     ctx.fillText(`₦${amountValue}`, centerX, 160);
 
-    // Successful checkmark + text
     ctx.fillStyle = '#0fb47a';
     ctx.beginPath();
     ctx.arc(centerX - 52, 202, 10, 0, Math.PI * 2);
@@ -333,7 +316,6 @@ export default function Home() {
     ctx.textAlign = 'left';
     ctx.fillText('Successful', centerX - 36, 208);
 
-    // Bonus Earned row (Refined position and color)
     ctx.fillStyle = '#8e94a3';
     ctx.font = '400 14px sans-serif';
     ctx.textAlign = 'left';
@@ -344,7 +326,6 @@ export default function Home() {
     ctx.font = '400 14px sans-serif';
     ctx.fillText(`+₦5.00 Cashback`, 390 - cardMargin - 20, 255);
 
-    // Transaction Details Header
     ctx.textAlign = 'left';
     ctx.fillStyle = '#111827';
     ctx.font = '700 20px sans-serif';
@@ -368,7 +349,6 @@ export default function Home() {
       let finalValueX = valueX;
       if (hasCopyIcon || isChevron) finalValueX -= 24;
       
-      // Keep readability high but ensure no clashing
       if (label === 'Transaction No.' || label === 'Transaction Date') {
         ctx.font = '400 12.5px sans-serif';
       }
@@ -531,15 +511,23 @@ export default function Home() {
       if (abortRef.current) break;
 
       setReceiptData(batchData[i]);
-      // Balanced delay: 350ms to ensure logo rendering stability
-      await new Promise(resolve => setTimeout(resolve, 350)); 
+      
+      // Wait for state update and then explicitly trigger and await the canvas generation
+      // to ensure we capture exactly what we just set without race conditions.
+      await new Promise(resolve => setTimeout(resolve, 50)); 
+      
+      if (mode === "uba") {
+        await generateUBAReceiptCanvas();
+      } else {
+        await generateOPayReceiptCanvas();
+      }
+
+      // Final short wait for browser paint
+      await new Promise(resolve => requestAnimationFrame(resolve));
       
       const canvas = canvasRef.current;
       if (canvas) {
-        // Optimized wait for frame
-        await new Promise(resolve => requestAnimationFrame(resolve));
-        
-        const blob = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve, 'image/png', 0.9)); // Quality 0.9 for better logo detail
+        const blob = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve, 'image/png', 0.95));
         if (blob) {
           const item = batchData[i];
           const fileName = mode === "uba" 

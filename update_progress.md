@@ -21,7 +21,9 @@
 - [x] Fix "Invalid hook call" in automatic generation
 - [x] Fix destructuring error in FormField components during auto-gen
 - [x] Fix broken logos in batch generation by implementing asset preloading and rendering delays
-- [x] Balance generation speed and logo rendering reliability (350ms delay)
+- [x] Balance generation speed and logo rendering reliability (Synchronization fix)
+- [x] Fix race conditions in batch generation (Awaiting async canvas draws)
+- [x] Prevent blank or overlapping receipts in batch mode by explicitly clearing and awaiting renders
 - [x] Implement "Stop & Abort" functionality for long-running batches
 - [x] Optimization for production deployment (Meta tags and asset pre-verification)
 - [x] Vercel-ready configuration (vercel.json and API entry point)
