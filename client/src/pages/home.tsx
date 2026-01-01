@@ -37,8 +37,7 @@ const airtimeSchema = z.object({
   network: z.enum(["MTN", "Glo", "Airtel"]),
   phoneNumber: z.string()
     .regex(/^\d+$/, "Phone number must be digits only")
-    .min(10, "Phone number must be at least 10 digits")
-    .max(15, "Phone number must be less than 15 digits"),
+    .length(11, "Phone number must be exactly 11 digits"),
   amount: z.string()
     .refine((val) => !isNaN(Number(val)) && Number(val) > 0, "Amount must be greater than 0")
     .refine((val) => /^\d+(\.\d{1,2})?$/.test(val), "Invalid amount format"),
@@ -178,6 +177,15 @@ export default function Home() {
     const canvas = canvasRef.current;
     if (!canvas || !receiptData || mode !== "opay") return;
     const data = receiptData as AirtimeFormValues;
+
+    // Format phone number for display: 080 3063 9305
+    const formatPhoneNumber = (num: string) => {
+      if (num.length === 11) {
+        return `${num.slice(0, 3)} ${num.slice(3, 7)} ${num.slice(7)}`;
+      }
+      return num;
+    };
+    const formattedPhone = formatPhoneNumber(data.phoneNumber);
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
@@ -362,7 +370,11 @@ export default function Home() {
       currentY += spacing;
     };
 
-    drawDetailRow('Recipient Mobile', data.phoneNumber);
+    const formattedPhone = data.phoneNumber.length === 11 
+      ? `${data.phoneNumber.slice(0, 3)} ${data.phoneNumber.slice(3, 7)} ${data.phoneNumber.slice(7)}`
+      : data.phoneNumber;
+
+    drawDetailRow('Recipient Mobile', formattedPhone);
     drawDetailRow('Transaction Type', 'Airtime');
     drawDetailRow('Payment Method', 'OWealth', false, true);
     
@@ -603,7 +615,13 @@ export default function Home() {
                     <FormItem>
                       <FormLabel>Phone Number</FormLabel>
                       <FormControl>
-                        <Input placeholder="08030639305" {...field} />
+                        <Input 
+                          placeholder="08030639305" 
+                          type="tel" 
+                          inputMode="numeric" 
+                          maxLength={11} 
+                          {...field} 
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -616,7 +634,12 @@ export default function Home() {
                     <FormItem>
                       <FormLabel>Amount (NGN)</FormLabel>
                       <FormControl>
-                        <Input placeholder="500" type="number" {...field} />
+                        <Input 
+                          placeholder="500" 
+                          type="number" 
+                          inputMode="decimal" 
+                          {...field} 
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
