@@ -231,20 +231,13 @@ export default function Home() {
       ctx.textAlign = 'center';
       ctx.fillText('MTN', centerX, 58);
     } else if (data.network === "Glo") {
-      // Precise Glo Sphere with the exact glow and text from Receipt
-      // Subtle outer glow/halo
+      // Correct Glo sphere as per JPEG: green orb with white "glo"
       ctx.beginPath();
-      ctx.arc(centerX, 55, 23, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(76, 175, 80, 0.2)';
-      ctx.fill();
-
-      // The green sphere
-      ctx.beginPath();
-      ctx.arc(centerX, 55, 19, 0, Math.PI * 2);
-      const gradient = ctx.createRadialGradient(centerX - 6, 50, 2, centerX, 55, 19);
-      gradient.addColorStop(0, '#a5d6a7'); 
-      gradient.addColorStop(0.4, '#4caf50'); 
-      gradient.addColorStop(1, '#1b5e20'); 
+      ctx.arc(centerX, 55, 20, 0, Math.PI * 2);
+      const gradient = ctx.createRadialGradient(centerX - 6, 51, 3, centerX, 55, 20);
+      gradient.addColorStop(0, '#8ed991'); 
+      gradient.addColorStop(0.5, '#4caf50'); 
+      gradient.addColorStop(1, '#0c4d10'); 
       ctx.fillStyle = gradient;
       ctx.fill();
       
@@ -253,24 +246,23 @@ export default function Home() {
       ctx.textAlign = 'center';
       ctx.fillText('glo', centerX, 61);
     } else if (data.network === "Airtel") {
-      // Precise Airtel Red Circle with stylized white mark from Receipt
+      // Exact Airtel Logo from JPEG: red circle with a stylized 'c' containing a dot
       ctx.fillStyle = '#e60000';
       ctx.beginPath();
       ctx.arc(centerX, 55, 23, 0, Math.PI * 2);
       ctx.fill();
       
-      // The stylized white 'a' mark - precisely drawn as a swirl from reference
+      // The stylized 'c' or 'a' mark
       ctx.strokeStyle = '#ffffff';
       ctx.lineWidth = 4.0;
       ctx.lineCap = 'round';
       ctx.beginPath();
-      // Draw the main curve of the 'a'
-      ctx.arc(centerX - 0.5, 54, 7.5, 0.25 * Math.PI, 1.8 * Math.PI);
+      ctx.arc(centerX, 55, 8, 0.2 * Math.PI, 1.8 * Math.PI);
       ctx.stroke();
       
-      // Draw the inner dot/terminal precisely
+      // Central dot
       ctx.beginPath();
-      ctx.arc(centerX + 3.5, 55, 3, 0, Math.PI * 2);
+      ctx.arc(centerX + 3, 55, 2.5, 0, Math.PI * 2);
       ctx.fillStyle = '#ffffff';
       ctx.fill();
     }
