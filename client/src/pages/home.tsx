@@ -241,10 +241,10 @@ export default function Home() {
     }
 
     ctx.fillStyle = '#111827';
-    ctx.font = '400 15px sans-serif';
+    ctx.font = '400 14.5px sans-serif';
     ctx.textAlign = 'center';
     ctx.letterSpacing = '0.2px';
-    ctx.fillText(data.network, centerX, 100);
+    ctx.fillText(data.network, centerX, 108);
 
     const amountValue = parseFloat(data.amount).toLocaleString('en-NG', { 
       minimumFractionDigits: 2, 
@@ -252,9 +252,9 @@ export default function Home() {
     });
 
     ctx.fillStyle = '#111827';
-    ctx.font = '700 40px sans-serif';
+    ctx.font = '700 42px sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText(`₦${amountValue}`, centerX, 155);
+    ctx.fillText(`₦${amountValue}`, centerX, 162);
 
     // Successful checkmark + text
     ctx.fillStyle = '#0fb47a';
