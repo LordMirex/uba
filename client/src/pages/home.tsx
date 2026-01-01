@@ -333,48 +333,53 @@ export default function Home() {
     ctx.font = '700 20px sans-serif';
     ctx.fillText('Transaction Details', cardMargin + 20, 335);
 
-    const detailX = cardMargin + 20;
-    const valueX = 390 - cardMargin - 20;
-    let currentY = 375;
-    const spacing = 42;
+    const detailX = cardMargin + 22;
+    const valueX = 390 - cardMargin - 22;
+    let currentY = 378;
+    const spacing = 44;
 
     const drawDetailRow = (label: string, value: string, hasCopyIcon: boolean = false, isChevron: boolean = false) => {
       ctx.textAlign = 'left';
       ctx.fillStyle = '#8e94a3';
-      ctx.font = '400 15px sans-serif';
+      ctx.font = '400 13px sans-serif';
       ctx.fillText(label, detailX, currentY);
       
       ctx.textAlign = 'right';
       ctx.fillStyle = '#111827';
-      ctx.font = '400 15px sans-serif';
+      ctx.font = '500 14px sans-serif';
       
       let finalValueX = valueX;
-      if (hasCopyIcon || isChevron) finalValueX -= 24;
+      if (hasCopyIcon || isChevron) finalValueX -= 26;
       
       if (label === 'Transaction No.' || label === 'Transaction Date') {
-        ctx.font = '400 12.5px sans-serif';
+        ctx.font = '500 12px sans-serif';
       }
       
       ctx.fillText(value, finalValueX, currentY);
       
       if (hasCopyIcon) {
         ctx.strokeStyle = '#b1b6c1';
-        ctx.lineWidth = 1.2;
+        ctx.lineWidth = 1.0;
         const iconSize = 13;
-        // Drawing a more precise copy icon
-        ctx.strokeRect(valueX - 14, currentY - 11, iconSize - 2, iconSize - 2);
+        const iconX = valueX - 16;
+        const iconY = currentY - 11;
+        
+        // Base rectangle
+        ctx.strokeRect(iconX, iconY, iconSize - 3, iconSize - 3);
+        
+        // Overlap rectangle
         ctx.fillStyle = '#ffffff';
-        ctx.fillRect(valueX - 18, currentY - 7, iconSize - 2, iconSize - 2);
-        ctx.strokeRect(valueX - 18, currentY - 7, iconSize - 2, iconSize - 2);
+        ctx.fillRect(iconX - 3, iconY + 3, iconSize - 3, iconSize - 3);
+        ctx.strokeRect(iconX - 3, iconY + 3, iconSize - 3, iconSize - 3);
       }
       
       if (isChevron) {
         ctx.strokeStyle = '#b1b6c1';
-        ctx.lineWidth = 2.0;
+        ctx.lineWidth = 1.5;
         ctx.beginPath();
-        ctx.moveTo(valueX - 9, currentY - 9);
-        ctx.lineTo(valueX - 5, currentY - 4);
-        ctx.lineTo(valueX - 9, currentY + 1);
+        ctx.moveTo(valueX - 10, currentY - 8);
+        ctx.lineTo(valueX - 5, currentY - 3);
+        ctx.lineTo(valueX - 10, currentY + 2);
         ctx.stroke();
       }
       currentY += spacing;
