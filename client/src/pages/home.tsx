@@ -62,11 +62,20 @@ export default function Home() {
   const [autoMinAmount, setAutoMinAmount] = useState("5000");
   const [autoMaxAmount, setAutoMaxAmount] = useState("50000");
   const [isGenerating, setIsGenerating] = useState(false);
+  const abortRef = useRef(false);
   const [progress, setProgress] = useState(0);
   const [receiptData, setReceiptData] = useState<TransferFormValues | AirtimeFormValues | null>(null);
   const [openBankSelector, setOpenBankSelector] = useState(false);
   const { toast } = useToast();
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  const stopBatch = () => {
+    abortRef.current = true;
+    toast({
+      title: "Stopping...",
+      description: "Batch generation aborted.",
+    });
+  };
 
   const transferForm = useForm<TransferFormValues>({
     resolver: zodResolver(transferSchema),
@@ -413,6 +422,7 @@ export default function Home() {
 
   const generateBatch = async () => {
     setIsGenerating(true);
+    abortRef.current = false;
     setProgress(0);
     const zip = new JSZip();
 
@@ -515,6 +525,8 @@ export default function Home() {
     }
 
     for (let i = 0; i < batchData.length; i++) {
+      if (abortRef.current) break;
+
       setReceiptData(batchData[i]);
       // Reduced delay from 500ms to 200ms for faster processing
       await new Promise(resolve => setTimeout(resolve, 200)); 
@@ -537,20 +549,26 @@ export default function Home() {
       setProgress(i + 1);
     }
 
-    const content = await zip.generateAsync({ 
-      type: "blob",
-      compression: "STORE" // Faster, no compression
-    });
-    const url = URL.createObjectURL(content);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `${mode}_batch_${Date.now()}.zip`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    if (Object.keys(zip.files).length > 0) {
+      const content = await zip.generateAsync({ 
+        type: "blob",
+        compression: "STORE" // Faster, no compression
+      });
+      const url = URL.createObjectURL(content);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${mode}_batch_${Date.now()}.zip`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
     
     setIsGenerating(false);
-    toast({ title: "Batch Completed", description: `Successfully generated and downloaded ${autoBatchCount} receipts.` });
+    if (abortRef.current) {
+      toast({ title: "Batch Aborted", description: `Generation stopped at ${progress} receipts.` });
+    } else {
+      toast({ title: "Batch Completed", description: `Successfully generated and downloaded ${autoBatchCount} receipts.` });
+    }
   };
 
   const handleDownload = () => {
@@ -916,16 +934,25 @@ export default function Home() {
             </div>
 
             {isGenerating ? (
-              <div className="space-y-2">
-                <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
-                  <div 
-                    className="h-full bg-blue-600 transition-all duration-300" 
-                    style={{ width: `${(progress / autoBatchCount) * 100}%` }}
-                  />
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-blue-600 transition-all duration-300" 
+                      style={{ width: `${(progress / autoBatchCount) * 100}%` }}
+                    />
+                  </div>
+                  <p className="text-sm text-center text-gray-500">
+                    Generating {progress} / {autoBatchCount} receipts...
+                  </p>
                 </div>
-                <p className="text-sm text-center text-gray-500">
-                  Generating {progress} / {autoBatchCount} receipts...
-                </p>
+                <Button 
+                  onClick={stopBatch}
+                  variant="destructive"
+                  className="w-full h-12 text-lg"
+                >
+                  Stop & Abort
+                </Button>
               </div>
             ) : (
               <Button 
