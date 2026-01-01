@@ -179,13 +179,13 @@ export default function Home() {
     const data = receiptData as AirtimeFormValues;
 
     // Format phone number for display: 080 3063 9305
-    const formatPhoneNumber = (num: string) => {
+    const getFormattedPhone = (num: string) => {
       if (num.length === 11) {
         return `${num.slice(0, 3)} ${num.slice(3, 7)} ${num.slice(7)}`;
       }
       return num;
     };
-    const formattedPhone = formatPhoneNumber(data.phoneNumber);
+    const opayFormattedPhone = getFormattedPhone(data.phoneNumber);
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
@@ -370,11 +370,11 @@ export default function Home() {
       currentY += spacing;
     };
 
-    const formattedPhone = data.phoneNumber.length === 11 
+    const opayFinalFormattedPhone = data.phoneNumber.length === 11 
       ? `${data.phoneNumber.slice(0, 3)} ${data.phoneNumber.slice(3, 7)} ${data.phoneNumber.slice(7)}`
       : data.phoneNumber;
 
-    drawDetailRow('Recipient Mobile', formattedPhone);
+    drawDetailRow('Recipient Mobile', opayFinalFormattedPhone);
     drawDetailRow('Transaction Type', 'Airtime');
     drawDetailRow('Payment Method', 'OWealth', false, true);
     
