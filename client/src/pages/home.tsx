@@ -259,18 +259,18 @@ export default function Home() {
       ctx.arc(centerX, 55, 23, 0, Math.PI * 2);
       ctx.fill();
       
-      // The stylized white 'a' mark - precisely drawn as a swirl
+      // The stylized white 'a' mark - precisely drawn as a swirl from reference
       ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 4.2;
+      ctx.lineWidth = 4.0;
       ctx.lineCap = 'round';
       ctx.beginPath();
-      // Swirl part
-      ctx.arc(centerX, 54, 8, 0.25 * Math.PI, 1.85 * Math.PI);
+      // Draw the main curve of the 'a'
+      ctx.arc(centerX - 0.5, 54, 7.5, 0.25 * Math.PI, 1.8 * Math.PI);
       ctx.stroke();
       
-      // Central dot/tail part
+      // Draw the inner dot/terminal precisely
       ctx.beginPath();
-      ctx.arc(centerX + 2.2, 55, 2.5, 0, Math.PI * 2);
+      ctx.arc(centerX + 3.5, 55, 3, 0, Math.PI * 2);
       ctx.fillStyle = '#ffffff';
       ctx.fill();
     }
