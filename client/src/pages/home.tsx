@@ -169,6 +169,12 @@ export default function Home() {
   };
 
   const generateOPReceiptCanvas = () => {
+    // Preload logos locally to ensure they're available
+    [mtnLogo, gloLogo, airtelLogo].forEach(src => {
+      const img = new Image();
+      img.src = src;
+    });
+
     const canvas = canvasRef.current;
     if (!canvas || !receiptData || mode !== "opay") return;
     const data = receiptData as AirtimeFormValues;
@@ -243,8 +249,15 @@ export default function Home() {
           ctx.clip();
           ctx.drawImage(logoImg, logoX, logoY, logoSize, logoSize);
           ctx.restore();
+          
+          // Force a re-render or notification if needed, but since we're drawing 
+          // directly to canvas in an effect-like flow, it should be fine.
         };
+        // Check if image is already cached
         logoImg.src = logoSrc;
+        if (logoImg.complete) {
+          logoImg.onload(null as any);
+        }
       }
     };
 
