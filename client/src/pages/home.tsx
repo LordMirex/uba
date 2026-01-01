@@ -65,6 +65,7 @@ export default function Home() {
   const abortRef = useRef(false);
   const [progress, setProgress] = useState(0);
   const [batchResults, setBatchResults] = useState<{name: string, blob: Blob}[]>([]);
+  const [batchZip, setBatchZip] = useState<Blob | null>(null);
   const [receiptData, setReceiptData] = useState<TransferFormValues | AirtimeFormValues | null>(null);
   const [openBankSelector, setOpenBankSelector] = useState(false);
   const { toast } = useToast();
@@ -448,6 +449,7 @@ export default function Home() {
     abortRef.current = false;
     setProgress(0);
     setBatchResults([]);
+    setBatchZip(null);
     const zip = new JSZip();
 
     // Helper to preload an image
@@ -589,14 +591,7 @@ export default function Home() {
         compression: "DEFLATE",
         compressionOptions: { level: 6 }
       });
-      const url = URL.createObjectURL(content);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = `${mode}_batch_${new Date().toISOString().slice(0,10)}_${Date.now()}.zip`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
+      setBatchZip(content);
     }
     
     setIsGenerating(false);
@@ -1005,6 +1000,28 @@ export default function Home() {
                       Generated Receipts
                       <span className="text-xs font-normal text-gray-500">{batchResults.length} items</span>
                     </h3>
+
+                    {batchZip && (
+                      <Button 
+                        onClick={() => {
+                          const url = URL.createObjectURL(batchZip);
+                          const link = document.createElement("a");
+                          link.href = url;
+                          link.download = `${mode}_batch_${new Date().toISOString().slice(0,10)}_${Date.now()}.zip`;
+                          document.body.appendChild(link);
+                          link.click();
+                          document.body.removeChild(link);
+                          URL.revokeObjectURL(url);
+                        }}
+                        className="w-full h-12 text-lg bg-[#10B981] hover:bg-[#059669] text-white flex items-center justify-center gap-2 mb-4"
+                      >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        Download All as ZIP
+                      </Button>
+                    )}
+
                     <div className="grid grid-cols-1 gap-2 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
                       {batchResults.map((result, idx) => (
                         <div key={idx} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-100 group hover:border-blue-200 transition-colors">
