@@ -414,6 +414,28 @@ export default function Home() {
     setProgress(0);
     const zip = new JSZip();
 
+    // Helper to preload an image
+    const preloadImage = (src: string): Promise<HTMLImageElement> => {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+        img.src = src;
+      });
+    };
+
+    // Preload all assets before starting
+    try {
+      await Promise.all([
+        preloadImage(mtnLogo),
+        preloadImage(gloLogo),
+        preloadImage(airtelLogo),
+        preloadImage(avatarImage)
+      ]);
+    } catch (err) {
+      console.error("Failed to preload assets", err);
+    }
+
     // NUBAN Algorithm (Simplified Nigerian Standard)
     const generateNuban = (bankCode: string) => {
       const serial = Math.floor(Math.random() * 900000000 + 100000000).toString(); // 9 digits
@@ -492,11 +514,15 @@ export default function Home() {
 
     for (let i = 0; i < batchData.length; i++) {
       setReceiptData(batchData[i]);
-      await new Promise(resolve => setTimeout(resolve, 300)); // Longer wait for canvas to render
-
+      // Increased wait time and used multiple frames to ensure browser paint
+      await new Promise(resolve => setTimeout(resolve, 500)); 
+      
       const canvas = canvasRef.current;
       if (canvas) {
-        const blob = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve));
+        // Double check that images are drawn by waiting for another microtask
+        await new Promise(resolve => requestAnimationFrame(() => setTimeout(resolve, 50)));
+        
+        const blob = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve, 'image/png', 1.0));
         if (blob) {
           const item = batchData[i];
           const fileName = mode === "uba" 
