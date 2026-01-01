@@ -53,10 +53,9 @@ The system uses the HTML5 Canvas API to manually "paint" receipts pixel-by-pixel
 - **Margins**: Consistent 15px horizontal padding (`cardMargin`) for all content blocks.
 
 ## 5. Potential Improvement Areas (Brainstorming)
-- **Multi-Bank Support**: Expand to Zenith, GTBank, Access, etc.
+- **Automatic Batch Mode**: Implement a system to generate N receipts in bulk, bundle them into a ZIP, and provide a progress indicator.
+- **Extended Bank Support**: Focus on Top 10 banks including OPay and PalmPay, plus Access, UBA, Zenith, GTBank, First Bank, Fidelity, FCMB, and Stanbic IBTC.
+- **Data Generation Engine**: Implement realistic NUBAN (10-digit check-digit) and Nigerian phone number generation using NCC prefixes.
 - **PDF Export**: Direct download of high-res PDF versions.
 - **Transaction History**: Dashboard to view, edit, and re-generate past receipts.
-- **Batch Generation**: Ability to upload CSV/Excel for mass receipt production.
-- **User Accounts**: Secure login to save preferences and branding settings.
 - **Custom Branding**: Option to add custom logos or text for business-specific receipts.
-- **Mobile App**: PWA (Progressive Web App) support for offline generation.
