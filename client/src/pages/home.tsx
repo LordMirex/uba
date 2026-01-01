@@ -162,17 +162,17 @@ export default function Home() {
         ctx.drawImage(img, avatarX, avatarY, avatarSize, avatarSize);
 
         ctx.fillStyle = '#000000';
-        ctx.font = 'bold 32px Inter, sans-serif';
+        ctx.font = 'bold 28px Inter, sans-serif';
         ctx.textAlign = 'center';
         ctx.fillText('Success', 390 / 2, avatarY + avatarSize + 50);
 
-        ctx.font = '400 16px Inter, sans-serif';
+        ctx.font = '400 14px Inter, sans-serif';
         ctx.textAlign = 'left';
         ctx.fillStyle = '#000000';
         
         const textX = 25;
         let textY = avatarY + avatarSize + 95;
-        const lineHeight = 20;
+        const lineHeight = 18;
 
         const amountValue = parseFloat(data.amount).toLocaleString('en-NG', { 
           minimumFractionDigits: 0, 
@@ -282,7 +282,7 @@ export default function Home() {
     await drawNetworkLogo();
 
     ctx.fillStyle = '#111827';
-    ctx.font = '500 13px sans-serif';
+    ctx.font = '500 15px sans-serif';
     ctx.textAlign = 'center';
     ctx.letterSpacing = '0.3px';
     ctx.fillText(data.network, centerX, 108);
@@ -293,7 +293,7 @@ export default function Home() {
     });
 
     ctx.fillStyle = '#111827';
-    ctx.font = '700 42px sans-serif';
+    ctx.font = '700 25px sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText(`₦${amountValue}`, centerX, 160);
 
@@ -313,23 +313,23 @@ export default function Home() {
     ctx.stroke();
 
     ctx.fillStyle = '#0fb47a';
-    ctx.font = '500 18px sans-serif';
+    ctx.font = '500 16px sans-serif';
     ctx.textAlign = 'left';
     ctx.fillText('Successful', centerX - 36, 208);
 
     ctx.fillStyle = '#8e94a3';
-    ctx.font = '400 14px sans-serif';
+    ctx.font = '400 13px sans-serif';
     ctx.textAlign = 'left';
     ctx.fillText('Bonus Earned', cardMargin + 20, 255);
     
     ctx.textAlign = 'right';
     ctx.fillStyle = '#0fb47a';
-    ctx.font = '400 14px sans-serif';
+    ctx.font = '400 13px sans-serif';
     ctx.fillText(`+₦5.00 Cashback`, 390 - cardMargin - 20, 255);
 
     ctx.textAlign = 'left';
     ctx.fillStyle = '#111827';
-    ctx.font = '700 20px sans-serif';
+    ctx.font = '700 18px sans-serif';
     ctx.fillText('Transaction Details', cardMargin + 20, 335);
 
     const detailX = cardMargin + 22;
@@ -340,18 +340,18 @@ export default function Home() {
     const drawDetailRow = (label: string, value: string, hasCopyIcon: boolean = false, isChevron: boolean = false) => {
       ctx.textAlign = 'left';
       ctx.fillStyle = '#8e94a3';
-      ctx.font = '400 13px sans-serif';
+      ctx.font = '400 12px sans-serif';
       ctx.fillText(label, detailX, currentY);
       
       ctx.textAlign = 'right';
       ctx.fillStyle = '#111827';
-      ctx.font = '500 14px sans-serif';
+      ctx.font = '500 13px sans-serif';
       
       let finalValueX = valueX;
       if (hasCopyIcon || isChevron) finalValueX -= 26;
       
       if (label === 'Transaction No.' || label === 'Transaction Date') {
-        ctx.font = '500 12px sans-serif';
+        ctx.font = '500 11px sans-serif';
       }
       
       ctx.fillText(value, finalValueX, currentY);
