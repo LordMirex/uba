@@ -516,15 +516,15 @@ export default function Home() {
 
     for (let i = 0; i < batchData.length; i++) {
       setReceiptData(batchData[i]);
-      // Increased wait time and used multiple frames to ensure browser paint
-      await new Promise(resolve => setTimeout(resolve, 500)); 
+      // Reduced delay from 500ms to 200ms for faster processing
+      await new Promise(resolve => setTimeout(resolve, 200)); 
       
       const canvas = canvasRef.current;
       if (canvas) {
-        // Double check that images are drawn by waiting for another microtask
-        await new Promise(resolve => requestAnimationFrame(() => setTimeout(resolve, 50)));
+        // Optimized wait for frame
+        await new Promise(resolve => requestAnimationFrame(resolve));
         
-        const blob = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve, 'image/png', 1.0));
+        const blob = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve, 'image/png', 0.8)); // Slightly reduced quality for faster compression
         if (blob) {
           const item = batchData[i];
           const fileName = mode === "uba" 
@@ -537,7 +537,10 @@ export default function Home() {
       setProgress(i + 1);
     }
 
-    const content = await zip.generateAsync({ type: "blob" });
+    const content = await zip.generateAsync({ 
+      type: "blob",
+      compression: "STORE" // Faster, no compression
+    });
     const url = URL.createObjectURL(content);
     const link = document.createElement("a");
     link.href = url;
