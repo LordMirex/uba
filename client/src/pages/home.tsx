@@ -282,7 +282,7 @@ export default function Home() {
     await drawNetworkLogo();
 
     ctx.fillStyle = '#111827';
-    ctx.font = '500 17px sans-serif'; // Keeping the increased font size (17px)
+    ctx.font = '500 21px sans-serif'; // Increased font size from 17px (~20% increase)
     ctx.textAlign = 'center';
     ctx.letterSpacing = '0.3px';
     ctx.fillText(data.network, centerX, 114);
