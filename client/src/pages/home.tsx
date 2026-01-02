@@ -240,6 +240,10 @@ export default function Home() {
       canvas.width = 390 * scale;
       canvas.height = (mode === "uba" ? 360 : 580) * scale;
       ctx.scale(scale, scale);
+      
+      // Fill background immediately to ensure canvas is not blank
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, 390, canvas.height / scale);
 
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, 390, 360);
@@ -709,6 +713,9 @@ export default function Home() {
       } else if (currentBatchMode === "opay") {
         await generateOPayReceiptCanvas();
       }
+
+      // Add a small extra delay to ensure browser has painted the canvas
+      await new Promise(resolve => setTimeout(resolve, 100));
 
       // Ensure rendering is complete
       await new Promise(resolve => requestAnimationFrame(() => 
