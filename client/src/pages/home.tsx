@@ -338,29 +338,29 @@ export default function Home() {
 
     ctx.textAlign = 'left';
     ctx.fillStyle = '#111827';
-    ctx.font = '700 18px sans-serif'; // Increased weight and size for title
-    ctx.fillText('Transaction Details', cardMargin + 20, 335);
+    ctx.font = '700 17px sans-serif'; 
+    ctx.fillText('Transaction Details', cardMargin + 20, 332);
 
-    const detailX = cardMargin + 22;
-    const valueX = 390 - cardMargin - 22;
-    let currentY = 380; // Adjusted starting Y
-    const spacing = 44; // Increased spacing for more vertical padding
+    const detailX = cardMargin + 20;
+    const valueX = 390 - cardMargin - 20;
+    let currentY = 372; 
+    const spacing = 40; 
 
     const drawDetailRow = (label: string, value: string, hasCopyIcon: boolean = false, isChevron: boolean = false) => {
       ctx.textAlign = 'left';
       ctx.fillStyle = '#8e94a3';
-      ctx.font = '400 15px sans-serif'; // Increased font size for label
+      ctx.font = '400 14px sans-serif'; 
       ctx.fillText(label, detailX, currentY);
       
       ctx.textAlign = 'right';
       ctx.fillStyle = '#111827';
-      ctx.font = '500 16px sans-serif'; // Increased font size for value
+      ctx.font = '500 14px sans-serif'; 
       
       let finalValueX = valueX;
-      if (hasCopyIcon || isChevron) finalValueX -= 26;
+      if (hasCopyIcon || isChevron) finalValueX -= 22;
       
       if (label === 'Transaction No.' || label === 'Transaction Date') {
-        ctx.font = '500 14px sans-serif'; // Slightly larger for long strings too
+        ctx.font = '500 12.5px sans-serif'; 
       }
       
       ctx.fillText(value, finalValueX, currentY);
@@ -368,26 +368,24 @@ export default function Home() {
       if (hasCopyIcon) {
         ctx.strokeStyle = '#b1b6c1';
         ctx.lineWidth = 1.0;
-        const iconSize = 13;
-        const iconX = valueX - 16;
-        const iconY = currentY - 11;
+        const iconSize = 12;
+        const iconX = valueX - 14;
+        const iconY = currentY - 10;
         
-        // Base rectangle
         ctx.strokeRect(iconX, iconY, iconSize - 3, iconSize - 3);
         
-        // Overlap rectangle - moved closer (offset reduced from 3 to 2)
         ctx.fillStyle = '#ffffff';
-        ctx.fillRect(iconX - 2, iconY + 2, iconSize - 3, iconSize - 3);
-        ctx.strokeRect(iconX - 2, iconY + 2, iconSize - 3, iconSize - 3);
+        ctx.fillRect(iconX - 1.5, iconY + 1.5, iconSize - 3, iconSize - 3);
+        ctx.strokeRect(iconX - 1.5, iconY + 1.5, iconSize - 3, iconSize - 3);
       }
       
       if (isChevron) {
         ctx.strokeStyle = '#b1b6c1';
         ctx.lineWidth = 1.5;
         ctx.beginPath();
-        ctx.moveTo(valueX - 10, currentY - 8);
-        ctx.lineTo(valueX - 5, currentY - 3);
-        ctx.lineTo(valueX - 10, currentY + 2);
+        ctx.moveTo(valueX - 8, currentY - 7);
+        ctx.lineTo(valueX - 4, currentY - 2);
+        ctx.lineTo(valueX - 8, currentY + 3);
         ctx.stroke();
       }
       currentY += spacing;
