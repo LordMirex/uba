@@ -121,10 +121,17 @@ export default function Home() {
     const url = URL.createObjectURL(content);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `manual_receipts_${new Date().getTime()}.zip`;
+    link.download = `manual_batch_${new Date().getTime()}.zip`;
+    document.body.appendChild(link);
     link.click();
+    document.body.removeChild(link);
+    
     setIsGenerating(false);
     setManualReceipts([]);
+    toast({
+      title: "Batch Downloaded",
+      description: "All receipts have been saved to your device.",
+    });
   };
 
   const stopBatch = () => {
