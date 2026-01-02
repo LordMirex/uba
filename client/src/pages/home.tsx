@@ -338,29 +338,29 @@ export default function Home() {
 
     ctx.textAlign = 'left';
     ctx.fillStyle = '#111827';
-    ctx.font = '700 20px sans-serif';
+    ctx.font = '700 18px sans-serif'; // Increased weight and size for title
     ctx.fillText('Transaction Details', cardMargin + 20, 335);
 
     const detailX = cardMargin + 22;
     const valueX = 390 - cardMargin - 22;
-    let currentY = 376;
-    const spacing = 41;
+    let currentY = 380; // Adjusted starting Y
+    const spacing = 44; // Increased spacing for more vertical padding
 
     const drawDetailRow = (label: string, value: string, hasCopyIcon: boolean = false, isChevron: boolean = false) => {
       ctx.textAlign = 'left';
       ctx.fillStyle = '#8e94a3';
-      ctx.font = '400 13px sans-serif';
+      ctx.font = '400 15px sans-serif'; // Increased font size for label
       ctx.fillText(label, detailX, currentY);
       
       ctx.textAlign = 'right';
       ctx.fillStyle = '#111827';
-      ctx.font = '500 14px sans-serif';
+      ctx.font = '500 16px sans-serif'; // Increased font size for value
       
       let finalValueX = valueX;
       if (hasCopyIcon || isChevron) finalValueX -= 26;
       
       if (label === 'Transaction No.' || label === 'Transaction Date') {
-        ctx.font = '500 12px sans-serif';
+        ctx.font = '500 14px sans-serif'; // Slightly larger for long strings too
       }
       
       ctx.fillText(value, finalValueX, currentY);
