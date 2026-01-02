@@ -281,10 +281,10 @@ export default function Home() {
 
     await drawNetworkLogo();
 
+    ctx.textAlign = 'left';
     ctx.fillStyle = '#111827';
-    ctx.font = '482 18px sans-serif'; // Reduced weight from 508 to 482 (~5% reduction)
-    ctx.textAlign = 'center';
-    ctx.letterSpacing = '0.3px';
+    ctx.font = '500 18px sans-serif'; // Reduced weight to 500, slight size increase to 18px
+    ctx.letterSpacing = '0.2px';
     const networkNameY = 120;
     ctx.fillText(data.network, centerX, networkNameY);
 
@@ -344,7 +344,7 @@ export default function Home() {
     const detailX = cardMargin + 20;
     const valueX = 390 - cardMargin - 20;
     let currentY = 372; 
-    const spacing = 40; 
+    const spacing = 41; // Increased by 1px from 40 for a tiny more vertical spacing
 
     const drawDetailRow = (label: string, value: string, hasCopyIcon: boolean = false, isChevron: boolean = false) => {
       ctx.textAlign = 'left';
@@ -354,7 +354,7 @@ export default function Home() {
       
       ctx.textAlign = 'right';
       ctx.fillStyle = '#111827';
-      ctx.font = '500 14px sans-serif'; 
+      ctx.font = '500 14.5px sans-serif'; // Adjusted to 14.5px for better visual match
       
       let finalValueX = valueX;
       if (hasCopyIcon || isChevron) finalValueX -= 22;
