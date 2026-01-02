@@ -187,6 +187,8 @@ export default function Home() {
 
   const onTransferSubmit = (data: TransferFormValues) => {
     setReceiptData(data);
+    setBatchResults([]);
+    setBatchZip(null);
     if (manualReceipts.length > 0) {
       setManualReceipts([...manualReceipts, { ...data, id: Math.random().toString(36).substr(2, 9) }]);
       transferForm.reset();
@@ -199,6 +201,8 @@ export default function Home() {
 
   const onAirtimeSubmit = (data: AirtimeFormValues) => {
     setReceiptData(data);
+    setBatchResults([]);
+    setBatchZip(null);
     if (manualReceipts.length > 0) {
       setManualReceipts([...manualReceipts, { ...data, id: Math.random().toString(36).substr(2, 9) }]);
       airtimeForm.reset();
@@ -778,6 +782,9 @@ export default function Home() {
             onClick={() => {
               setMode("opay");
               setSubMode("manual");
+              setReceiptData(null);
+              setBatchResults([]);
+              setBatchZip(null);
             }}
             data-testid="card-select-opay"
           >
@@ -788,8 +795,22 @@ export default function Home() {
               <h2 className="text-2xl font-bold mb-2">OPay Receipts</h2>
               <p className="text-gray-500 text-center">Airtime & Transaction Receipts</p>
               <div className="flex gap-3 mt-6">
-                <Button variant="outline" className="px-6" onClick={(e) => { e.stopPropagation(); setMode("opay"); setSubMode("manual"); }}>Manual</Button>
-                <Button variant="default" className="bg-[#10B981] hover:bg-[#059669] px-6" onClick={(e) => { e.stopPropagation(); setMode("opay"); setSubMode("auto"); }}>Auto Gateway</Button>
+                <Button variant="outline" className="px-6" onClick={(e) => { 
+                  e.stopPropagation(); 
+                  setMode("opay"); 
+                  setSubMode("manual"); 
+                  setReceiptData(null);
+                  setBatchResults([]);
+                  setBatchZip(null);
+                }}>Manual</Button>
+                <Button variant="default" className="bg-[#10B981] hover:bg-[#059669] px-6" onClick={(e) => { 
+                  e.stopPropagation(); 
+                  setMode("opay"); 
+                  setSubMode("auto"); 
+                  setReceiptData(null);
+                  setBatchResults([]);
+                  setBatchZip(null);
+                }}>Auto Gateway</Button>
               </div>
             </CardContent>
           </Card>
@@ -799,6 +820,9 @@ export default function Home() {
             onClick={() => {
               setMode("uba");
               setSubMode("manual");
+              setReceiptData(null);
+              setBatchResults([]);
+              setBatchZip(null);
             }}
             data-testid="card-select-uba"
           >
@@ -809,8 +833,22 @@ export default function Home() {
               <h2 className="text-2xl font-bold mb-2">UBA Receipts</h2>
               <p className="text-gray-500 text-center">Transfer & Payment Receipts</p>
               <div className="flex gap-3 mt-6">
-                <Button variant="outline" className="px-6" onClick={(e) => { e.stopPropagation(); setMode("uba"); setSubMode("manual"); }}>Manual</Button>
-                <Button variant="default" className="bg-[#E60000] hover:bg-[#C40000] px-6" onClick={(e) => { e.stopPropagation(); setMode("uba"); setSubMode("auto"); }}>Auto Gateway</Button>
+                <Button variant="outline" className="px-6" onClick={(e) => { 
+                  e.stopPropagation(); 
+                  setMode("uba"); 
+                  setSubMode("manual"); 
+                  setReceiptData(null);
+                  setBatchResults([]);
+                  setBatchZip(null);
+                }}>Manual</Button>
+                <Button variant="default" className="bg-[#E60000] hover:bg-[#C40000] px-6" onClick={(e) => { 
+                  e.stopPropagation(); 
+                  setMode("uba"); 
+                  setSubMode("auto"); 
+                  setReceiptData(null);
+                  setBatchResults([]);
+                  setBatchZip(null);
+                }}>Auto Gateway</Button>
               </div>
             </CardContent>
           </Card>
