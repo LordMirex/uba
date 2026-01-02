@@ -187,10 +187,26 @@ export default function Home() {
 
   const onTransferSubmit = (data: TransferFormValues) => {
     setReceiptData(data);
+    if (manualReceipts.length > 0) {
+      setManualReceipts([...manualReceipts, { ...data, id: Math.random().toString(36).substr(2, 9) }]);
+      transferForm.reset();
+      toast({
+        title: "Receipt Added",
+        description: "The receipt has been added to your batch.",
+      });
+    }
   };
 
   const onAirtimeSubmit = (data: AirtimeFormValues) => {
     setReceiptData(data);
+    if (manualReceipts.length > 0) {
+      setManualReceipts([...manualReceipts, { ...data, id: Math.random().toString(36).substr(2, 9) }]);
+      airtimeForm.reset();
+      toast({
+        title: "Receipt Added",
+        description: "The receipt has been added to your batch.",
+      });
+    }
   };
 
   // Generate receipt canvas when receipt data changes
