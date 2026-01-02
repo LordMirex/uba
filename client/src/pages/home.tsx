@@ -231,11 +231,11 @@ export default function Home() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Clear canvas before drawing
-    const scale = 2;
-    canvas.width = 390 * scale;
-    canvas.height = 360 * scale;
-    ctx.scale(scale, scale);
+      // Clear canvas before drawing
+      const scale = 2;
+      canvas.width = 390 * scale;
+      canvas.height = (mode === "uba" ? 360 : 580) * scale;
+      ctx.scale(scale, scale);
 
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, 390, 360);
@@ -308,7 +308,9 @@ export default function Home() {
     const scale = 2;
     canvas.width = 390 * scale; 
     canvas.height = 580 * scale;
-    ctx.scale(scale, scale);
+    if (ctx.getTransform().a !== scale) {
+      ctx.scale(scale, scale);
+    }
 
     // Background
     ctx.fillStyle = '#f2f3f7';
