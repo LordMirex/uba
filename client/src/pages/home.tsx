@@ -247,6 +247,12 @@ export default function Home() {
 
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, 390, 360);
+    
+    // Additional background safety check for UBA
+    if (mode === "uba") {
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, 390, 360);
+    }
 
     ctx.strokeStyle = '#000000';
     ctx.lineWidth = 2.5;
