@@ -282,7 +282,7 @@ export default function Home() {
     await drawNetworkLogo();
 
     ctx.fillStyle = '#111827';
-    ctx.font = '550 18px sans-serif'; // Increased weight from 500 to 550 (~10% increase)
+    ctx.font = '535 18px sans-serif'; // Reduced weight from 550 to 535 (~3% reduction)
     ctx.textAlign = 'center';
     ctx.letterSpacing = '0.3px';
     const networkNameY = 120;
