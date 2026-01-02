@@ -65,10 +65,67 @@ export default function Home() {
   const [progress, setProgress] = useState(0);
   const [batchResults, setBatchResults] = useState<{name: string, blob: Blob}[]>([]);
   const [batchZip, setBatchZip] = useState<Blob | null>(null);
+  const [manualReceipts, setManualReceipts] = useState<((TransferFormValues | AirtimeFormValues) & { id: string })[]>([]);
   const [receiptData, setReceiptData] = useState<TransferFormValues | AirtimeFormValues | null>(null);
   const [openBankSelector, setOpenBankSelector] = useState(false);
   const { toast } = useToast();
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  const addManualReceipt = () => {
+    if (mode === "uba") {
+      const data = transferForm.getValues();
+      setManualReceipts([...manualReceipts, { ...data, id: Math.random().toString(36).substr(2, 9) }]);
+      transferForm.reset();
+    } else {
+      const data = airtimeForm.getValues();
+      setManualReceipts([...manualReceipts, { ...data, id: Math.random().toString(36).substr(2, 9) }]);
+      airtimeForm.reset();
+    }
+    toast({
+      title: "Receipt Added",
+      description: "You can now add another receipt or download all.",
+    });
+  };
+
+  const removeManualReceipt = (id: string) => {
+    setManualReceipts(manualReceipts.filter(r => r.id !== id));
+  };
+
+  const downloadManualBatch = async () => {
+    if (manualReceipts.length === 0) return;
+    
+    setIsGenerating(true);
+    const zip = new JSZip();
+    const currentMode = mode;
+
+    for (let i = 0; i < manualReceipts.length; i++) {
+      setReceiptData(manualReceipts[i]);
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
+      if (currentMode === "uba") await generateUBAReceiptCanvas();
+      else await generateOPayReceiptCanvas();
+
+      const canvas = canvasRef.current;
+      if (canvas) {
+        const blob = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve, 'image/png'));
+        if (blob) {
+          const name = currentMode === "uba" 
+            ? `uba_receipt_${i + 1}.png`
+            : `opay_receipt_${i + 1}.png`;
+          zip.file(name, blob);
+        }
+      }
+    }
+
+    const content = await zip.generateAsync({ type: "blob" });
+    const url = URL.createObjectURL(content);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `manual_receipts_${new Date().getTime()}.zip`;
+    link.click();
+    setIsGenerating(false);
+    setManualReceipts([]);
+  };
 
   const stopBatch = () => {
     abortRef.current = true;
@@ -739,216 +796,271 @@ export default function Home() {
           </h1>
           
           {subMode === "manual" ? (
-            mode === "uba" ? (
-            <Form {...transferForm}>
-              <form onSubmit={transferForm.handleSubmit(onTransferSubmit)} className="space-y-6">
-                <FormField
-                  control={transferForm.control}
-                  name="recipientName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Recipient name</FormLabel>
-                      <FormControl>
-                        <Input placeholder="e.g. Oluwadamilola Deborah Idogbe" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={transferForm.control}
-                  name="amount"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Amount (NGN)</FormLabel>
-                      <FormControl>
-                        <Input 
-                          placeholder="20000" 
-                          type="number" 
-                          inputMode="decimal"
-                          {...field} 
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={transferForm.control}
-                  name="bankName"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col">
-                      <FormLabel>Bank name</FormLabel>
-                      <Popover open={openBankSelector} onOpenChange={setOpenBankSelector}>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant="outline"
-                              role="combobox"
-                              className={cn("w-full justify-between h-11 font-normal", !field.value && "text-muted-foreground")}
-                            >
-                              {field.value || "Select a bank"}
-                              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
-                          <Command className="w-full">
-                            <CommandInput placeholder="Search bank..." />
-                            <CommandList>
-                              <CommandEmpty>No bank found.</CommandEmpty>
-                              <CommandGroup>
-                                {nigerianBanks.map((bank) => (
-                                  <CommandItem
-                                    key={bank.code}
-                                    value={bank.name}
-                                    onSelect={() => {
-                                      transferForm.setValue("bankName", bank.name);
-                                      setOpenBankSelector(false);
-                                    }}
-                                  >
-                                    <Check className={cn("mr-2 h-4 w-4", field.value === bank.name ? "opacity-100" : "opacity-0")} />
-                                    {bank.name}
-                                  </CommandItem>
-                                ))}
-                              </CommandGroup>
-                            </CommandList>
-                          </Command>
-                        </PopoverContent>
-                      </Popover>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={transferForm.control}
-                  name="accountNumber"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Account number</FormLabel>
-                      <FormControl>
-                        <Input 
-                          placeholder="7056172558" 
-                          type="tel"
-                          inputMode="numeric"
-                          maxLength={10} 
-                          {...field} 
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <Button type="submit" className="w-full h-12 text-lg bg-[#E60000] hover:bg-[#cc0000] text-white">
-                  Generate Receipt
-                </Button>
-              </form>
-            </Form>
-          ) : (
-            <Form {...airtimeForm}>
-              <form onSubmit={airtimeForm.handleSubmit(onAirtimeSubmit)} className="space-y-6">
-                <FormField
-                  control={airtimeForm.control}
-                  name="network"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Network</FormLabel>
-                      <FormControl>
-                        <div className="grid grid-cols-3 gap-2">
-                          {["MTN", "Glo", "Airtel"].map((net) => (
-                            <Button
-                              key={net}
-                              type="button"
-                              variant={field.value === net ? "default" : "outline"}
-                              className={cn(
-                                "w-full",
-                                field.value === net && net === "MTN" && "bg-[#FFCC00] hover:bg-[#e6b800] text-black",
-                                field.value === net && net === "Glo" && "bg-[#008000] hover:bg-[#006400] text-white",
-                                field.value === net && net === "Airtel" && "bg-[#FF0000] hover:bg-[#cc0000] text-white"
-                              )}
-                              onClick={() => airtimeForm.setValue("network", net as any)}
-                            >
-                              {net}
-                            </Button>
-                          ))}
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={airtimeForm.control}
-                  name="phoneNumber"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Phone Number</FormLabel>
-                      <FormControl>
-                        <Input 
-                          placeholder="08030639305" 
-                          type="tel" 
-                          inputMode="numeric" 
-                          maxLength={11} 
-                          {...field} 
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={airtimeForm.control}
-                  name="amount"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Amount (NGN)</FormLabel>
-                      <FormControl>
-                        <Input 
-                          placeholder="500" 
-                          type="number" 
-                          inputMode="decimal" 
-                          {...field} 
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <div className="grid grid-cols-2 gap-4">
-                  <FormField
-                    control={airtimeForm.control}
-                    name="date"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Date</FormLabel>
-                        <FormControl>
-                          <Input type="date" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={airtimeForm.control}
-                    name="time"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Time</FormLabel>
-                        <FormControl>
-                          <Input type="time" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+            <div className="space-y-6">
+              {manualReceipts.length > 0 && (
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Added Receipts ({manualReceipts.length})</Label>
+                  <div className="flex flex-wrap gap-2">
+                    {manualReceipts.map((receipt) => (
+                      <div key={receipt.id} className="bg-muted px-3 py-1 rounded-full text-xs flex items-center gap-2 border">
+                        <span className="max-w-[120px] truncate">
+                          {"recipientName" in receipt ? receipt.recipientName : receipt.phoneNumber}
+                        </span>
+                        <button 
+                          onClick={() => removeManualReceipt(receipt.id)}
+                          className="text-muted-foreground hover:text-destructive transition-colors text-sm"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <Button type="submit" className="w-full h-12 text-lg bg-[#10B981] hover:bg-[#059669] text-white">
-                  Generate Airtime Receipt
+              )}
+
+              {mode === "uba" ? (
+                <Form {...transferForm}>
+                  <form onSubmit={transferForm.handleSubmit(onTransferSubmit)} className="space-y-6">
+                    <FormField
+                      control={transferForm.control}
+                      name="recipientName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Recipient name</FormLabel>
+                          <FormControl>
+                            <Input placeholder="e.g. Oluwadamilola Deborah Idogbe" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={transferForm.control}
+                      name="amount"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Amount (NGN)</FormLabel>
+                          <FormControl>
+                            <Input 
+                              placeholder="20000" 
+                              type="number" 
+                              inputMode="decimal"
+                              {...field} 
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={transferForm.control}
+                      name="bankName"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-col">
+                          <FormLabel>Bank name</FormLabel>
+                          <Popover open={openBankSelector} onOpenChange={setOpenBankSelector}>
+                            <PopoverTrigger asChild>
+                              <FormControl>
+                                <Button
+                                  variant="outline"
+                                  role="combobox"
+                                  className={cn("w-full justify-between h-11 font-normal", !field.value && "text-muted-foreground")}
+                                >
+                                  {field.value || "Select a bank"}
+                                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                </Button>
+                              </FormControl>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
+                              <Command className="w-full">
+                                <CommandInput placeholder="Search bank..." />
+                                <CommandList>
+                                  <CommandEmpty>No bank found.</CommandEmpty>
+                                  <CommandGroup>
+                                    {nigerianBanks.map((bank) => (
+                                      <CommandItem
+                                        key={bank.code}
+                                        value={bank.name}
+                                        onSelect={() => {
+                                          transferForm.setValue("bankName", bank.name);
+                                          setOpenBankSelector(false);
+                                        }}
+                                      >
+                                        <Check className={cn("mr-2 h-4 w-4", field.value === bank.name ? "opacity-100" : "opacity-0")} />
+                                        {bank.name}
+                                      </CommandItem>
+                                    ))}
+                                  </CommandGroup>
+                                </CommandList>
+                              </Command>
+                            </PopoverContent>
+                          </Popover>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={transferForm.control}
+                      name="accountNumber"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Account number</FormLabel>
+                          <FormControl>
+                            <Input 
+                              placeholder="7056172558" 
+                              type="tel"
+                              inputMode="numeric"
+                              maxLength={10} 
+                              {...field} 
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <div className="flex gap-3">
+                      <Button type="submit" className="flex-1 h-12 text-lg bg-[#E60000] hover:bg-[#cc0000] text-white">
+                        Preview
+                      </Button>
+                      <Button 
+                        type="button" 
+                        variant="outline" 
+                        className="w-14 h-12 flex items-center justify-center border-2 border-dashed border-[#E60000] text-[#E60000] hover:bg-[#E60000]/5"
+                        onClick={addManualReceipt}
+                        title="Add Another Receipt"
+                      >
+                        <span className="text-2xl font-bold">+</span>
+                      </Button>
+                    </div>
+                  </form>
+                </Form>
+              ) : (
+                <Form {...airtimeForm}>
+                  <form onSubmit={airtimeForm.handleSubmit(onAirtimeSubmit)} className="space-y-6">
+                    <FormField
+                      control={airtimeForm.control}
+                      name="network"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Network</FormLabel>
+                          <FormControl>
+                            <div className="grid grid-cols-3 gap-2">
+                              {["MTN", "Glo", "Airtel"].map((net) => (
+                                <Button
+                                  key={net}
+                                  type="button"
+                                  variant={field.value === net ? "default" : "outline"}
+                                  className={cn(
+                                    "w-full",
+                                    field.value === net && net === "MTN" && "bg-[#FFCC00] hover:bg-[#e6b800] text-black",
+                                    field.value === net && net === "Glo" && "bg-[#008000] hover:bg-[#006400] text-white",
+                                    field.value === net && net === "Airtel" && "bg-[#FF0000] hover:bg-[#cc0000] text-white"
+                                  )}
+                                  onClick={() => airtimeForm.setValue("network", net as any)}
+                                >
+                                  {net}
+                                </Button>
+                              ))}
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={airtimeForm.control}
+                      name="phoneNumber"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Phone Number</FormLabel>
+                          <FormControl>
+                            <Input 
+                              placeholder="08030639305" 
+                              type="tel" 
+                              inputMode="numeric" 
+                              maxLength={11} 
+                              {...field} 
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={airtimeForm.control}
+                      name="amount"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Amount (NGN)</FormLabel>
+                          <FormControl>
+                            <Input 
+                              placeholder="500" 
+                              type="number" 
+                              inputMode="decimal" 
+                              {...field} 
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <div className="grid grid-cols-2 gap-4">
+                      <FormField
+                        control={airtimeForm.control}
+                        name="date"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Date</FormLabel>
+                            <FormControl>
+                              <Input type="date" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={airtimeForm.control}
+                        name="time"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Time</FormLabel>
+                            <FormControl>
+                              <Input type="time" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    <div className="flex gap-3">
+                      <Button type="submit" className="flex-1 h-12 text-lg bg-[#10B981] hover:bg-[#059669] text-white">
+                        Preview
+                      </Button>
+                      <Button 
+                        type="button" 
+                        variant="outline" 
+                        className="w-14 h-12 flex items-center justify-center border-2 border-dashed border-[#10B981] text-[#10B981] hover:bg-[#10B981]/5"
+                        onClick={addManualReceipt}
+                        title="Add Another Receipt"
+                      >
+                        <span className="text-2xl font-bold">+</span>
+                      </Button>
+                    </div>
+                  </form>
+                </Form>
+              )}
+
+              {manualReceipts.length > 0 && (
+                <Button 
+                  onClick={downloadManualBatch} 
+                  className="w-full h-12 text-lg bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-200 transition-all active:scale-95"
+                  disabled={isGenerating}
+                >
+                  Download All {manualReceipts.length} Receipts (ZIP)
                 </Button>
-              </form>
-            </Form>
-          )
-        ) : (
+              )}
+            </div>
+          ) : (
           <div className="space-y-6">
             <div className="space-y-4">
               <div>
