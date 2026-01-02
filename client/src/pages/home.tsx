@@ -282,7 +282,7 @@ export default function Home() {
     await drawNetworkLogo();
 
     ctx.fillStyle = '#111827';
-    ctx.font = '600 18px sans-serif'; // Reduced from 19px (~5% reduction)
+    ctx.font = '500 18px sans-serif'; // Reduced weight from 600 to 500 for thinner boldness
     ctx.textAlign = 'center';
     ctx.letterSpacing = '0.3px';
     const networkNameY = 120;
@@ -298,11 +298,11 @@ export default function Home() {
     // Calculate middle between networkNameY and successfulTextY
     // networkNameY is at 120, successfulTextY is at 208
     // Middle is (120 + 208) / 2 = 164
-    // Amount font size is 40px, so we need to account for baseline.
+    // Amount font size is 38px, so we need to account for baseline.
     const amountY = 172; 
 
     ctx.fillStyle = '#111827';
-    ctx.font = '700 40px sans-serif'; // Reduced from 42px (~5% reduction)
+    ctx.font = '700 38px sans-serif'; // Reduced from 40px (~5% reduction)
     ctx.textAlign = 'center';
     ctx.fillText(`₦${amountValue}`, centerX, amountY);
 
