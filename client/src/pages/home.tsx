@@ -243,7 +243,7 @@ export default function Home() {
 
     const drawNetworkLogo = () => {
       return new Promise<void>((resolve) => {
-        const logoSize = 68; // Increased by 30% from 52
+        const logoSize = 52; // Reverted to original size
         const logoX = centerX - (logoSize / 2);
         const logoY = 55 - (logoSize / 2);
 
@@ -257,7 +257,7 @@ export default function Home() {
           logoImg.onload = () => {
             ctx.save();
             ctx.beginPath();
-            ctx.arc(centerX, 55, 34, 0, Math.PI * 2); // Increased arc radius by 30% from 26
+            ctx.arc(centerX, 55, 26, 0, Math.PI * 2); // Reverted arc radius to 26
             ctx.clip();
             ctx.drawImage(logoImg, logoX, logoY, logoSize, logoSize);
             ctx.restore();
@@ -267,7 +267,7 @@ export default function Home() {
           if (logoImg.complete) {
             ctx.save();
             ctx.beginPath();
-            ctx.arc(centerX, 55, 34, 0, Math.PI * 2);
+            ctx.arc(centerX, 55, 26, 0, Math.PI * 2);
             ctx.clip();
             ctx.drawImage(logoImg, logoX, logoY, logoSize, logoSize);
             ctx.restore();
@@ -282,10 +282,10 @@ export default function Home() {
     await drawNetworkLogo();
 
     ctx.fillStyle = '#111827';
-    ctx.font = '500 17px sans-serif'; // Increased font size from 13px (~30% increase)
+    ctx.font = '500 17px sans-serif'; // Keeping the increased font size (17px)
     ctx.textAlign = 'center';
     ctx.letterSpacing = '0.3px';
-    ctx.fillText(data.network, centerX, 114); // Positioned already adjusted from previous turn
+    ctx.fillText(data.network, centerX, 114);
 
     const amountValue = parseFloat(data.amount).toLocaleString('en-NG', { 
       minimumFractionDigits: 2, 
@@ -295,7 +295,7 @@ export default function Home() {
     ctx.fillStyle = '#111827';
     ctx.font = '700 42px sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText(`₦${amountValue}`, centerX, 166); // Moved down slightly to accommodate larger logo
+    ctx.fillText(`₦${amountValue}`, centerX, 160); // Reverted Y position to original since logo is smaller again
 
     ctx.fillStyle = '#0fb47a';
     ctx.beginPath();
