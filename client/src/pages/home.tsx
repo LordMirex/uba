@@ -385,8 +385,8 @@ export default function Home() {
 
     ctx.textAlign = 'center';
     ctx.fillStyle = '#111827';
-    ctx.font = '500 18px sans-serif'; 
-    ctx.letterSpacing = '0.2px';
+    ctx.font = '700 18.5px sans-serif'; 
+    ctx.letterSpacing = '0.3px';
     const networkNameY = 120;
     ctx.fillText(data.network, centerX, networkNameY);
 
@@ -450,19 +450,19 @@ export default function Home() {
 
     const drawDetailRow = (label: string, value: string, hasCopyIcon: boolean = false, isChevron: boolean = false) => {
       ctx.textAlign = 'left';
-      ctx.fillStyle = '#8e94a3';
-      ctx.font = '400 14px sans-serif'; 
+      ctx.fillStyle = '#898e9b';
+      ctx.font = '400 13.5px sans-serif'; 
       ctx.fillText(label, detailX, currentY);
       
       ctx.textAlign = 'right';
-      ctx.fillStyle = '#111827';
-      ctx.font = '500 14.5px sans-serif'; // Adjusted to 14.5px for better visual match
+      ctx.fillStyle = '#1a1d24';
+      ctx.font = '500 15px sans-serif'; 
       
       let finalValueX = valueX;
       if (hasCopyIcon || isChevron) finalValueX -= 22;
       
       if (label === 'Transaction No.' || label === 'Transaction Date') {
-        ctx.font = '500 12.5px sans-serif'; 
+        ctx.font = '400 13px sans-serif'; 
       }
       
       ctx.fillText(value, finalValueX, currentY);
