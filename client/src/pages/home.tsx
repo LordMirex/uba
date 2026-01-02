@@ -702,7 +702,7 @@ export default function Home() {
       
       if (currentBatchMode === "uba") {
         await generateUBAReceiptCanvas();
-      } else {
+      } else if (currentBatchMode === "opay") {
         await generateOPayReceiptCanvas();
       }
 
