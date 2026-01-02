@@ -92,14 +92,36 @@ export default function Home() {
   };
 
   const downloadManualBatch = async () => {
-    if (manualReceipts.length === 0) return;
+    // Determine the data for the currently previewed receipt
+    let currentPreviewData: (TransferFormValues | AirtimeFormValues) | null = null;
+    if (mode === "uba") {
+      const isValid = await transferForm.trigger();
+      if (isValid) currentPreviewData = transferForm.getValues();
+    } else {
+      const isValid = await airtimeForm.trigger();
+      if (isValid) currentPreviewData = airtimeForm.getValues();
+    }
+
+    const allReceipts = [...manualReceipts];
+    if (currentPreviewData) {
+      allReceipts.push({ ...currentPreviewData, id: "current-preview" });
+    }
+
+    if (allReceipts.length === 0) {
+      toast({
+        title: "No Receipts",
+        description: "Please fill in a receipt or add one to the batch first.",
+        variant: "destructive"
+      });
+      return;
+    }
     
     setIsGenerating(true);
     const zip = new JSZip();
     const currentMode = mode;
 
-    for (let i = 0; i < manualReceipts.length; i++) {
-      setReceiptData(manualReceipts[i]);
+    for (let i = 0; i < allReceipts.length; i++) {
+      setReceiptData(allReceipts[i]);
       await new Promise(resolve => setTimeout(resolve, 800));
       
       if (currentMode === "uba") await generateUBAReceiptCanvas();
@@ -345,9 +367,9 @@ export default function Home() {
 
     await drawNetworkLogo();
 
-    ctx.textAlign = 'left';
+    ctx.textAlign = 'center';
     ctx.fillStyle = '#111827';
-    ctx.font = '500 18px sans-serif'; // Reduced weight to 500, slight size increase to 18px
+    ctx.font = '500 18px sans-serif'; 
     ctx.letterSpacing = '0.2px';
     const networkNameY = 120;
     ctx.fillText(data.network, centerX, networkNameY);
