@@ -285,17 +285,26 @@ export default function Home() {
     ctx.font = '600 18px sans-serif'; // Reduced from 19px (~5% reduction)
     ctx.textAlign = 'center';
     ctx.letterSpacing = '0.3px';
-    ctx.fillText(data.network, centerX, 120); // Increased spacing from top logo (from 116)
+    const networkNameY = 120;
+    ctx.fillText(data.network, centerX, networkNameY);
 
     const amountValue = parseFloat(data.amount).toLocaleString('en-NG', { 
       minimumFractionDigits: 2, 
       maximumFractionDigits: 2 
     });
 
+    // Successful text Y is 208
+    const successfulTextY = 208;
+    // Calculate middle between networkNameY and successfulTextY
+    // networkNameY is at 120, successfulTextY is at 208
+    // Middle is (120 + 208) / 2 = 164
+    // Amount font size is 40px, so we need to account for baseline.
+    const amountY = 172; 
+
     ctx.fillStyle = '#111827';
     ctx.font = '700 40px sans-serif'; // Reduced from 42px (~5% reduction)
     ctx.textAlign = 'center';
-    ctx.fillText(`₦${amountValue}`, centerX, 182); // Increased spacing from network name (from 172)
+    ctx.fillText(`₦${amountValue}`, centerX, amountY);
 
     ctx.fillStyle = '#0fb47a';
     ctx.beginPath();
