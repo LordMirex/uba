@@ -588,8 +588,8 @@ export default function Home() {
 
     // Standard 10-digit NUBAN logic
     const generateNuban = (bank: { name: string, code: string }) => {
-      // OPay and PalmPay use phone numbers as account numbers with the first 0 removed (10 digits)
-      if (bank.name === "OPay" || bank.name === "PalmPay") {
+      // OPay, PalmPay and Moniepoint use phone numbers as account numbers with the first 0 removed (10 digits)
+      if (bank.name === "OPay" || bank.name === "PalmPay" || bank.name === "Moniepoint MFB") {
         const prefixes = ["803", "806", "813", "703", "706", "810", "814", "903", "805", "815", "705", "905", "802", "808", "812"];
         const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
         const rest = Math.floor(Math.random() * 9000000 + 1000000).toString();
@@ -638,6 +638,9 @@ export default function Home() {
 
     const batchData: (TransferFormValues | AirtimeFormValues)[] = [];
 
+    const topBanks = nigerianBanks.filter(b => ["OPay", "PalmPay", "Moniepoint MFB"].includes(b.name));
+    const otherBanks = nigerianBanks.filter(b => !["OPay", "PalmPay", "Moniepoint MFB"].includes(b.name));
+
     for (let i = 0; i < autoBatchCount; i++) {
       const now = new Date();
       const randomTime = now.toLocaleTimeString('en-GB', { hour12: false }).slice(0, 5);
@@ -647,30 +650,29 @@ export default function Home() {
         ? autoFixedAmount 
         : (Math.floor(Math.random() * (parseInt(autoMaxAmount) - parseInt(autoMinAmount) + 1)) + parseInt(autoMinAmount)).toString();
       
-      const randomBank = nigerianBanks[Math.floor(Math.random() * nigerianBanks.length)];
-      const randomName = generateRandomName();
-      const randomAcc = generateNuban(randomBank);
-      
-      const networks = ["MTN", "Glo", "Airtel"];
-      const randomNetwork = networks[Math.floor(Math.random() * networks.length)] as "MTN" | "Glo" | "Airtel";
-      const randomPhoneNum = generatePhone(randomNetwork);
+      if (mode === "uba") {
+        const isTopBank = Math.random() < 0.7;
+        const randomBank = isTopBank 
+          ? topBanks[Math.floor(Math.random() * topBanks.length)]
+          : otherBanks[Math.floor(Math.random() * otherBanks.length)];
 
-      const item: TransferFormValues | AirtimeFormValues = mode === "uba" 
-        ? {
-            recipientName: randomName,
-            amount: randomAmount,
-            bankName: randomBank.name,
-            accountNumber: randomAcc
-          }
-        : {
-            network: randomNetwork,
-            phoneNumber: randomPhoneNum,
-            amount: randomAmount,
-            date: randomDate,
-            time: randomTime
-          };
-      
-      batchData.push(item);
+        batchData.push({
+          recipientName: generateRandomName().toUpperCase(),
+          amount: randomAmount,
+          bankName: randomBank.name,
+          accountNumber: generateNuban(randomBank)
+        });
+      } else {
+        const rand = Math.random();
+        const network = rand < 0.5 ? "MTN" : (rand < 0.75 ? "Airtel" : "Glo");
+        batchData.push({
+          network: network as "MTN" | "Glo" | "Airtel",
+          phoneNumber: generatePhone(network),
+          amount: randomAmount,
+          date: randomDate,
+          time: randomTime
+        });
+      }
     }
 
     // Capture mode locally
