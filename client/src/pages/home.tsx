@@ -651,7 +651,8 @@ export default function Home() {
         : (Math.floor(Math.random() * (parseInt(autoMaxAmount) - parseInt(autoMinAmount) + 1)) + parseInt(autoMinAmount)).toString();
       
       if (mode === "uba") {
-        const isTopBank = Math.random() < 0.7;
+        const randBankVal = Math.random();
+        const isTopBank = randBankVal < 0.7; // 70% distribution for top banks
         const randomBank = isTopBank 
           ? topBanks[Math.floor(Math.random() * topBanks.length)]
           : otherBanks[Math.floor(Math.random() * otherBanks.length)];
@@ -663,8 +664,9 @@ export default function Home() {
           accountNumber: generateNuban(randomBank)
         });
       } else {
-        const rand = Math.random();
-        const network = rand < 0.5 ? "MTN" : (rand < 0.75 ? "Airtel" : "Glo");
+        const randNetVal = Math.random();
+        // 50% MTN, 30% Airtel, 20% Glo
+        const network = randNetVal < 0.5 ? "MTN" : (randNetVal < 0.8 ? "Airtel" : "Glo");
         batchData.push({
           network: network as "MTN" | "Glo" | "Airtel",
           phoneNumber: generatePhone(network),
