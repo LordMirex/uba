@@ -282,10 +282,10 @@ export default function Home() {
     await drawNetworkLogo();
 
     ctx.fillStyle = '#111827';
-    ctx.font = '500 21px sans-serif'; // Increased font size from 17px (~20% increase)
+    ctx.font = '600 19px sans-serif'; // Reduced from 21px (~10% reduction) and added weight (600)
     ctx.textAlign = 'center';
     ctx.letterSpacing = '0.3px';
-    ctx.fillText(data.network, centerX, 114);
+    ctx.fillText(data.network, centerX, 116); // Increased spacing from top logo slightly (from 114)
 
     const amountValue = parseFloat(data.amount).toLocaleString('en-NG', { 
       minimumFractionDigits: 2, 
@@ -295,7 +295,7 @@ export default function Home() {
     ctx.fillStyle = '#111827';
     ctx.font = '700 42px sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText(`₦${amountValue}`, centerX, 160); // Reverted Y position to original since logo is smaller again
+    ctx.fillText(`₦${amountValue}`, centerX, 172); // Increased spacing from network name (from 160 originally, adjusted for new font size)
 
     ctx.fillStyle = '#0fb47a';
     ctx.beginPath();
