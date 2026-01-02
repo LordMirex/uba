@@ -385,7 +385,7 @@ export default function Home() {
 
     ctx.textAlign = 'center';
     ctx.fillStyle = '#111827';
-    ctx.font = '700 17.5px sans-serif'; 
+    ctx.font = '700 16.6px sans-serif'; 
     ctx.letterSpacing = '0.4px';
     const networkNameY = 120;
     ctx.fillText(data.network, centerX, networkNameY);
