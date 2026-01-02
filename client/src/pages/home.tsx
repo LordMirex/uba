@@ -282,10 +282,10 @@ export default function Home() {
     await drawNetworkLogo();
 
     ctx.fillStyle = '#111827';
-    ctx.font = '500 13px sans-serif';
+    ctx.font = '500 17px sans-serif'; // Increased font size from 13px (~30% increase)
     ctx.textAlign = 'center';
     ctx.letterSpacing = '0.3px';
-    ctx.fillText(data.network, centerX, 114); // Moved down slightly to accommodate larger logo
+    ctx.fillText(data.network, centerX, 114); // Positioned already adjusted from previous turn
 
     const amountValue = parseFloat(data.amount).toLocaleString('en-NG', { 
       minimumFractionDigits: 2, 
