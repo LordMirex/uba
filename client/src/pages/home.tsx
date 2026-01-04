@@ -136,29 +136,39 @@ export default function Home() {
 
     for (let i = 0; i < allReceipts.length; i++) {
       const currentItem = allReceipts[i];
+      
+      // 1. Update state
       setReceiptData(currentItem);
       
-      // Wait for React to update state and trigger generate effect
-      await new Promise(resolve => setTimeout(resolve, 500));
+      // 2. Clear current canvas context to ensure a fresh render
+      const canvas = canvasRef.current;
+      if (canvas) {
+        const ctx = canvas.getContext('2d');
+        if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
       
-      // Force manual render and wait for it
+      // 3. Wait for state propagation
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
+      // 4. Force manual render
       if (currentMode === "uba") {
         await generateUBAReceiptCanvas();
       } else {
         await generateOPayReceiptCanvas();
       }
 
-      // Final short wait for rendering to finish
-      await new Promise(resolve => setTimeout(resolve, 200));
+      // 5. Wait for canvas paint completion
+      await new Promise(resolve => setTimeout(resolve, 400));
 
-      const canvas = canvasRef.current;
-      if (canvas && canvas.width > 0) {
-        const blob = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve, 'image/png', 1.0));
+      const updatedCanvas = canvasRef.current;
+      if (updatedCanvas && updatedCanvas.width > 0) {
+        const blob = await new Promise<Blob | null>(resolve => updatedCanvas.toBlob(resolve, 'image/png', 1.0));
         if (blob) {
           const name = currentMode === "uba" 
             ? `uba_receipt_${i + 1}.png`
             : `opay_receipt_${i + 1}.png`;
           zip.file(name, blob);
+          console.log(`Captured receipt ${i + 1}/${allReceipts.length}: ${name}`);
         }
       }
     }
