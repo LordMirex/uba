@@ -570,7 +570,7 @@ export default function Home() {
         default: return "th";
       }
     };
-    const finalFormattedDate = `${monthNamesArr[dateObj.getMonth()]} ${dayVal}${getSuffix(dayVal)}, ${dateObj.getFullYear()} ${data.time}:56`;
+    const finalFormattedDate = `${monthNamesArr[dateObj.getMonth()]} ${dayVal}${getSuffix(dayVal)}, ${dateObj.getFullYear()} ${data.time}:${new Date().getSeconds().toString().padStart(2, '0')}`;
     drawDetailRow('Transaction Date', finalFormattedDate);
   };
 
