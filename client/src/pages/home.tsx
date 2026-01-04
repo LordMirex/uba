@@ -104,7 +104,21 @@ export default function Home() {
 
     const allReceipts = [...manualReceipts];
     if (currentPreviewData) {
-      allReceipts.push({ ...currentPreviewData, id: "current-preview" });
+      // Check if this specific data is already in the manualReceipts to avoid duplicates
+      const isDuplicate = manualReceipts.some(r => {
+        if (mode === "uba") {
+          const tr = r as TransferFormValues;
+          const cur = currentPreviewData as TransferFormValues;
+          return tr.recipientName === cur.recipientName && tr.amount === cur.amount && tr.accountNumber === cur.accountNumber;
+        } else {
+          const ar = r as AirtimeFormValues;
+          const cur = currentPreviewData as AirtimeFormValues;
+          return ar.phoneNumber === cur.phoneNumber && ar.amount === cur.amount && ar.network === cur.network;
+        }
+      });
+      if (!isDuplicate) {
+        allReceipts.push({ ...currentPreviewData, id: "current-preview" });
+      }
     }
 
     if (allReceipts.length === 0) {
@@ -122,10 +136,14 @@ export default function Home() {
 
     for (let i = 0; i < allReceipts.length; i++) {
       setReceiptData(allReceipts[i]);
-      await new Promise(resolve => setTimeout(resolve, 800));
+      // Wait for the preview rendering to complete
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
       if (currentMode === "uba") await generateUBAReceiptCanvas();
       else await generateOPayReceiptCanvas();
+
+      // Additional wait for canvas drawing
+      await new Promise(resolve => setTimeout(resolve, 200));
 
       const canvas = canvasRef.current;
       if (canvas) {
@@ -152,7 +170,7 @@ export default function Home() {
     setManualReceipts([]);
     toast({
       title: "Batch Downloaded",
-      description: "All receipts have been saved to your device.",
+      description: `Successfully saved ${allReceipts.length} receipts to your device.`,
     });
   };
 
