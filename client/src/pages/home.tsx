@@ -443,9 +443,9 @@ export default function Home() {
 
     ctx.textAlign = 'center';
     ctx.fillStyle = '#111827';
-    ctx.font = '700 15.1px sans-serif'; 
+    ctx.font = '700 13.6px sans-serif'; 
     ctx.letterSpacing = '0.4px';
-    const networkNameY = 120;
+    const networkNameY = 114;
     ctx.fillText(data.network, centerX, networkNameY);
 
     const amountValue = parseFloat(data.amount).toLocaleString('en-NG', { 
@@ -454,21 +454,21 @@ export default function Home() {
     });
 
     // Successful text Y is 208
-    const successfulTextY = 208;
+    const successfulTextY = 202;
     // Calculate middle between networkNameY and successfulTextY
-    // networkNameY is at 120, successfulTextY is at 208
-    // Middle is (120 + 208) / 2 = 164
-    // Amount font size is 38px, so we need to account for baseline.
-    const amountY = 172; 
+    // networkNameY is at 114, successfulTextY is at 202
+    // Middle is (114 + 202) / 2 = 158
+    // Amount font size is 34.2px, so we need to account for baseline.
+    const amountY = 166; 
 
     ctx.fillStyle = '#111827';
-    ctx.font = '700 38px sans-serif'; // Reduced from 40px (~5% reduction)
+    ctx.font = '700 34.2px sans-serif'; // Reduced from 38px
     ctx.textAlign = 'center';
     ctx.fillText(`₦${amountValue}`, centerX, amountY);
 
     ctx.fillStyle = '#0fb47a';
     ctx.beginPath();
-    ctx.arc(centerX - 52, 202, 10, 0, Math.PI * 2);
+    ctx.arc(centerX - 52, 196, 10, 0, Math.PI * 2);
     ctx.fill();
     
     ctx.strokeStyle = '#ffffff';
@@ -476,29 +476,29 @@ export default function Home() {
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
     ctx.beginPath();
-    ctx.moveTo(centerX - 56, 202);
-    ctx.lineTo(centerX - 53, 206);
-    ctx.lineTo(centerX - 48, 198);
+    ctx.moveTo(centerX - 56, 196);
+    ctx.lineTo(centerX - 53, 200);
+    ctx.lineTo(centerX - 48, 192);
     ctx.stroke();
 
     ctx.fillStyle = '#0fb47a';
-    ctx.font = '500 18px sans-serif';
+    ctx.font = '500 16.2px sans-serif'; // Reduced from 18px
     ctx.textAlign = 'left';
-    ctx.fillText('Successful', centerX - 36, 208);
+    ctx.fillText('Successful', centerX - 36, 202);
 
     ctx.fillStyle = '#8e94a3';
-    ctx.font = '400 14px sans-serif';
+    ctx.font = '400 12.6px sans-serif'; // Reduced from 14px
     ctx.textAlign = 'left';
     ctx.fillText('Bonus Earned', cardMargin + 20, 255);
     
     ctx.textAlign = 'right';
     ctx.fillStyle = '#0fb47a';
-    ctx.font = '400 14px sans-serif';
+    ctx.font = '400 12.6px sans-serif'; // Reduced from 14px
     ctx.fillText(`+₦5.00 Cashback`, 390 - cardMargin - 20, 255);
 
     ctx.textAlign = 'left';
     ctx.fillStyle = '#111827';
-    ctx.font = '700 17px sans-serif'; 
+    ctx.font = '700 15.3px sans-serif'; // Reduced from 17px
     ctx.fillText('Transaction Details', cardMargin + 20, 332);
 
     const detailX = cardMargin + 20;
@@ -509,13 +509,12 @@ export default function Home() {
     const drawDetailRow = (label: string, value: string, hasCopyIcon: boolean = false, isChevron: boolean = false) => {
       ctx.textAlign = 'left';
       ctx.fillStyle = '#8e94a3';
-      ctx.font = '400 13px sans-serif'; 
+      ctx.font = '400 11.7px sans-serif'; // Reduced from 13px
       ctx.fillText(label, detailX, currentY);
       
       ctx.textAlign = 'right';
       ctx.fillStyle = '#111827';
-      ctx.font = '500 13px sans-serif'; 
-      
+      ctx.font = '500 11.7px sans-serif'; // Reduced from 13px      
       let finalValueX = valueX;
       if (hasCopyIcon || isChevron) finalValueX -= 22;
       
