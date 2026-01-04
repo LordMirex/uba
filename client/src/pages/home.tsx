@@ -138,28 +138,33 @@ export default function Home() {
     for (let i = 0; i < allReceipts.length; i++) {
       const currentItem = allReceipts[i];
       
-      // 1. Update state
-      setReceiptData(currentItem);
+      // 1. Force state update and wait for it to settle
+      setReceiptData({...currentItem});
       
       // 2. Clear current canvas context to ensure a fresh render
       const canvas = canvasRef.current;
       if (canvas) {
         const ctx = canvas.getContext('2d');
-        if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if (ctx) {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          // Set to transparent/white immediately
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
       }
       
-      // 3. Wait for state propagation
-      await new Promise(resolve => setTimeout(resolve, 800));
+      // 3. Extended wait for state propagation and image asset loading
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // 4. Force manual render
+      // 4. Force manual render and await completion
       if (currentMode === "uba") {
         await generateUBAReceiptCanvas();
       } else {
         await generateOPayReceiptCanvas();
       }
 
-      // 5. Wait for canvas paint completion
-      await new Promise(resolve => setTimeout(resolve, 400));
+      // 5. Final wait for canvas paint completion before capture
+      await new Promise(resolve => setTimeout(resolve, 500));
 
       const updatedCanvas = canvasRef.current;
       if (updatedCanvas && updatedCanvas.width > 0) {
