@@ -71,16 +71,33 @@ export default function Home() {
   const { toast } = useToast();
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  const addManualReceipt = () => {
+  const addManualReceipt = async () => {
     let data;
     if (mode === "uba") {
-      data = transferForm.getValues();
-      transferForm.reset();
+      const isValid = await transferForm.trigger();
+      if (!isValid) return;
+      data = { ...transferForm.getValues() };
+      transferForm.reset({
+        recipientName: "",
+        amount: "",
+        bankName: "",
+        accountNumber: "",
+      });
     } else {
-      data = airtimeForm.getValues();
-      airtimeForm.reset();
+      const isValid = await airtimeForm.trigger();
+      if (!isValid) return;
+      data = { ...airtimeForm.getValues() };
+      airtimeForm.reset({
+        network: data.network,
+        phoneNumber: "",
+        amount: "",
+        date: new Date().toISOString().split('T')[0],
+        time: new Date().toLocaleTimeString('en-GB', { hour12: false }).slice(0, 5),
+      });
     }
-    setManualReceipts([...manualReceipts, { ...data, id: Math.random().toString(36).substr(2, 9) }]);
+    
+    const newReceipt = { ...data, id: Math.random().toString(36).substr(2, 9) };
+    setManualReceipts(prev => [...prev, newReceipt]);
     
     toast({
       title: "Receipt Added",
@@ -104,7 +121,8 @@ export default function Home() {
     }
 
     const allReceipts = [...manualReceipts];
-    // Only include current form if it's valid and not already added
+    // We already add receipts to manualReceipts via the "+" button
+    // The current form state is also added to the list of receipts to capture if it's valid
     if (currentPreviewData) {
       const isAlreadyAdded = manualReceipts.some(r => {
         if (mode === "uba") {
@@ -118,7 +136,7 @@ export default function Home() {
         }
       });
       if (!isAlreadyAdded) {
-        allReceipts.push({ ...currentPreviewData, id: "current-preview" });
+        allReceipts.push({ ...currentPreviewData, id: "current-preview-" + Date.now() });
       }
     }
 
