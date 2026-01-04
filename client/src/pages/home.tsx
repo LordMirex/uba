@@ -72,15 +72,16 @@ export default function Home() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const addManualReceipt = () => {
+    let data;
     if (mode === "uba") {
-      const data = transferForm.getValues();
-      setManualReceipts([...manualReceipts, { ...data, id: Math.random().toString(36).substr(2, 9) }]);
+      data = transferForm.getValues();
       transferForm.reset();
     } else {
-      const data = airtimeForm.getValues();
-      setManualReceipts([...manualReceipts, { ...data, id: Math.random().toString(36).substr(2, 9) }]);
+      data = airtimeForm.getValues();
       airtimeForm.reset();
     }
+    setManualReceipts([...manualReceipts, { ...data, id: Math.random().toString(36).substr(2, 9) }]);
+    
     toast({
       title: "Receipt Added",
       description: "You can now add another receipt or download all.",
@@ -103,9 +104,9 @@ export default function Home() {
     }
 
     const allReceipts = [...manualReceipts];
+    // Only include current form if it's valid and not already added
     if (currentPreviewData) {
-      // Check if this specific data is already in the manualReceipts to avoid duplicates
-      const isDuplicate = manualReceipts.some(r => {
+      const isAlreadyAdded = manualReceipts.some(r => {
         if (mode === "uba") {
           const tr = r as TransferFormValues;
           const cur = currentPreviewData as TransferFormValues;
@@ -116,7 +117,7 @@ export default function Home() {
           return ar.phoneNumber === cur.phoneNumber && ar.amount === cur.amount && ar.network === cur.network;
         }
       });
-      if (!isDuplicate) {
+      if (!isAlreadyAdded) {
         allReceipts.push({ ...currentPreviewData, id: "current-preview" });
       }
     }
@@ -223,28 +224,12 @@ export default function Home() {
     setReceiptData(data);
     setBatchResults([]);
     setBatchZip(null);
-    if (manualReceipts.length > 0) {
-      setManualReceipts([...manualReceipts, { ...data, id: Math.random().toString(36).substr(2, 9) }]);
-      transferForm.reset();
-      toast({
-        title: "Receipt Added",
-        description: "The receipt has been added to your batch.",
-      });
-    }
   };
 
   const onAirtimeSubmit = (data: AirtimeFormValues) => {
     setReceiptData(data);
     setBatchResults([]);
     setBatchZip(null);
-    if (manualReceipts.length > 0) {
-      setManualReceipts([...manualReceipts, { ...data, id: Math.random().toString(36).substr(2, 9) }]);
-      airtimeForm.reset();
-      toast({
-        title: "Receipt Added",
-        description: "The receipt has been added to your batch.",
-      });
-    }
   };
 
   // Generate receipt canvas when receipt data changes
